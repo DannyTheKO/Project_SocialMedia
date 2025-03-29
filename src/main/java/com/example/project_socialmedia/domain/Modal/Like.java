@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -30,10 +31,8 @@ public class Like {
     @JoinColumn(name = "comment_id")
     private Comment comment;
 
-    private Date createdAt;
-
-    ;
-
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
     /**
      * Like Constructor
      * @param likeId        Long
@@ -42,7 +41,7 @@ public class Like {
      * @param comment       Object: {Comment}
      * @param createdAt     Date
      */
-    public Like(Long likeId, User user, Post post, Comment comment, Date createdAt) {
+    public Like(Long likeId, User user, Post post, Comment comment, LocalDateTime createdAt) {
         this.likeId = likeId;
         this.user = user;
         this.post = post;

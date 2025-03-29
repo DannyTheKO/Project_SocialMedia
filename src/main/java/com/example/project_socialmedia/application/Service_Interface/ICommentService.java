@@ -32,7 +32,7 @@ public interface ICommentService {
      * Add Comment
      * @param request Object {CommentCreateRequest}
      */
-    void addComment(CommentCreateRequest request);
+    Comment addComment (CommentCreateRequest request, Long userId, Long postId);
 
     /**
      * Delete Comment By ID

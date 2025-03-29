@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import java.sql.Date;
@@ -31,25 +32,24 @@ public class Comment {
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes;
 
+    @Column(nullable = false)
     private String content;
-    private Date createdComment;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
 
     /**
      * Comment Constructor
-     * @param commentId         Long
      * @param user              Object: {User}
      * @param post              Object: {Post}
-     * @param likes             List Object: List[{Like}]
      * @param content           String
-     * @param createdComment    Date
+     * @param createdAt         Date
      */
-    public Comment(Long commentId, User user, Post post, List<Like> likes, String content, Date createdComment) {
-        this.commentId = commentId;
+    public Comment(User user, Post post, String content, LocalDateTime createdAt) {
         this.user = user;
         this.post = post;
-        this.likes = likes;
         this.content = content;
-        this.createdComment = createdComment;
+        this.createdAt = createdAt;
     }
 
     // Custom Function

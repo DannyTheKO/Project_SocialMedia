@@ -37,5 +37,5 @@ public interface IUserService {
      * Update User
      * @param request UserUpdateRequest Object
      */
-    void updateUser(UserUpdateRequest request);
+    void updateUser(UserUpdateRequest request, Long userId);
 }

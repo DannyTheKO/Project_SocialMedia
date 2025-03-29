@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 
 @Getter
@@ -27,9 +28,14 @@ public class Message {
     @JoinColumn(name = "receiver_user_id")
     private User receiver;
 
+    @Column(nullable = false)
     private String content;
+
+    @Column(nullable = false)
     private Boolean readStatus;
-    private Date createdAt;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
 
     /**
      * Message Constructor
@@ -38,9 +44,9 @@ public class Message {
      * @param receiver      Object: {User}
      * @param content       String
      * @param readStatus    Boolean
-     * @param createdAt     Date
+     * @param createdAt     LocalDateTime
      */
-    public Message(Long messageId, User sender, User receiver, String content, Boolean readStatus, Date createdAt) {
+    public Message(Long messageId, User sender, User receiver, String content, Boolean readStatus, LocalDateTime createdAt) {
         this.messageId = messageId;
         this.sender = sender;
         this.receiver = receiver;
