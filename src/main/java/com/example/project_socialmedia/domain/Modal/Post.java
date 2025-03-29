@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -30,13 +31,20 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes;
 
+    @Column(nullable = false)
     private String content;
+
+    @Column(nullable = false)
+    private LocalDateTime createdPost;
+
+    @Column(nullable = false)
+    private LocalDateTime modifiedPost;
+
     private String imageUrl;
     private String videoUrl;
-    private Date createdPost;
-    private Date modifiedPost;
 
-    public Post(User user, List<Comment> comments, List<Like> likes, String content, String imageUrl, String videoUrl, Date createdPost, Date modifiedPost) {
+
+    public Post(User user, List<Comment> comments, List<Like> likes, String content, String imageUrl, String videoUrl, LocalDateTime createdPost, LocalDateTime modifiedPost) {
         this.user = user;
         this.comments = comments;
         this.likes = likes;

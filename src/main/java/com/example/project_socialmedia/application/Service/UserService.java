@@ -5,11 +5,11 @@ import com.example.project_socialmedia.domain.Modal.User;
 import com.example.project_socialmedia.domain.Repository.UserRepository;
 import com.example.project_socialmedia.domain.Request.User.UserCreateRequest;
 import com.example.project_socialmedia.domain.Request.User.UserUpdateRequest;
-import com.example.project_socialmedia.infrastructure.Exception.UserNotFound;
+import com.example.project_socialmedia.infrastructure.Exception.ResourceNotFound;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -36,7 +36,7 @@ public class UserService implements IUserService {
     @Override
     public User getUserById(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFound("getUserById: userId not found"));
+                .orElseThrow(() -> new ResourceNotFound("getUserById: userId not found"));
     }
 
     /**
@@ -53,8 +53,8 @@ public class UserService implements IUserService {
                 request.getLastname(),
                 request.getEmail(),
                 request.getPassword(),
-                new Date(), // Created At;
-                new Date()  // Last Login;
+                LocalDateTime.now(), // Created At;
+                LocalDateTime.now()  // Last Login;
         );
 
         // Send to database
@@ -73,17 +73,28 @@ public class UserService implements IUserService {
                 // If found, delete it
                 .ifPresentOrElse(userRepository::delete, () -> {
                     // Else, return exception UserNotFound
-                    throw new UserNotFound("deleteUser: userId not found");
+                    throw new ResourceNotFound("deleteUser: userId not found");
                 });
     }
 
     /**
-     * TODO: Update User
+     * Update User
      *
      * @param request request Object
      */
     @Override
-    public void updateUser(UserUpdateRequest request) {
+    public void updateUser(UserUpdateRequest request, Long userId) {
+        // Get User though UserID
+        User existingUser = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFound("updateUser: userId not found"));
 
+        // Update User by overwriting from request
+        existingUser.setFirstName(request.getFirstName());
+        existingUser.setLastName(request.getLastName());
+        existingUser.setEmail(request.getEmail());
+        existingUser.setPassword(request.getPassword());
+
+        // Save it in the database
+        userRepository.save(existingUser);
     }
 }

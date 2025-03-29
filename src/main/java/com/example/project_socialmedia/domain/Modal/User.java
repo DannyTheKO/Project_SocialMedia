@@ -2,10 +2,10 @@ package com.example.project_socialmedia.domain.Modal;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +18,25 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
+
+    private String  firstName;
+    private String  lastName;
+    private String  bio;
+
+    @Column(nullable = false)
+    private String  username;
+
+    @Column(nullable = false)
+    private String  email;
+
+    @Column(nullable = false)
+    private String  password;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    private LocalDateTime lastLogin;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts;
@@ -34,17 +53,6 @@ public class User {
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Message> receivedMessages;
 
-    private String  username;
-    private String  firstName;
-    private String  lastName;
-    private String  email;
-    private String  bio;
-    private String  password;
-
-    private Date    createdAt;
-    private Date    lastLogin;
-
-
     /**
      * User Constructor
      *
@@ -56,7 +64,7 @@ public class User {
      * @param createdAt Date
      * @param lastLogin Date
      */
-    public User(String username, String firstName, String lastName, String email, String password, Date createdAt, Date lastLogin) {
+    public User(String username, String firstName, String lastName, String email, String password, LocalDateTime createdAt, LocalDateTime lastLogin) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -71,7 +79,7 @@ public class User {
      * Update the User last login
      * @param lastLogin Date
      */
-    public void updateUserLastLogin(Date lastLogin) {
+    public void updateUserLastLogin(LocalDateTime lastLogin) {
         this.lastLogin = lastLogin;
     }
 
