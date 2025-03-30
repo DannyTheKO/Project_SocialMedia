@@ -1,8 +1,8 @@
 package com.example.project_socialmedia.application.Service_Interface;
 
 import com.example.project_socialmedia.domain.Modal.Comment;
-import com.example.project_socialmedia.domain.Request.Comment.CommentCreateRequest;
-import com.example.project_socialmedia.domain.Request.Comment.CommentUpdateRequest;
+import com.example.project_socialmedia.infrastructure.Request.Comment.CommentCreateRequest;
+import com.example.project_socialmedia.infrastructure.Request.Comment.CommentUpdateRequest;
 
 import java.util.List;
 
@@ -29,6 +29,11 @@ public interface ICommentService {
     List<Comment> getAllUserCommentsByUserId(Long userId);
 
     /**
+     * Get All User Comment From Post
+     */
+    List<Comment> getAllUserCommentsByPostId(Long postId);
+
+    /**
      * Add Comment
      * @param request Object {CommentCreateRequest}
      */
@@ -44,5 +49,5 @@ public interface ICommentService {
      * Update Comment
      * @param request   Object {CommentUpdateRequest}
      */
-    void updateComment(CommentUpdateRequest request);
+    void updateComment(CommentUpdateRequest request, Long commentId);
 }

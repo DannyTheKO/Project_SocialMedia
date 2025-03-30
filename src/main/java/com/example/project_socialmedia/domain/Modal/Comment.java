@@ -2,7 +2,6 @@ package com.example.project_socialmedia.domain.Modal;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
@@ -38,6 +37,9 @@ public class Comment {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
+
     /**
      * Comment Constructor
      * @param user              Object: {User}
@@ -45,11 +47,12 @@ public class Comment {
      * @param content           String
      * @param createdAt         Date
      */
-    public Comment(User user, Post post, String content, LocalDateTime createdAt) {
+    public Comment(User user, Post post, String content, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.user = user;
         this.post = post;
         this.content = content;
         this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     // Custom Function

@@ -7,8 +7,8 @@ import com.example.project_socialmedia.domain.Modal.User;
 import com.example.project_socialmedia.domain.Repository.CommentRepository;
 import com.example.project_socialmedia.domain.Repository.PostRepository;
 import com.example.project_socialmedia.domain.Repository.UserRepository;
-import com.example.project_socialmedia.domain.Request.Comment.CommentCreateRequest;
-import com.example.project_socialmedia.domain.Request.Comment.CommentUpdateRequest;
+import com.example.project_socialmedia.infrastructure.Request.Comment.CommentCreateRequest;
+import com.example.project_socialmedia.infrastructure.Request.Comment.CommentUpdateRequest;
 import com.example.project_socialmedia.infrastructure.Exception.ResourceNotFound;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -69,7 +69,22 @@ public class CommentService implements ICommentService {
     }
 
     /**
-     * TODO: Add Comment [NEED TESTING]
+     * Get All User Comment From Post
+     * TODO: getAllUserCommentsByPostId [Need Testing]
+     *
+     * @param postId    Long
+     */
+    @Override
+    public List<Comment> getAllUserCommentsByPostId(Long postId) {
+        Post getPost = postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFound("getAllUserCommentsByPostId: postId not found"));
+
+        return getPost.getComments();
+    }
+
+    /**
+     * Add Comment
+     * TODO: addComment [Need Testing]
      *
      * @param request Object {CommentCreateRequest}
      */
@@ -85,27 +100,41 @@ public class CommentService implements ICommentService {
                 existingUser,
                 existingPost,
                 request.getContent(),
-                LocalDateTime.now()
+                LocalDateTime.now(),    // Created At
+                LocalDateTime.now()     // Updated At
         );
     }
 
     /**
-     * TODO: Delete Comment By ID
+     * Delete Comment By ID
+     * TODO: deleteCommentById [Need Testing]
      *
-     * @param id Long
+     * @param commentId Long
      */
     @Override
-    public void deleteCommentById(Long id) {
+    public void deleteCommentById(Long commentId) {
+        Comment getComment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new ResourceNotFound("deleteCommentById: commentId not found"));
 
+        commentRepository.delete(getComment);
     }
 
     /**
-     * TODO: Update Comment
+     * Update Comment
+     * TODO: updateComment [Need Testing]
      *
      * @param request Object {CommentUpdateRequest}
      */
     @Override
-    public void updateComment(CommentUpdateRequest request) {
+    public void updateComment(CommentUpdateRequest request, Long commentId) {
+        Comment getComment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new ResourceNotFound("updateComment: commentId not found"));
 
+            // Change
+        getComment.setContent(request.getContent());
+        getComment.setUpdatedAt(LocalDateTime.now());
+
+        // Send to Database
+        commentRepository.save(getComment);
     }
 }
