@@ -1,21 +1,25 @@
 package com.example.project_socialmedia.application.Service;
 
 import com.example.project_socialmedia.application.Service_Interface.IUserService;
+import com.example.project_socialmedia.controllers.DTO.UserDTO;
 import com.example.project_socialmedia.domain.Modal.User;
 import com.example.project_socialmedia.domain.Repository.UserRepository;
 import com.example.project_socialmedia.application.Request.User.UserCreateRequest;
 import com.example.project_socialmedia.application.Request.User.UserUpdateRequest;
 import com.example.project_socialmedia.controllers.Exception.ResourceNotFound;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class UserService implements IUserService {
     private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
 
     /**
      * Get all User from database
@@ -100,4 +104,21 @@ public class UserService implements IUserService {
 
     // TODO: Convert User Object Into UserDTO Object
     // Use ModelMapper to map User object
+    /**
+     * Convert User Object into UserDTO
+     * @param user  Object {User}
+     * @return      Object {UserDTO}
+     */
+    public UserDTO convertToDTO(User user) {
+        return modelMapper.map(user, UserDTO.class);
+    }
+
+    /**
+     * Convert User List Object into UserDTO List Object
+     * @param userList  List[T] {User}
+     * @return          List[T] {UserDTO}
+     */
+    public List<UserDTO> convertToDTOList(List<User> userList) {
+        return userList.stream().map(this::convertToDTO).toList();
+    }
 }

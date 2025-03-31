@@ -1,17 +1,17 @@
 package com.example.project_socialmedia.domain.Modal;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "users")
 public class User {
@@ -83,12 +83,5 @@ public class User {
      */
     public void updateUserLastLogin(LocalDateTime lastLogin) {
         this.lastLogin = lastLogin;
-    }
-
-    public void updateUser(String firstName, String lastName, String email, String password) {
-        this.firstName =  firstName;
-        this.lastName =  lastName;
-        this.email =  email;
-        this.password = password;
     }
 }
