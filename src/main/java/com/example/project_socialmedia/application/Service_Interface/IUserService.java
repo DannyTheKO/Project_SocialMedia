@@ -1,8 +1,8 @@
 package com.example.project_socialmedia.application.Service_Interface;
 
 import com.example.project_socialmedia.domain.Modal.User;
-import com.example.project_socialmedia.infrastructure.Request.User.UserCreateRequest;
-import com.example.project_socialmedia.infrastructure.Request.User.UserUpdateRequest;
+import com.example.project_socialmedia.application.Request.User.UserCreateRequest;
+import com.example.project_socialmedia.application.Request.User.UserUpdateRequest;
 
 import java.util.List;
 

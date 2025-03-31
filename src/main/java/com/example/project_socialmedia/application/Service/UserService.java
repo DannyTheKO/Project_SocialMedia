@@ -3,9 +3,9 @@ package com.example.project_socialmedia.application.Service;
 import com.example.project_socialmedia.application.Service_Interface.IUserService;
 import com.example.project_socialmedia.domain.Modal.User;
 import com.example.project_socialmedia.domain.Repository.UserRepository;
-import com.example.project_socialmedia.infrastructure.Request.User.UserCreateRequest;
-import com.example.project_socialmedia.infrastructure.Request.User.UserUpdateRequest;
-import com.example.project_socialmedia.infrastructure.Exception.ResourceNotFound;
+import com.example.project_socialmedia.application.Request.User.UserCreateRequest;
+import com.example.project_socialmedia.application.Request.User.UserUpdateRequest;
+import com.example.project_socialmedia.controllers.Exception.ResourceNotFound;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -97,4 +97,7 @@ public class UserService implements IUserService {
         // Save it in the database
         userRepository.save(existingUser);
     }
+
+    // TODO: Convert User Object Into UserDTO Object
+    // Use ModelMapper to map User object
 }
