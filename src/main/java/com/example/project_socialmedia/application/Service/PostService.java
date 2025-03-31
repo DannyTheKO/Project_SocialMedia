@@ -6,16 +6,15 @@ import com.example.project_socialmedia.domain.Modal.Post;
 import com.example.project_socialmedia.domain.Modal.User;
 import com.example.project_socialmedia.domain.Repository.PostRepository;
 import com.example.project_socialmedia.domain.Repository.UserRepository;
-import com.example.project_socialmedia.infrastructure.Exception.ResourceNotFound;
-import com.example.project_socialmedia.infrastructure.Request.Post.PostCreateRequest;
-import com.example.project_socialmedia.infrastructure.Request.Post.PostUpdateRequest;
+import com.example.project_socialmedia.controllers.Exception.ResourceNotFound;
+import com.example.project_socialmedia.application.Request.Post.PostCreateRequest;
+import com.example.project_socialmedia.application.Request.Post.PostUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

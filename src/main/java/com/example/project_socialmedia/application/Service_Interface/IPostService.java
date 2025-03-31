@@ -1,8 +1,8 @@
 package com.example.project_socialmedia.application.Service_Interface;
 
 import com.example.project_socialmedia.domain.Modal.Post;
-import com.example.project_socialmedia.infrastructure.Request.Post.PostCreateRequest;
-import com.example.project_socialmedia.infrastructure.Request.Post.PostUpdateRequest;
+import com.example.project_socialmedia.application.Request.Post.PostCreateRequest;
+import com.example.project_socialmedia.application.Request.Post.PostUpdateRequest;
 
 import java.util.List;
 

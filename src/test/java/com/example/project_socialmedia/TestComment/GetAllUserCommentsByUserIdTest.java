@@ -5,7 +5,7 @@ import com.example.project_socialmedia.domain.Modal.Comment;
 import com.example.project_socialmedia.domain.Modal.User;
 import com.example.project_socialmedia.domain.Repository.CommentRepository;
 import com.example.project_socialmedia.domain.Repository.UserRepository;
-import com.example.project_socialmedia.infrastructure.Exception.ResourceNotFound;
+import com.example.project_socialmedia.controllers.Exception.ResourceNotFound;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;

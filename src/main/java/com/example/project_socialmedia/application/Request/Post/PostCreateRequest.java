@@ -1,11 +1,11 @@
-package com.example.project_socialmedia.infrastructure.Request.Post;
+package com.example.project_socialmedia.application.Request.Post;
 
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-public class PostUpdateRequest {
+public class PostCreateRequest {
     private String content;
     private List<String> mediaUrls;
 }

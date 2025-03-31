@@ -7,9 +7,9 @@ import com.example.project_socialmedia.domain.Modal.User;
 import com.example.project_socialmedia.domain.Repository.CommentRepository;
 import com.example.project_socialmedia.domain.Repository.PostRepository;
 import com.example.project_socialmedia.domain.Repository.UserRepository;
-import com.example.project_socialmedia.infrastructure.Request.Comment.CommentCreateRequest;
-import com.example.project_socialmedia.infrastructure.Request.Comment.CommentUpdateRequest;
-import com.example.project_socialmedia.infrastructure.Exception.ResourceNotFound;
+import com.example.project_socialmedia.application.Request.Comment.CommentCreateRequest;
+import com.example.project_socialmedia.application.Request.Comment.CommentUpdateRequest;
+import com.example.project_socialmedia.controllers.Exception.ResourceNotFound;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

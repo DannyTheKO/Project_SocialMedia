@@ -1,4 +1,4 @@
-package com.example.project_socialmedia.infrastructure.ApiResponse;
+package com.example.project_socialmedia.controllers.ApiResponse;
 
 import lombok.Data;
 

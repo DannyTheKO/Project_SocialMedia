@@ -19,9 +19,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    private String  firstName;
-    private String  lastName;
-    private String  bio;
+    private String firstName;
+    private String lastName;
+    private String bio;
+    private String profileImageUrl;
+    private String bannerImageUrl;
 
     @Column(nullable = false)
     private String  username;
