@@ -1,5 +1,6 @@
 package com.example.project_socialmedia.application.Service_Interface;
 
+import com.example.project_socialmedia.controllers.DTO.UserDTO;
 import com.example.project_socialmedia.domain.Modal.User;
 import com.example.project_socialmedia.application.Request.User.UserCreateRequest;
 import com.example.project_socialmedia.application.Request.User.UserUpdateRequest;
@@ -38,4 +39,18 @@ public interface IUserService {
      * @param request UserUpdateRequest Object
      */
     void updateUser(UserUpdateRequest request, Long userId);
+
+    /**
+     * Convert User Object into UserDTO
+     * @param user  Object {User}
+     * @return      Object {UserDTO}
+     */
+    UserDTO convertToDTO(User user);
+
+    /**
+     * Convert User List Object into UserDTO List Object
+     * @param userList  List[T] {User}
+     * @return          List[T] {UserDTO}
+     */
+    List<UserDTO> convertToDTOList(List<User> userList);
 }

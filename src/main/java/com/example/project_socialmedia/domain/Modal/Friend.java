@@ -1,23 +1,21 @@
 package com.example.project_socialmedia.domain.Modal;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "friends")
 public class Friend {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long friendId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id_1", nullable = false)
@@ -41,13 +39,11 @@ public class Friend {
 
     /**
      * Friend Constructor
-     * @param id            Long
      * @param user1         Object: {User}
      * @param user2         Object: {User}
      * @param statusEnum    ENUM: {PENDING, ACCEPTED, DECLINED}
      */
-    public Friend(Long id, User user1, User user2, Enum<friendStatus> statusEnum, LocalDateTime createdAt) {
-        this.id = id;
+    public Friend(User user1, User user2, Enum<friendStatus> statusEnum, LocalDateTime createdAt) {
         this.user1 = user1;
         this.user2 = user2;
         this.statusEnum = statusEnum;

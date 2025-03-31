@@ -1,10 +1,7 @@
 package com.example.project_socialmedia.domain.Modal;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.sql.Date;
 import java.time.LocalDateTime;
@@ -12,7 +9,8 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "messages")
 public class Message {
@@ -46,8 +44,7 @@ public class Message {
      * @param readStatus    Boolean
      * @param createdAt     LocalDateTime
      */
-    public Message(Long messageId, User sender, User receiver, String content, Boolean readStatus, LocalDateTime createdAt) {
-        this.messageId = messageId;
+    public Message(User sender, User receiver, String content, Boolean readStatus, LocalDateTime createdAt) {
         this.sender = sender;
         this.receiver = receiver;
         this.content = content;
