@@ -1,19 +1,25 @@
 package com.example.project_socialmedia.application.Service;
 
+import com.example.project_socialmedia.application.DTO.UserDTO;
+import com.example.project_socialmedia.application.Exception.ResourceConflict;
+import com.example.project_socialmedia.application.Exception.ResourceNotFound;
 import com.example.project_socialmedia.application.Service_Interface.IUserService;
-import com.example.project_socialmedia.controllers.DTO.UserDTO;
 import com.example.project_socialmedia.domain.Modal.User;
 import com.example.project_socialmedia.domain.Repository.UserRepository;
-import com.example.project_socialmedia.application.Request.User.UserCreateRequest;
-import com.example.project_socialmedia.application.Request.User.UserUpdateRequest;
-import com.example.project_socialmedia.controllers.Exception.ResourceNotFound;
+import com.example.project_socialmedia.infrastructure.Config.Request.User.UserCreateRequest;
+import com.example.project_socialmedia.infrastructure.Config.Request.User.UserUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -46,29 +52,34 @@ public class UserService implements IUserService {
     /**
      * Create User
      *
-     * @param request UserCreateRequest object
+     * @param createRequest Object {UserCreateRequest}
      */
     @Override
-    public void createUser(UserCreateRequest request) {
+    public User createUser(UserCreateRequest createRequest) {
+        User getUser = userRepository.findUserByEmail(createRequest.getEmail());
+        if (getUser != null) {
+            throw new ResourceConflict("createUser: user email already exists");
+        }
+
         // Construct User
-        User newUser = new User(
-                request.getUsername(),
-                request.getFirstname(),
-                request.getLastname(),
-                request.getEmail(),
-                request.getPassword(),
-                LocalDateTime.now(), // Created At;
-                LocalDateTime.now()  // Last Login;
-        );
+        User newUser = new User();
+        newUser.setUsername(createRequest.getUsername());
+        newUser.setFirstName(createRequest.getFirstname());
+        newUser.setLastName(createRequest.getLastname());
+        newUser.setEmail(createRequest.getEmail());
+        newUser.setPassword(createRequest.getPassword());
+        newUser.setCreatedAt(LocalDateTime.now());
+        newUser.setLastLogin(LocalDateTime.now());
 
         // Send to database
         userRepository.save(newUser);
+        return newUser;
     }
 
     /**
      * Delete User By ID
      *
-     * @param userId User ID
+     * @param userId Long
      */
     @Override
     public void deleteUser(Long userId) {
@@ -84,10 +95,10 @@ public class UserService implements IUserService {
     /**
      * Update User
      *
-     * @param request request Object
+     * @param request Object {UserUpdateRequest}
      */
     @Override
-    public void updateUser(UserUpdateRequest request, Long userId) {
+    public User updateUser(Long userId, UserUpdateRequest request) throws IOException {
         // Get User though UserID
         User existingUser = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFound("updateUser: userId not found"));
@@ -97,17 +108,29 @@ public class UserService implements IUserService {
         existingUser.setLastName(request.getLastName());
         existingUser.setEmail(request.getEmail());
         existingUser.setPassword(request.getPassword());
+        existingUser.setBio(request.getBio());
+        existingUser.setBirthDate(request.getBirthDate());
+
+        if (request.getProfileImageUrl() != null && !request.getProfileImageUrl().isEmpty()) {
+            String profileImageUrl = saveFile(request.getProfileImageUrl(), existingUser);
+            existingUser.setProfileImageUrl(profileImageUrl);
+        }
+
+        if (request.getBannerImageUrl() != null && !request.getBannerImageUrl().isEmpty()) {
+            String bannerImageUrl = saveFile(request.getBannerImageUrl(), existingUser);
+            existingUser.setBannerImageUrl(bannerImageUrl);
+        }
 
         // Save it in the database
         userRepository.save(existingUser);
+        return existingUser;
     }
 
-    // TODO: Convert User Object Into UserDTO Object
-    // Use ModelMapper to map User object
     /**
      * Convert User Object into UserDTO
-     * @param user  Object {User}
-     * @return      Object {UserDTO}
+     *
+     * @param user Object {User}
+     * @return Object {UserDTO}
      */
     public UserDTO convertToDTO(User user) {
         return modelMapper.map(user, UserDTO.class);
@@ -115,10 +138,37 @@ public class UserService implements IUserService {
 
     /**
      * Convert User List Object into UserDTO List Object
-     * @param userList  List[T] {User}
-     * @return          List[T] {UserDTO}
+     *
+     * @param userList List[T] {User}
+     * @return List[T] {UserDTO}
      */
     public List<UserDTO> convertToDTOList(List<User> userList) {
         return userList.stream().map(this::convertToDTO).toList();
+    }
+
+    /**
+     * Save File Function
+     *
+     * @param file Object {MultipartFile}
+     * @param user Object {User}
+     * @return String
+     * @throws IOException
+     */
+    public String saveFile(MultipartFile file, User user) throws IOException {
+        String fileName = user.getUserId() + "_"
+                + UUID.randomUUID() + "_"
+                + file.getOriginalFilename();
+
+        // Create the full path to the file
+        String uploadDir = "src/main/resources/uploads/user/images/";
+        Path filePath = Paths.get(uploadDir, fileName);
+
+        // Create the directory if it doesn't exist
+        Files.createDirectories(filePath.getParent());
+
+        // Save the file to the specified path
+        Files.copy(file.getInputStream(), filePath);
+
+        return fileName;
     }
 }

@@ -1,12 +1,13 @@
 package com.example.project_socialmedia.domain.Modal;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
-import java.sql.Date;
 
 @Getter
 @Setter
@@ -41,10 +42,11 @@ public class Comment {
 
     /**
      * Comment Constructor
-     * @param user              Object: {User}
-     * @param post              Object: {Post}
-     * @param content           String
-     * @param createdAt         Date
+     *
+     * @param user      Object: {User}
+     * @param post      Object: {Post}
+     * @param content   String
+     * @param createdAt Date
      */
     public Comment(User user, Post post, String content, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.user = user;

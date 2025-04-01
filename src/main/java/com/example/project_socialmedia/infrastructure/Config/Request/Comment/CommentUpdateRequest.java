@@ -1,8 +1,7 @@
-package com.example.project_socialmedia.application.Request.Comment;
+package com.example.project_socialmedia.infrastructure.Config.Request.Comment;
 
 import lombok.Data;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
