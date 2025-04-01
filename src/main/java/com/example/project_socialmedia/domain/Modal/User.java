@@ -1,12 +1,13 @@
 package com.example.project_socialmedia.domain.Modal;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -24,15 +25,16 @@ public class User {
     private String bio;
     private String profileImageUrl;
     private String bannerImageUrl;
+    private LocalDateTime birthDate;
 
     @Column(nullable = false)
-    private String  username;
+    private String username;
 
     @Column(nullable = false)
-    private String  email;
+    private String email;
 
     @Column(nullable = false)
-    private String  password;
+    private String password;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -77,8 +79,10 @@ public class User {
     }
 
     // ==> Custom Function
+
     /**
      * Update the User last login
+     *
      * @param lastLogin Date
      */
     public void updateUserLastLogin(LocalDateTime lastLogin) {

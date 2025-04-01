@@ -1,9 +1,11 @@
 package com.example.project_socialmedia.domain.Modal;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
 
 @Getter
@@ -31,12 +33,14 @@ public class Like {
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
+
     /**
      * Like Constructor
-     * @param user          Object: {User}
-     * @param post          Object: {Post}
-     * @param comment       Object: {Comment}
-     * @param createdAt     Date
+     *
+     * @param user      Object: {User}
+     * @param post      Object: {Post}
+     * @param comment   Object: {Comment}
+     * @param createdAt Date
      */
     public Like(User user, Post post, Comment comment, LocalDateTime createdAt) {
         this.user = user;

@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 class ProjectSocialMediaApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+    @Test
+    void contextLoads() {
+    }
 
 }

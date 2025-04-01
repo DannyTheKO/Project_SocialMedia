@@ -1,9 +1,10 @@
 package com.example.project_socialmedia.domain.Modal;
 
 import jakarta.persistence.*;
-import lombok.*;
-
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 @Getter
@@ -18,15 +19,10 @@ public class Media {
     private Long mediaId;
 
     private String url;
-    private String type;
+    private String fileType;
+    private String fileName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
-
-    public Media(String url, String type, Post post) {
-        this.url = url;
-        this.type = type;
-        this.post = post;
-    }
 }

@@ -1,8 +1,10 @@
 package com.example.project_socialmedia.domain.Modal;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.cglib.core.Local;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -29,7 +31,9 @@ public class Friend {
         PENDING,
         ACCEPTED,
         DECLINED
-    };
+    }
+
+    ;
 
     @Column(nullable = false)
     private Enum<friendStatus> statusEnum;
@@ -39,9 +43,10 @@ public class Friend {
 
     /**
      * Friend Constructor
-     * @param user1         Object: {User}
-     * @param user2         Object: {User}
-     * @param statusEnum    ENUM: {PENDING, ACCEPTED, DECLINED}
+     *
+     * @param user1      Object: {User}
+     * @param user2      Object: {User}
+     * @param statusEnum ENUM: {PENDING, ACCEPTED, DECLINED}
      */
     public Friend(User user1, User user2, Enum<friendStatus> statusEnum, LocalDateTime createdAt) {
         this.user1 = user1;

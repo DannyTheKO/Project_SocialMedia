@@ -1,5 +1,6 @@
 package com.example.project_socialmedia.application.Service;
 
+import com.example.project_socialmedia.application.Exception.ResourceNotFound;
 import com.example.project_socialmedia.application.Service_Interface.ICommentService;
 import com.example.project_socialmedia.domain.Modal.Comment;
 import com.example.project_socialmedia.domain.Modal.Post;
@@ -7,9 +8,8 @@ import com.example.project_socialmedia.domain.Modal.User;
 import com.example.project_socialmedia.domain.Repository.CommentRepository;
 import com.example.project_socialmedia.domain.Repository.PostRepository;
 import com.example.project_socialmedia.domain.Repository.UserRepository;
-import com.example.project_socialmedia.application.Request.Comment.CommentCreateRequest;
-import com.example.project_socialmedia.application.Request.Comment.CommentUpdateRequest;
-import com.example.project_socialmedia.controllers.Exception.ResourceNotFound;
+import com.example.project_socialmedia.infrastructure.Config.Request.Comment.CommentCreateRequest;
+import com.example.project_socialmedia.infrastructure.Config.Request.Comment.CommentUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -72,7 +72,7 @@ public class CommentService implements ICommentService {
      * Get All User Comment From Post
      * TODO: getAllUserCommentsByPostId [Need Testing]
      *
-     * @param postId    Long
+     * @param postId Long
      */
     @Override
     public List<Comment> getAllUserCommentsByPostId(Long postId) {
@@ -130,7 +130,7 @@ public class CommentService implements ICommentService {
         Comment getComment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new ResourceNotFound("updateComment: commentId not found"));
 
-            // Change
+        // Change
         getComment.setContent(request.getContent());
         getComment.setUpdatedAt(LocalDateTime.now());
 

@@ -1,14 +1,14 @@
 package com.example.project_socialmedia.application.Service;
 
+import com.example.project_socialmedia.application.Exception.ResourceNotFound;
 import com.example.project_socialmedia.application.Service_Interface.IPostService;
 import com.example.project_socialmedia.domain.Modal.Media;
 import com.example.project_socialmedia.domain.Modal.Post;
 import com.example.project_socialmedia.domain.Modal.User;
 import com.example.project_socialmedia.domain.Repository.PostRepository;
 import com.example.project_socialmedia.domain.Repository.UserRepository;
-import com.example.project_socialmedia.controllers.Exception.ResourceNotFound;
-import com.example.project_socialmedia.application.Request.Post.PostCreateRequest;
-import com.example.project_socialmedia.application.Request.Post.PostUpdateRequest;
+import com.example.project_socialmedia.infrastructure.Config.Request.Post.PostCreateRequest;
+import com.example.project_socialmedia.infrastructure.Config.Request.Post.PostUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,8 +24,9 @@ public class PostService implements IPostService {
 
     /**
      * Identify the media type when pass in
-     * @param url   URL of the file type
-     * @return      return a string type
+     *
+     * @param url URL of the file type
+     * @return return a string type
      */
     private String identifyMediaType(String url) {
         if (url.toLowerCase().endsWith(".jpg") || url.toLowerCase().endsWith(".png") || url.toLowerCase().endsWith(".jpeg")) {
@@ -84,13 +85,14 @@ public class PostService implements IPostService {
                 LocalDateTime.now(),
                 LocalDateTime.now()
         );
+        // FIXME: Create and Assign Media file type into a Post Object
 
-        List<Media> newMedia = request.getMediaUrls().stream()
-                .map(url -> new Media(url, identifyMediaType(url), newPost)) // Associate with Post
-                .toList();
+//        List<Media> newMedia = request.getMediaUrls().stream()
+//                .map(url -> new CreateMediaRequest(url, identifyMediaType(url), "sad" , newPost)) // Associate with Post
+//                .toList();
 
         // Add the Media objects to the Post
-        newPost.setMedia(newMedia);
+//        newPost.setMedia(newMedia);
         postRepository.save(newPost);
         return newPost;
     }
@@ -135,12 +137,12 @@ public class PostService implements IPostService {
         // Remove media that are no longer present in the request
         existingMedia.removeIf(media -> !newMediaUrls.contains(media.getUrl()));
 
-        // Add new media URLs
-        for (String newUrl : newMediaUrls) {
-            if (existingMedia.stream().noneMatch(media -> media.getUrl().equals(newUrl))) {
-                existingPost.getMedia().add(new Media(newUrl, identifyMediaType(newUrl), existingPost));
-            }
-        }
+        // FIXME: Add new media URLs
+//        for (String newUrl : newMediaUrls) {
+//            if (existingMedia.stream().noneMatch(media -> media.getUrl().equals(newUrl))) {
+//                existingPost.getMedia().add(new Media(newUrl, identifyMediaType(newUrl), existingPost));
+//            }
+//        }
 
         postRepository.save(existingPost);
         return existingPost;

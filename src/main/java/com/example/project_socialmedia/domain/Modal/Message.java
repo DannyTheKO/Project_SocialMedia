@@ -1,9 +1,11 @@
 package com.example.project_socialmedia.domain.Modal;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
 
 
@@ -37,12 +39,12 @@ public class Message {
 
     /**
      * Message Constructor
-     * @param messageId     Long
-     * @param sender        Object: {User}
-     * @param receiver      Object: {User}
-     * @param content       String
-     * @param readStatus    Boolean
-     * @param createdAt     LocalDateTime
+     *
+     * @param sender     Object: {User}
+     * @param receiver   Object: {User}
+     * @param content    String
+     * @param readStatus Boolean
+     * @param createdAt  LocalDateTime
      */
     public Message(User sender, User receiver, String content, Boolean readStatus, LocalDateTime createdAt) {
         this.sender = sender;
