@@ -37,7 +37,7 @@ public interface IPostService {
      * @param userId  Long
      * @return Object {Post}
      */
-    Post createPost(PostCreateRequest request, Long userId);
+    Post createPost(PostCreateRequest request, Long userId) throws IOException;
 
     /**
      * Delete Post

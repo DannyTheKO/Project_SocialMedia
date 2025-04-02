@@ -88,7 +88,7 @@ public class PostService implements IPostService {
      * @return Object {Post}
      */
     @Override
-    public Post createPost(PostCreateRequest request, Long userId) {
+    public Post createPost(PostCreateRequest request, Long userId) throws IOException {
         // Check if User exist in the database
         User user = userService.getUserById(userId);
 
@@ -98,12 +98,25 @@ public class PostService implements IPostService {
                 LocalDateTime.now(),
                 LocalDateTime.now()
         );
-        // FIXME: Create and Assign Media file type into a Post Object
 
+        postRepository.save(newPost); // Save the post first to get the generated ID
 
-        // Add the Media objects to the Post
-//        newPost.setMedia(newMedia);
-        postRepository.save(newPost);
+        // Now handle media
+        List<MultipartFile> mediaFiles = request.getMedia();
+        if (mediaFiles != null) {
+            for (MultipartFile mediaFile : mediaFiles) {
+                if (!mediaFile.isEmpty()) {
+                    mediaService.saveFile(
+                            mediaFile,
+                            "src/main/resources/uploads/posts/" + newPost.getPostId() + "/", // Use newPost.getPostId()
+                            newPost.getPostId() + "_",
+                            newPost.getPostId(),
+                            "Post"
+                    );
+                }
+            }
+        }
+
         return newPost;
     }
 
@@ -149,8 +162,8 @@ public class PostService implements IPostService {
                             mediaFile,
                             "src/main/resources/uploads/posts/" + postId + "/",
                             postId + "_",
-                            postId, // This is the targetId
-                            "Post"   // This is the targetType
+                            postId,     // This is the targetId
+                            "Post"      // This is the targetType
                     );
                 }
             }

@@ -8,7 +8,6 @@ import java.util.List;
 
 @Data
 public class PostUpdateRequest {
-    // FIXME
     private String content;
     private List<MultipartFile> media;
     private LocalDateTime modifiedPost;
