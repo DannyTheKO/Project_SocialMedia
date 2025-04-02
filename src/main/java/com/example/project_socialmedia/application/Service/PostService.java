@@ -1,17 +1,24 @@
 package com.example.project_socialmedia.application.Service;
 
+import com.example.project_socialmedia.application.DTO.PostDTO;
 import com.example.project_socialmedia.application.Exception.ResourceNotFound;
 import com.example.project_socialmedia.application.Service_Interface.IPostService;
 import com.example.project_socialmedia.domain.Modal.Media;
+import com.example.project_socialmedia.domain.Modal.MediaAssociation;
 import com.example.project_socialmedia.domain.Modal.Post;
 import com.example.project_socialmedia.domain.Modal.User;
+import com.example.project_socialmedia.domain.Repository.MediaAssociationRepository;
+import com.example.project_socialmedia.domain.Repository.MediaRepository;
 import com.example.project_socialmedia.domain.Repository.PostRepository;
 import com.example.project_socialmedia.domain.Repository.UserRepository;
-import com.example.project_socialmedia.infrastructure.Config.Request.Post.PostCreateRequest;
-import com.example.project_socialmedia.infrastructure.Config.Request.Post.PostUpdateRequest;
+import com.example.project_socialmedia.infrastructure.Request.Post.PostCreateRequest;
+import com.example.project_socialmedia.infrastructure.Request.Post.PostUpdateRequest;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,24 +26,14 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class PostService implements IPostService {
-    private final UserRepository userRepository;
-    private final PostRepository postRepository;
 
-    /**
-     * Identify the media type when pass in
-     *
-     * @param url URL of the file type
-     * @return return a string type
-     */
-    private String identifyMediaType(String url) {
-        if (url.toLowerCase().endsWith(".jpg") || url.toLowerCase().endsWith(".png") || url.toLowerCase().endsWith(".jpeg")) {
-            return "image";
-        } else if (url.toLowerCase().endsWith(".mp4") || url.toLowerCase().endsWith(".mov") || url.toLowerCase().endsWith(".avi")) {
-            return "video";
-        } else {
-            return "unknown"; // Or handle other types as needed
-        }
-    }
+    private final ModelMapper modelMapper;
+
+    private final PostRepository postRepository;
+    private final MediaAssociationRepository mediaAssociationRepository;
+
+    private final UserService userService;
+    private final MediaService mediaService;
 
 
     /**
@@ -50,23 +47,41 @@ public class PostService implements IPostService {
     }
 
     /**
+     * Get Post By ID
+     *
+     * @param postId Long
+     * @return Object {Post}
+     */
+    @Override
+    public Post getPostById(Long postId) {
+        return postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFound("getPostById: post not found"));
+    }
+
+    /**
      * Get All Post By User ID
-     * TODO: getPostsByUserId [Need Testing]
      *
      * @param userId Long
      * @return List{Object} Post
      */
     @Override
-    public List<Post> getPostsByUserId(Long userId) {
-        User existingUser = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFound("getPostsByUserId: User not found"));
-
+    public List<Post> getAllPostsByUserId(Long userId) {
+        User existingUser = userService.getUserById(userId);
         return existingUser.getPosts();
     }
 
     /**
+     * Get Media By Post ID
+     * @param postId    Long
+     * @return          Object {Media}
+     */
+    public List<Media> getMediaByPostId(Long postId) {
+        List<MediaAssociation> associations = mediaAssociationRepository.findByTargetIdAndTargetType(postId, "Post");
+        return associations.stream().map(MediaAssociation::getMedia).toList();
+    }
+
+    /**
      * Create Post
-     * TODO: createPost [Need Testing]
      *
      * @param request Object {PostCreateRequest}
      * @param userId  Long
@@ -75,21 +90,16 @@ public class PostService implements IPostService {
     @Override
     public Post createPost(PostCreateRequest request, Long userId) {
         // Check if User exist in the database
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFound("createPost: User not found"));
+        User user = userService.getUserById(userId);
 
         Post newPost = new Post(
                 user,
                 request.getContent(),
-                new ArrayList<>(),
                 LocalDateTime.now(),
                 LocalDateTime.now()
         );
         // FIXME: Create and Assign Media file type into a Post Object
 
-//        List<Media> newMedia = request.getMediaUrls().stream()
-//                .map(url -> new CreateMediaRequest(url, identifyMediaType(url), "sad" , newPost)) // Associate with Post
-//                .toList();
 
         // Add the Media objects to the Post
 //        newPost.setMedia(newMedia);
@@ -99,7 +109,6 @@ public class PostService implements IPostService {
 
     /**
      * Delete Post
-     * TODO: deletePost [Need Testing]
      *
      * @param postId Long
      */
@@ -113,7 +122,6 @@ public class PostService implements IPostService {
 
     /**
      * Update Post
-     * TODO: Find a way to edit, add or delete image and video
      *
      * @param request Object {PostUpdateRequest}
      * @param userId  Long
@@ -121,30 +129,42 @@ public class PostService implements IPostService {
      * @return Object {Object}
      */
     @Override
-    public Post updatePost(PostUpdateRequest request, Long userId, Long postId) {
+    public Post updatePost(PostUpdateRequest request, Long userId, Long postId) throws IOException {
         Post existingPost = postRepository.findById(postId)
                 .orElseThrow(() -> new ResourceNotFound("updatePost: Post not found"));
 
-        User existingUser = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFound("updatePost: User not found"));
+        User existingUser = userService.getUserById(userId);
 
         existingPost.setContent(request.getContent());
 
         //Handle Media Updates:
-        List<Media> existingMedia = existingPost.getMedia();
-        List<String> newMediaUrls = request.getMediaUrls();
+        List<Media> existingMedia = getMediaByPostId(postId);
+        List<MultipartFile> newMediaFiles = request.getMedia();
 
-        // Remove media that are no longer present in the request
-        existingMedia.removeIf(media -> !newMediaUrls.contains(media.getUrl()));
-
-        // FIXME: Add new media URLs
-//        for (String newUrl : newMediaUrls) {
-//            if (existingMedia.stream().noneMatch(media -> media.getUrl().equals(newUrl))) {
-//                existingPost.getMedia().add(new Media(newUrl, identifyMediaType(newUrl), existingPost));
-//            }
-//        }
+        // Add new media files
+        if (newMediaFiles != null) {
+            for (MultipartFile mediaFile : newMediaFiles) {
+                if (!mediaFile.isEmpty()) {
+                    Media newMedia = mediaService.saveFile(
+                            mediaFile,
+                            "src/main/resources/uploads/posts/" + postId + "/",
+                            postId + "_",
+                            postId, // This is the targetId
+                            "Post"   // This is the targetType
+                    );
+                }
+            }
+        }
 
         postRepository.save(existingPost);
         return existingPost;
+    }
+
+    public PostDTO convertToDTO(Post post) {
+        return modelMapper.map(post, PostDTO.class);
+    }
+
+    public List<PostDTO> convertToListDTO(List<Post> postList) {
+        return postList.stream().map(this::convertToDTO).toList();
     }
 }

@@ -2,8 +2,8 @@ package com.example.project_socialmedia.application.Service_Interface;
 
 import com.example.project_socialmedia.application.DTO.UserDTO;
 import com.example.project_socialmedia.domain.Modal.User;
-import com.example.project_socialmedia.infrastructure.Config.Request.User.UserCreateRequest;
-import com.example.project_socialmedia.infrastructure.Config.Request.User.UserUpdateRequest;
+import com.example.project_socialmedia.infrastructure.Request.User.UserCreateRequest;
+import com.example.project_socialmedia.infrastructure.Request.User.UserUpdateRequest;
 
 import java.io.IOException;
 import java.util.List;

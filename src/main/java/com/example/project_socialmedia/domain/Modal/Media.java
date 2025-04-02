@@ -6,11 +6,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "media")
 public class Media {
@@ -19,10 +22,23 @@ public class Media {
     private Long mediaId;
 
     private String url;
-    private String fileType;
     private String fileName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
-    private Post post;
+    public enum fileType {
+        VIDEO,
+        IMAGE,
+        GIF,
+        UNKNOWN
+    };
+    private Enum<fileType> fileTypeEnum;
+
+    @OneToMany(mappedBy = "media", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MediaAssociation> associations = new ArrayList<>();
+
+    public Media(String filePath, String fileName, Enum<fileType> fileTypeEnum) {
+        this.url = filePath;
+        this.fileName = fileName;
+        this.fileTypeEnum = fileTypeEnum;
+    }
+
 }

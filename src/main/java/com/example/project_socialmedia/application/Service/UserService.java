@@ -4,10 +4,11 @@ import com.example.project_socialmedia.application.DTO.UserDTO;
 import com.example.project_socialmedia.application.Exception.ResourceConflict;
 import com.example.project_socialmedia.application.Exception.ResourceNotFound;
 import com.example.project_socialmedia.application.Service_Interface.IUserService;
+import com.example.project_socialmedia.domain.Modal.Media;
 import com.example.project_socialmedia.domain.Modal.User;
 import com.example.project_socialmedia.domain.Repository.UserRepository;
-import com.example.project_socialmedia.infrastructure.Config.Request.User.UserCreateRequest;
-import com.example.project_socialmedia.infrastructure.Config.Request.User.UserUpdateRequest;
+import com.example.project_socialmedia.infrastructure.Request.User.UserCreateRequest;
+import com.example.project_socialmedia.infrastructure.Request.User.UserUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -24,8 +25,12 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class UserService implements IUserService {
-    private final UserRepository userRepository;
+
     private final ModelMapper modelMapper;
+
+    private final UserRepository userRepository;
+
+    private final MediaService mediaService;
 
     /**
      * Get all User from database
@@ -112,13 +117,27 @@ public class UserService implements IUserService {
         existingUser.setBirthDate(request.getBirthDate());
 
         if (request.getProfileImageUrl() != null && !request.getProfileImageUrl().isEmpty()) {
-            String profileImageUrl = saveFile(request.getProfileImageUrl(), existingUser);
-            existingUser.setProfileImageUrl(profileImageUrl);
+            Media profileImage = mediaService.saveFile(
+                    request.getProfileImageUrl(),
+                    "src/main/resources/uploads/user/" + existingUser.getUserId() + "/",
+                    existingUser.getUserId() + "_",
+                    existingUser.getUserId(),
+                    "ProfileImage"
+            );
+
+            existingUser.setProfileImageUrl(profileImage.getUrl());
         }
 
         if (request.getBannerImageUrl() != null && !request.getBannerImageUrl().isEmpty()) {
-            String bannerImageUrl = saveFile(request.getBannerImageUrl(), existingUser);
-            existingUser.setBannerImageUrl(bannerImageUrl);
+            Media bannerImage = mediaService.saveFile(
+                    request.getBannerImageUrl(),
+                    "src/main/resources/uploads/user/" + existingUser.getUserId() + "/",
+                    existingUser.getUserId() + "_",
+                    existingUser.getUserId(),
+                    "BannerImage"
+            );
+
+            existingUser.setBannerImageUrl(bannerImage.getUrl());
         }
 
         // Save it in the database
@@ -144,31 +163,5 @@ public class UserService implements IUserService {
      */
     public List<UserDTO> convertToDTOList(List<User> userList) {
         return userList.stream().map(this::convertToDTO).toList();
-    }
-
-    /**
-     * Save File Function
-     *
-     * @param file Object {MultipartFile}
-     * @param user Object {User}
-     * @return String
-     * @throws IOException
-     */
-    public String saveFile(MultipartFile file, User user) throws IOException {
-        String fileName = user.getUserId() + "_"
-                + UUID.randomUUID() + "_"
-                + file.getOriginalFilename();
-
-        // Create the full path to the file
-        String uploadDir = "src/main/resources/uploads/user/images/";
-        Path filePath = Paths.get(uploadDir, fileName);
-
-        // Create the directory if it doesn't exist
-        Files.createDirectories(filePath.getParent());
-
-        // Save the file to the specified path
-        Files.copy(file.getInputStream(), filePath);
-
-        return fileName;
     }
 }
