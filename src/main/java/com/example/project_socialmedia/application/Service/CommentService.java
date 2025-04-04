@@ -2,14 +2,12 @@ package com.example.project_socialmedia.application.Service;
 
 import com.example.project_socialmedia.application.Exception.ResourceNotFound;
 import com.example.project_socialmedia.application.Service_Interface.ICommentService;
-import com.example.project_socialmedia.domain.Modal.Comment;
-import com.example.project_socialmedia.domain.Modal.Post;
-import com.example.project_socialmedia.domain.Modal.User;
+import com.example.project_socialmedia.domain.Model.Comment;
+import com.example.project_socialmedia.domain.Model.Post;
+import com.example.project_socialmedia.domain.Model.User;
 import com.example.project_socialmedia.domain.Repository.CommentRepository;
-import com.example.project_socialmedia.domain.Repository.PostRepository;
-import com.example.project_socialmedia.domain.Repository.UserRepository;
-import com.example.project_socialmedia.infrastructure.Config.Request.Comment.CommentCreateRequest;
-import com.example.project_socialmedia.infrastructure.Config.Request.Comment.CommentUpdateRequest;
+import com.example.project_socialmedia.controllers.Request.Comment.CommentCreateRequest;
+import com.example.project_socialmedia.controllers.Request.Comment.CommentUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +17,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CommentService implements ICommentService {
+
     private final CommentRepository commentRepository;
-    private final UserRepository userRepository;
-    private final PostRepository postRepository;
+
+    private final UserService userService;
+    private final PostService postService;
 
     /**
      * Get Comment By ID
@@ -53,8 +53,7 @@ public class CommentService implements ICommentService {
      */
     @Override
     public List<Comment> getAllUserCommentsByUserId(Long userId) {
-        User existingUser = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFound("getAllUserCommentsByUserId: userId not found"));
+        User existingUser = userService.getUserById(userId);
 
         // Testing
         System.out.println("Retrieved User: " + existingUser.getUserId());
@@ -76,9 +75,7 @@ public class CommentService implements ICommentService {
      */
     @Override
     public List<Comment> getAllUserCommentsByPostId(Long postId) {
-        Post getPost = postRepository.findById(postId)
-                .orElseThrow(() -> new ResourceNotFound("getAllUserCommentsByPostId: postId not found"));
-
+        Post getPost = postService.getPostById(postId);
         return getPost.getComments();
     }
 
@@ -90,11 +87,8 @@ public class CommentService implements ICommentService {
      */
     @Override
     public Comment addComment(CommentCreateRequest request, Long userId, Long postId) {
-        User existingUser = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFound("addComment: userId not found"));
-
-        Post existingPost = postRepository.findById(postId)
-                .orElseThrow(() -> new ResourceNotFound("addComment: postId not found"));
+        User existingUser = userService.getUserById(userId);
+        Post existingPost = postService.getPostById(postId);
 
         return new Comment(
                 existingUser,

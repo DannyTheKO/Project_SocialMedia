@@ -1,6 +1,6 @@
-package com.example.project_socialmedia.infrastructure.Config.Request.Media;
+package com.example.project_socialmedia.controllers.Request.Media;
 
-import com.example.project_socialmedia.domain.Modal.Post;
+import com.example.project_socialmedia.domain.Model.Post;
 import lombok.Data;
 
 @Data

@@ -1,4 +1,4 @@
-package com.example.project_socialmedia.domain.Modal;
+package com.example.project_socialmedia.domain.Model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -6,7 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -25,7 +27,7 @@ public class User {
     private String bio;
     private String profileImageUrl;
     private String bannerImageUrl;
-    private LocalDateTime birthDate;
+    private Date birthDate;
 
     @Column(nullable = false)
     private String username;
@@ -37,10 +39,10 @@ public class User {
     private String password;
 
     @Column(nullable = false)
-    private LocalDateTime createdAt;
+    private Date createdAt;
 
     @Column(nullable = false)
-    private LocalDateTime lastLogin;
+    private Date lastLogin;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts;
@@ -68,7 +70,7 @@ public class User {
      * @param createdAt Date
      * @param lastLogin Date
      */
-    public User(String username, String firstName, String lastName, String email, String password, LocalDateTime createdAt, LocalDateTime lastLogin) {
+    public User(String username, String firstName, String lastName, String email, String password, Date createdAt, Date lastLogin) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -85,7 +87,7 @@ public class User {
      *
      * @param lastLogin Date
      */
-    public void updateUserLastLogin(LocalDateTime lastLogin) {
+    public void updateUserLastLogin(Date lastLogin) {
         this.lastLogin = lastLogin;
     }
 }

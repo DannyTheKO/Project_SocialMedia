@@ -4,10 +4,12 @@ import com.example.project_socialmedia.application.DTO.UserDTO;
 import com.example.project_socialmedia.application.Service.PostService;
 import com.example.project_socialmedia.application.Service.UserService;
 import com.example.project_socialmedia.controllers.ApiResponse.ApiResponse;
-import com.example.project_socialmedia.domain.Modal.User;
-import com.example.project_socialmedia.infrastructure.Config.Request.User.UserCreateRequest;
-import com.example.project_socialmedia.infrastructure.Config.Request.User.UserUpdateRequest;
+import com.example.project_socialmedia.domain.Model.User;
+import com.example.project_socialmedia.controllers.Request.User.UserCreateRequest;
+import com.example.project_socialmedia.controllers.Request.User.UserUpdateRequest;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,7 @@ import java.util.List;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+
 
 @Controller
 @RequiredArgsConstructor
@@ -29,6 +32,7 @@ public class UserController {
      *
      * @return Object {userDTOList}
      */
+    @Operation
     @GetMapping("/all")
     public ResponseEntity<ApiResponse> getAllUser() {
         try {
@@ -41,6 +45,7 @@ public class UserController {
         }
     }
 
+    @Operation
     @GetMapping("/user/{userId}")
     public ResponseEntity<ApiResponse> getUserById(@PathVariable Long userId) {
         try {
@@ -60,6 +65,7 @@ public class UserController {
     }
 
     // Create
+    @Operation
     @PostMapping("/create")
     public ResponseEntity<ApiResponse> createUser(@RequestBody UserCreateRequest request) {
         try {
@@ -72,10 +78,13 @@ public class UserController {
     }
 
     // Update
-    @PutMapping("/user/{userId}/update")
+    @Operation
+    @PutMapping(value = "/user/{userId}/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse> updateUser(
             @PathVariable Long userId,
-            @RequestBody UserUpdateRequest request) {
+            @ModelAttribute UserUpdateRequest request
+    ) {
+        // FIXME: Birth date is not match, change the data type
 
         try {
             User getUser = userService.getUserById(userId);
@@ -93,5 +102,5 @@ public class UserController {
         }
     }
 
-    // Delete
+    // TODO: Delete
 }

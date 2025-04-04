@@ -1,4 +1,4 @@
-package com.example.project_socialmedia.infrastructure.Config.Request.User;
+package com.example.project_socialmedia.controllers.Request.User;
 
 import lombok.Data;
 

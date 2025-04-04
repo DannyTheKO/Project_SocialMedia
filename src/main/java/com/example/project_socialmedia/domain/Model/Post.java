@@ -1,4 +1,4 @@
-package com.example.project_socialmedia.domain.Modal;
+package com.example.project_socialmedia.domain.Model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -31,9 +31,6 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Media> media;
-
     @Column(nullable = false)
     private String content;
 
@@ -44,10 +41,9 @@ public class Post {
     private LocalDateTime modifiedPost;
 
 
-    public Post(User user, String content, List<Media> media, LocalDateTime createdPost, LocalDateTime modifiedPost) {
+    public Post(User user, String content, LocalDateTime createdPost, LocalDateTime modifiedPost) {
         this.user = user;
         this.content = content;
-        this.media = media;
         this.createdPost = createdPost;
         this.modifiedPost = modifiedPost;
     }

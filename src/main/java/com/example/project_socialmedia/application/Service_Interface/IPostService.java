@@ -1,8 +1,8 @@
 package com.example.project_socialmedia.application.Service_Interface;
 
-import com.example.project_socialmedia.domain.Modal.Post;
-import com.example.project_socialmedia.infrastructure.Config.Request.Post.PostCreateRequest;
-import com.example.project_socialmedia.infrastructure.Config.Request.Post.PostUpdateRequest;
+import com.example.project_socialmedia.domain.Model.Post;
+import com.example.project_socialmedia.controllers.Request.Post.PostCreateRequest;
+import com.example.project_socialmedia.controllers.Request.Post.PostUpdateRequest;
 
 import java.util.List;
 
@@ -15,12 +15,19 @@ public interface IPostService {
     List<Post> getAllPosts();
 
     /**
+     * Get Post By ID
+     * @param postId    Long
+     * @return          Object {Post}
+     */
+    Post getPostById(Long postId);
+
+    /**
      * Get Post By User ID
      *
      * @param userId Long
      * @return List{Object} Post
      */
-    List<Post> getPostsByUserId(Long userId);
+    List<Post> getAllPostsByUserId(Long userId);
 
     /**
      * Create Post
@@ -46,5 +53,5 @@ public interface IPostService {
      * @param postId  Long
      * @return Object {Object}
      */
-    Post updatePost(PostUpdateRequest request, Long userId, Long postId);
+    Post updatePost(Long userId, Long postId, PostUpdateRequest request);
 }

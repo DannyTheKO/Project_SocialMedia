@@ -2,8 +2,8 @@ package com.example.project_socialmedia.TestComment;
 
 import com.example.project_socialmedia.application.Exception.ResourceNotFound;
 import com.example.project_socialmedia.application.Service.CommentService;
-import com.example.project_socialmedia.domain.Modal.Comment;
-import com.example.project_socialmedia.domain.Modal.User;
+import com.example.project_socialmedia.domain.Model.Comment;
+import com.example.project_socialmedia.domain.Model.User;
 import com.example.project_socialmedia.domain.Repository.CommentRepository;
 import com.example.project_socialmedia.domain.Repository.UserRepository;
 import org.junit.jupiter.api.Test;
