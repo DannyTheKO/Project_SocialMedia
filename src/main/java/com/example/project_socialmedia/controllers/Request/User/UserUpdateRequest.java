@@ -1,9 +1,11 @@
-package com.example.project_socialmedia.infrastructure.Request.User;
+package com.example.project_socialmedia.controllers.Request.User;
 
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 public class UserUpdateRequest {
@@ -13,7 +15,7 @@ public class UserUpdateRequest {
     private String password;
 
     private String bio;
-    private MultipartFile profileImageUrl;
-    private MultipartFile bannerImageUrl;
-    private LocalDateTime birthDate;
+    private MultipartFile profileImage;
+    private MultipartFile bannerImage;
+    private Timestamp birthDate;
 }

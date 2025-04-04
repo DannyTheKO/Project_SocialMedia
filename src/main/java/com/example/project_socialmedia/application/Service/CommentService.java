@@ -2,14 +2,12 @@ package com.example.project_socialmedia.application.Service;
 
 import com.example.project_socialmedia.application.Exception.ResourceNotFound;
 import com.example.project_socialmedia.application.Service_Interface.ICommentService;
-import com.example.project_socialmedia.domain.Modal.Comment;
-import com.example.project_socialmedia.domain.Modal.Post;
-import com.example.project_socialmedia.domain.Modal.User;
+import com.example.project_socialmedia.domain.Model.Comment;
+import com.example.project_socialmedia.domain.Model.Post;
+import com.example.project_socialmedia.domain.Model.User;
 import com.example.project_socialmedia.domain.Repository.CommentRepository;
-import com.example.project_socialmedia.domain.Repository.PostRepository;
-import com.example.project_socialmedia.domain.Repository.UserRepository;
-import com.example.project_socialmedia.infrastructure.Request.Comment.CommentCreateRequest;
-import com.example.project_socialmedia.infrastructure.Request.Comment.CommentUpdateRequest;
+import com.example.project_socialmedia.controllers.Request.Comment.CommentCreateRequest;
+import com.example.project_socialmedia.controllers.Request.Comment.CommentUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -2,12 +2,10 @@ package com.example.project_socialmedia.application.Service;
 
 import com.example.project_socialmedia.application.Exception.ResourceNotFound;
 import com.example.project_socialmedia.application.Service_Interface.IMediaService;
-import com.example.project_socialmedia.domain.Modal.Media;
-import com.example.project_socialmedia.domain.Modal.MediaAssociation;
-import com.example.project_socialmedia.domain.Modal.User;
+import com.example.project_socialmedia.domain.Model.Media;
+import com.example.project_socialmedia.domain.Model.MediaAssociation;
 import com.example.project_socialmedia.domain.Repository.MediaRepository;
 import com.example.project_socialmedia.domain.Repository.PostRepository;
-import com.example.project_socialmedia.infrastructure.Request.Media.CreateMediaRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,7 +18,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-import static com.example.project_socialmedia.domain.Modal.Media.fileType.*;
+import static com.example.project_socialmedia.domain.Model.Media.fileType.*;
 
 @Service
 @RequiredArgsConstructor

@@ -1,10 +1,9 @@
 package com.example.project_socialmedia.application.Service_Interface;
 
-import com.example.project_socialmedia.domain.Modal.Post;
-import com.example.project_socialmedia.infrastructure.Request.Post.PostCreateRequest;
-import com.example.project_socialmedia.infrastructure.Request.Post.PostUpdateRequest;
+import com.example.project_socialmedia.domain.Model.Post;
+import com.example.project_socialmedia.controllers.Request.Post.PostCreateRequest;
+import com.example.project_socialmedia.controllers.Request.Post.PostUpdateRequest;
 
-import java.io.IOException;
 import java.util.List;
 
 public interface IPostService {
@@ -37,7 +36,7 @@ public interface IPostService {
      * @param userId  Long
      * @return Object {Post}
      */
-    Post createPost(PostCreateRequest request, Long userId) throws IOException;
+    Post createPost(PostCreateRequest request, Long userId);
 
     /**
      * Delete Post
@@ -54,5 +53,5 @@ public interface IPostService {
      * @param postId  Long
      * @return Object {Object}
      */
-    Post updatePost(PostUpdateRequest request, Long userId, Long postId) throws IOException;
+    Post updatePost(Long userId, Long postId, PostUpdateRequest request);
 }

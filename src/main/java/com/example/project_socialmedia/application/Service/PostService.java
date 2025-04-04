@@ -3,16 +3,14 @@ package com.example.project_socialmedia.application.Service;
 import com.example.project_socialmedia.application.DTO.PostDTO;
 import com.example.project_socialmedia.application.Exception.ResourceNotFound;
 import com.example.project_socialmedia.application.Service_Interface.IPostService;
-import com.example.project_socialmedia.domain.Modal.Media;
-import com.example.project_socialmedia.domain.Modal.MediaAssociation;
-import com.example.project_socialmedia.domain.Modal.Post;
-import com.example.project_socialmedia.domain.Modal.User;
+import com.example.project_socialmedia.domain.Model.Media;
+import com.example.project_socialmedia.domain.Model.MediaAssociation;
+import com.example.project_socialmedia.domain.Model.Post;
+import com.example.project_socialmedia.domain.Model.User;
 import com.example.project_socialmedia.domain.Repository.MediaAssociationRepository;
-import com.example.project_socialmedia.domain.Repository.MediaRepository;
 import com.example.project_socialmedia.domain.Repository.PostRepository;
-import com.example.project_socialmedia.domain.Repository.UserRepository;
-import com.example.project_socialmedia.infrastructure.Request.Post.PostCreateRequest;
-import com.example.project_socialmedia.infrastructure.Request.Post.PostUpdateRequest;
+import com.example.project_socialmedia.controllers.Request.Post.PostCreateRequest;
+import com.example.project_socialmedia.controllers.Request.Post.PostUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -20,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -88,36 +85,40 @@ public class PostService implements IPostService {
      * @return Object {Post}
      */
     @Override
-    public Post createPost(PostCreateRequest request, Long userId) throws IOException {
-        // Check if User exist in the database
-        User user = userService.getUserById(userId);
+    public Post createPost(PostCreateRequest request, Long userId) {
+        try {
+            // Check if User exist in the database
+            User user = userService.getUserById(userId);
 
-        Post newPost = new Post(
-                user,
-                request.getContent(),
-                LocalDateTime.now(),
-                LocalDateTime.now()
-        );
+            Post newPost = new Post(
+                    user,
+                    request.getContent(),
+                    LocalDateTime.now(),
+                    LocalDateTime.now()
+            );
 
-        postRepository.save(newPost); // Save the post first to get the generated ID
+            postRepository.save(newPost); // Save the post first to get the generated ID
 
-        // Now handle media
-        List<MultipartFile> mediaFiles = request.getMedia();
-        if (mediaFiles != null) {
-            for (MultipartFile mediaFile : mediaFiles) {
-                if (!mediaFile.isEmpty()) {
-                    mediaService.saveFile(
-                            mediaFile,
-                            "src/main/resources/uploads/posts/" + newPost.getPostId() + "/", // Use newPost.getPostId()
-                            newPost.getPostId() + "_",
-                            newPost.getPostId(),
-                            "Post"
-                    );
+            // Now handle media
+            List<MultipartFile> mediaFiles = request.getMedia();
+            if (mediaFiles != null) {
+                for (MultipartFile mediaFile : mediaFiles) {
+                    if (!mediaFile.isEmpty()) {
+                        mediaService.saveFile(
+                                mediaFile,
+                                "src/main/resources/uploads/posts/" + newPost.getPostId() + "/", // Use newPost.getPostId()
+                                newPost.getPostId() + "_",
+                                newPost.getPostId(),
+                                "Post"
+                        );
+                    }
                 }
             }
-        }
 
-        return newPost;
+            return newPost;
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     /**
@@ -142,35 +143,43 @@ public class PostService implements IPostService {
      * @return Object {Object}
      */
     @Override
-    public Post updatePost(PostUpdateRequest request, Long userId, Long postId) throws IOException {
-        Post existingPost = postRepository.findById(postId)
-                .orElseThrow(() -> new ResourceNotFound("updatePost: Post not found"));
+    public Post updatePost(Long userId, Long postId, PostUpdateRequest request) {
+        try {
+            // 1. Retrieve the post using postId
+            Post existingPost = postRepository.findById(postId)
+                    .orElseThrow(() -> new ResourceNotFound("updatePost: Post not found"));
 
-        User existingUser = userService.getUserById(userId);
+            // 2. Verify that the userId from the request matches the post's owner
+            // TODO: Add Authorization
+            User existingUser = userService.getUserById(userId);
 
-        existingPost.setContent(request.getContent());
+            // 3. If authorized, proceed with the update logic
+            existingPost.setContent(request.getContent());
 
-        //Handle Media Updates:
-        List<Media> existingMedia = getMediaByPostId(postId);
-        List<MultipartFile> newMediaFiles = request.getMedia();
+            //Handle Media Updates:
+            List<Media> existingMedia = getMediaByPostId(postId);
+            List<MultipartFile> newMediaFiles = request.getMedia();
 
-        // Add new media files
-        if (newMediaFiles != null) {
-            for (MultipartFile mediaFile : newMediaFiles) {
-                if (!mediaFile.isEmpty()) {
-                    Media newMedia = mediaService.saveFile(
-                            mediaFile,
-                            "src/main/resources/uploads/posts/" + postId + "/",
-                            postId + "_",
-                            postId,     // This is the targetId
-                            "Post"      // This is the targetType
-                    );
+            // Add new media files
+            if (newMediaFiles != null) {
+                for (MultipartFile mediaFile : newMediaFiles) {
+                    if (!mediaFile.isEmpty()) {
+                        Media newMedia = mediaService.saveFile(
+                                mediaFile,
+                                "src/main/resources/uploads/posts/" + postId + "/",
+                                postId + "_",
+                                postId,     // This is the targetId
+                                "Post"      // This is the targetType
+                        );
+                    }
                 }
             }
-        }
 
-        postRepository.save(existingPost);
-        return existingPost;
+            postRepository.save(existingPost);
+            return existingPost;
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     public PostDTO convertToDTO(Post post) {

@@ -1,4 +1,4 @@
-package com.example.project_socialmedia.infrastructure.Request.Comment;
+package com.example.project_socialmedia.controllers.Request.Comment;
 
 import lombok.Data;
 

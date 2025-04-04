@@ -4,23 +4,20 @@ import com.example.project_socialmedia.application.DTO.UserDTO;
 import com.example.project_socialmedia.application.Exception.ResourceConflict;
 import com.example.project_socialmedia.application.Exception.ResourceNotFound;
 import com.example.project_socialmedia.application.Service_Interface.IUserService;
-import com.example.project_socialmedia.domain.Modal.Media;
-import com.example.project_socialmedia.domain.Modal.User;
+import com.example.project_socialmedia.domain.Model.Media;
+import com.example.project_socialmedia.domain.Model.User;
 import com.example.project_socialmedia.domain.Repository.UserRepository;
-import com.example.project_socialmedia.infrastructure.Request.User.UserCreateRequest;
-import com.example.project_socialmedia.infrastructure.Request.User.UserUpdateRequest;
+import com.example.project_socialmedia.controllers.Request.User.UserCreateRequest;
+import com.example.project_socialmedia.controllers.Request.User.UserUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -73,8 +70,8 @@ public class UserService implements IUserService {
         newUser.setLastName(createRequest.getLastname());
         newUser.setEmail(createRequest.getEmail());
         newUser.setPassword(createRequest.getPassword());
-        newUser.setCreatedAt(LocalDateTime.now());
-        newUser.setLastLogin(LocalDateTime.now());
+        newUser.setCreatedAt(new Date());
+        newUser.setLastLogin(new Date());
 
         // Send to database
         userRepository.save(newUser);
@@ -102,47 +99,52 @@ public class UserService implements IUserService {
      *
      * @param request Object {UserUpdateRequest}
      */
+
     @Override
-    public User updateUser(Long userId, UserUpdateRequest request) throws IOException {
-        // Get User though UserID
-        User existingUser = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFound("updateUser: userId not found"));
+    public User updateUser(Long userId, UserUpdateRequest request) {
+        try {
+            // Get User though UserID
+            User existingUser = userRepository.findById(userId)
+                    .orElseThrow(() -> new ResourceNotFound("updateUser: userId not found"));
 
-        // Update User by overwriting from request
-        existingUser.setFirstName(request.getFirstName());
-        existingUser.setLastName(request.getLastName());
-        existingUser.setEmail(request.getEmail());
-        existingUser.setPassword(request.getPassword());
-        existingUser.setBio(request.getBio());
-        existingUser.setBirthDate(request.getBirthDate());
+            // Update User by overwriting from request
+            existingUser.setFirstName(request.getFirstName());
+            existingUser.setLastName(request.getLastName());
+            existingUser.setEmail(request.getEmail());
+            existingUser.setPassword(request.getPassword());
+            existingUser.setBio(request.getBio());
+            existingUser.setBirthDate(request.getBirthDate());
 
-        if (request.getProfileImageUrl() != null && !request.getProfileImageUrl().isEmpty()) {
-            Media profileImage = mediaService.saveFile(
-                    request.getProfileImageUrl(),
-                    "src/main/resources/uploads/user/" + existingUser.getUserId() + "/",
-                    existingUser.getUserId() + "_",
-                    existingUser.getUserId(),
-                    "ProfileImage"
-            );
+            if (request.getProfileImage() != null && !request.getProfileImage().isEmpty()) {
+                Media profileImage = mediaService.saveFile(
+                        request.getProfileImage(),
+                        "src/main/resources/uploads/user/" + existingUser.getUserId() + "/",
+                        existingUser.getUserId() + "_",
+                        existingUser.getUserId(),
+                        "ProfileImage"
+                );
 
-            existingUser.setProfileImageUrl(profileImage.getUrl());
+                existingUser.setProfileImageUrl(profileImage.getUrl());
+            }
+
+            if (request.getBannerImage() != null && !request.getBannerImage().isEmpty()) {
+                Media bannerImage = mediaService.saveFile(
+                        request.getBannerImage(),
+                        "src/main/resources/uploads/user/" + existingUser.getUserId() + "/",
+                        existingUser.getUserId() + "_",
+                        existingUser.getUserId(),
+                        "BannerImage"
+                );
+
+                existingUser.setBannerImageUrl(bannerImage.getUrl());
+            }
+
+            // Save it in the database
+            userRepository.save(existingUser);
+            return existingUser;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-
-        if (request.getBannerImageUrl() != null && !request.getBannerImageUrl().isEmpty()) {
-            Media bannerImage = mediaService.saveFile(
-                    request.getBannerImageUrl(),
-                    "src/main/resources/uploads/user/" + existingUser.getUserId() + "/",
-                    existingUser.getUserId() + "_",
-                    existingUser.getUserId(),
-                    "BannerImage"
-            );
-
-            existingUser.setBannerImageUrl(bannerImage.getUrl());
-        }
-
-        // Save it in the database
-        userRepository.save(existingUser);
-        return existingUser;
     }
 
     /**

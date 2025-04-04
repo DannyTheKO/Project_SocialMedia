@@ -1,6 +1,6 @@
 package com.example.project_socialmedia.domain.Repository;
 
-import com.example.project_socialmedia.domain.Modal.User;
+import com.example.project_socialmedia.domain.Model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

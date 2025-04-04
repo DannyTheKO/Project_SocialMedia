@@ -1,4 +1,4 @@
-package com.example.project_socialmedia.domain.Modal;
+package com.example.project_socialmedia.domain.Model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -32,8 +32,6 @@ public class Friend {
         ACCEPTED,
         DECLINED
     }
-
-    ;
 
     @Column(nullable = false)
     private Enum<friendStatus> statusEnum;
