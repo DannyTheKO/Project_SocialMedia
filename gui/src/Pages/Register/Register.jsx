@@ -6,8 +6,8 @@ const Register = () => {
     return (
         <div className='register'>
             <div className="card">
-                <div className="left font-medium">
-                    <h1>Ttuan Social.</h1>
+                <div className="left font-normal">
+                    <h1>Social Media</h1>
                     <p>
                         Lorem ipsum dolor, sit amet consectetur adipisicing elit.
                         Nobis repellendus, modi, est sit, autem officiis obcaecati

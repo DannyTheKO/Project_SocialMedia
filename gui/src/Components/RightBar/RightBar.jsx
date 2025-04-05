@@ -6,9 +6,8 @@ const RightBar = () => {
     return (
         <div className='rightbar flex-[3]'>
             <div className="container p-[20px]">
-
                 <div className="item p-[20px] mb-[20px]">
-                    <span className='text-gray-500'>Latest Activities</span>
+                    <span className='text-gray-500'>Suggestions For You</span>
                     <div className="user flex items-center justify-between my-[20px]">
                         <div className="userInfo flex items-center gap-[15px]">
                             <img src={PlaceHolderImage} alt="" className='w-[40px] h-[40px] rounded-full object-cover' />
