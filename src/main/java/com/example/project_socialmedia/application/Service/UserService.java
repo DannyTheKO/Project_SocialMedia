@@ -12,6 +12,7 @@ import com.example.project_socialmedia.controllers.Request.User.UserUpdateReques
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -70,8 +71,8 @@ public class UserService implements IUserService {
         newUser.setLastName(createRequest.getLastname());
         newUser.setEmail(createRequest.getEmail());
         newUser.setPassword(createRequest.getPassword());
-        newUser.setCreatedAt(new Date());
-        newUser.setLastLogin(new Date());
+        newUser.setCreatedAt(LocalDateTime.now());
+        newUser.setLastLogin(LocalDateTime.now());
 
         // Send to database
         userRepository.save(newUser);
@@ -99,7 +100,6 @@ public class UserService implements IUserService {
      *
      * @param request Object {UserUpdateRequest}
      */
-
     @Override
     public User updateUser(Long userId, UserUpdateRequest request) {
         try {
@@ -119,7 +119,6 @@ public class UserService implements IUserService {
                 Media profileImage = mediaService.saveFile(
                         request.getProfileImage(),
                         "src/main/resources/uploads/user/" + existingUser.getUserId() + "/",
-                        existingUser.getUserId() + "_",
                         existingUser.getUserId(),
                         "ProfileImage"
                 );
@@ -131,7 +130,6 @@ public class UserService implements IUserService {
                 Media bannerImage = mediaService.saveFile(
                         request.getBannerImage(),
                         "src/main/resources/uploads/user/" + existingUser.getUserId() + "/",
-                        existingUser.getUserId() + "_",
                         existingUser.getUserId(),
                         "BannerImage"
                 );
@@ -142,7 +140,7 @@ public class UserService implements IUserService {
             // Save it in the database
             userRepository.save(existingUser);
             return existingUser;
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

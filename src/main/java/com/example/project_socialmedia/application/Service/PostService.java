@@ -107,7 +107,6 @@ public class PostService implements IPostService {
                         mediaService.saveFile(
                                 mediaFile,
                                 "src/main/resources/uploads/posts/" + newPost.getPostId() + "/", // Use newPost.getPostId()
-                                newPost.getPostId() + "_",
                                 newPost.getPostId(),
                                 "Post"
                         );
@@ -116,7 +115,7 @@ public class PostService implements IPostService {
             }
 
             return newPost;
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -167,7 +166,6 @@ public class PostService implements IPostService {
                         Media newMedia = mediaService.saveFile(
                                 mediaFile,
                                 "src/main/resources/uploads/posts/" + postId + "/",
-                                postId + "_",
                                 postId,     // This is the targetId
                                 "Post"      // This is the targetType
                         );
@@ -177,7 +175,7 @@ public class PostService implements IPostService {
 
             postRepository.save(existingPost);
             return existingPost;
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
     }

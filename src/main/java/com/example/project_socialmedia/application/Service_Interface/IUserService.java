@@ -4,6 +4,7 @@ import com.example.project_socialmedia.application.DTO.UserDTO;
 import com.example.project_socialmedia.domain.Model.User;
 import com.example.project_socialmedia.controllers.Request.User.UserCreateRequest;
 import com.example.project_socialmedia.controllers.Request.User.UserUpdateRequest;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -45,7 +46,7 @@ public interface IUserService {
      *
      * @param request UserUpdateRequest Object
      */
-    User updateUser(Long userId, UserUpdateRequest request) throws IOException;
+    User updateUser(Long userId, UserUpdateRequest request);
 
     /**
      * Convert User Object into UserDTO
