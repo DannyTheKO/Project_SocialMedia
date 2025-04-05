@@ -4,16 +4,19 @@ import com.example.project_socialmedia.application.DTO.UserDTO;
 import com.example.project_socialmedia.application.Service.PostService;
 import com.example.project_socialmedia.application.Service.UserService;
 import com.example.project_socialmedia.controllers.ApiResponse.ApiResponse;
-import com.example.project_socialmedia.domain.Model.User;
 import com.example.project_socialmedia.controllers.Request.User.UserCreateRequest;
 import com.example.project_socialmedia.controllers.Request.User.UserUpdateRequest;
+import com.example.project_socialmedia.domain.Model.User;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Date;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
@@ -66,7 +69,7 @@ public class UserController {
 
     // Create
     @Operation
-    @PostMapping("/create")
+    @PostMapping(value = "/create")
     public ResponseEntity<ApiResponse> createUser(@RequestBody UserCreateRequest request) {
         try {
             User createUser = userService.createUser(request);
@@ -79,28 +82,36 @@ public class UserController {
 
     // Update
     @Operation
-    @PutMapping(value = "/user/{userId}/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/user/{userId}/update")
     public ResponseEntity<ApiResponse> updateUser(
             @PathVariable Long userId,
             @ModelAttribute UserUpdateRequest request
     ) {
-        // FIXME: Birth date is not match, change the data type
-
         try {
             User getUser = userService.getUserById(userId);
-            if (getUser == null) {
+            if (getUser != null) {
+                User updatedUser = userService.updateUser(userId, request);
+                return ResponseEntity.ok(new ApiResponse("Success", userService.convertToDTO(updatedUser)));
+            } else {
                 return ResponseEntity.status(NOT_FOUND)
                         .body(new ApiResponse("User Not Found", null));
             }
-
-            User updatedUser = userService.updateUser(userId, request);
-            return ResponseEntity.ok(new ApiResponse("Success", userService.convertToDTO(updatedUser)));
-
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse("Error!", e.getMessage()));
         }
     }
 
-    // TODO: Delete
+
+    // Delete
+    @DeleteMapping("/user/{userId}/delete")
+    public ResponseEntity<ApiResponse> deleteUser(@PathVariable Long userId) {
+        try {
+            userService.deleteUser(userId);
+            return ResponseEntity.ok(new ApiResponse("Success", null));
+        } catch (Exception e) {
+            return  ResponseEntity.status(INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error!", e.getMessage()));
+        }
+    }
 }

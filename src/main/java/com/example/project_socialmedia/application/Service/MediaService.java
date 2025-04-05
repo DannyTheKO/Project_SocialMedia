@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -47,9 +48,9 @@ public class MediaService implements IMediaService {
         } else if (url.toLowerCase().endsWith(".mp4") || url.toLowerCase().endsWith(".mov") || url.toLowerCase().endsWith(".avi")) {
             return VIDEO;
         } else if (url.toLowerCase().endsWith(".gif")) {
-            // Or handle other types as needed
             return GIF;
         } else {
+            // Or handle other types as needed
             return UNKNOWN;
         }
     }
@@ -59,47 +60,49 @@ public class MediaService implements IMediaService {
      *
      * @param file Object {MultipartFile}
      * @param uploadDir String
-     * @param filePrefix String
+     * @param targetId Long
      * @return String
-     * @throws IOException  If something wrong
      */
-    public Media saveFile(MultipartFile file, String uploadDir, String filePrefix, Long targetId, String targetType) throws IOException {
-        String fileName = filePrefix + "_"
-                + file.getOriginalFilename() + "_"
-                + UUID.randomUUID();
+    public Media saveFile(MultipartFile file, String uploadDir, Long targetId, String targetType) {
+        try {
+            String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
 
-        Enum<Media.fileType> fileType = identifyMediaType(Objects.requireNonNull(file.getOriginalFilename()));
+            Enum<Media.fileType> fileType = identifyMediaType(Objects.requireNonNull(file.getOriginalFilename()));
 
-        // Create the full path to the file
-        Path filePath = Paths.get(uploadDir, fileName);
+            // Create the full path to the file
+            Path filePath = Paths.get(uploadDir, fileName);
 
-        // Create the directory if it doesn't exist
-        Files.createDirectories(filePath.getParent());
+            // Create the directory if it doesn't exist
+            Files.createDirectories(filePath.getParent());
 
-        // Save the file to the specified path
-        Files.copy(file.getInputStream(), filePath);
+            // Save the file to the specified path
+            Files.copy(file.getInputStream(), filePath);
 
-        Media newMedia = new Media(
-                filePath.toString(),
-                fileName,
-                fileType
-        );
+            Media newMedia = new Media(
+                    filePath.toString(),
+                    fileName,
+                    fileType,
+                    LocalDateTime.now()
+            );
 
-        // Persist the Media object first
-        newMedia = mediaRepository.save(newMedia);
+            // Persist the Media object first
+            newMedia = mediaRepository.save(newMedia);
 
-        // Create and persist the MediaAssociation
-        MediaAssociation association = new MediaAssociation(
-                null, // Auto-generated ID
-                newMedia,
-                targetId,
-                targetType
-        );
+            // Create and persist the MediaAssociation
+            MediaAssociation association = new MediaAssociation(
+                    null, // Auto-generated ID
+                    newMedia,
+                    targetId,
+                    targetType
+            );
 
-        newMedia.getAssociations().add(association);
-        mediaRepository.save(newMedia);
+            newMedia.getAssociations().add(association);
+            mediaRepository.save(newMedia);
 
-        return newMedia;
+            return newMedia;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 }
