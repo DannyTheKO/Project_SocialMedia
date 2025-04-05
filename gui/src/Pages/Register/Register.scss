@@ -1,0 +1,91 @@
+.register {
+    height: 100vh;
+    background-color: rgb(193, 190, 255);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .card {
+        width: 50%;
+        min-height: 500px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: row-reverse;
+        background-color: white;
+        border-radius: 10px;
+
+        .left {
+            flex: 1;
+            background: linear-gradient(rgba(39, 11, 96, 0.4), rgba(39, 11, 96, 0.4)), url('../../assets/register-image.jpg');
+            background-size: cover;
+            background-position: center;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            gap: 35px;
+            color: white;
+
+            h1 {
+                font-size: 65px;
+                line-height: 60px;
+                font-weight: 700;
+
+            }
+
+            p {
+                font-size: 14px;
+            }
+
+            span {
+                font-size: 14px;
+            }
+
+            button {
+                width: 50%;
+                padding: 5px;
+                background-color: #fff;
+                border: none;
+                color: purple;
+                font-weight: 700;
+                cursor: pointer;
+            }
+        }
+
+        .right {
+            flex: 1;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            gap: 35px;
+
+            h1 {
+                font-weight: 700;
+                font-size: 30px;
+                color: #555;
+                line-height: 20px;
+            }
+
+            form {
+                display: flex;
+                flex-direction: column;
+                gap: 18px;
+
+                input {
+                    border: none;
+                    border-bottom: 1px solid lightgray;
+                    padding: 20px 10px;
+                }
+
+                button {
+                    width: 50%;
+                    padding: 8px;
+                    border: none;
+                    background-color: #a532f3;
+                    color: white;
+                    font-weight: bold;
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+}
