@@ -103,5 +103,15 @@ public class UserController {
     }
 
 
-    // TODO: Delete
+    // Delete
+    @DeleteMapping("/user/{userId}/delete")
+    public ResponseEntity<ApiResponse> deleteUser(@PathVariable Long userId) {
+        try {
+            userService.deleteUser(userId);
+            return ResponseEntity.ok(new ApiResponse("Success", null));
+        } catch (Exception e) {
+            return  ResponseEntity.status(INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error!", e.getMessage()));
+        }
+    }
 }
