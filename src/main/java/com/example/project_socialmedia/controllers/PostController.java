@@ -28,7 +28,8 @@ public class PostController {
     private final PostService postService;
     private final UserService userService;
 
-    // TODO: PostController
+    // PostController
+    // FIXME: get post doesn't get the media
 
     /**
      * Get All Post
@@ -36,7 +37,7 @@ public class PostController {
      * @return Object {PostDTO}
      */
     @Operation
-    @GetMapping("/all")
+    @GetMapping(value = "/all")
     public ResponseEntity<ApiResponse> getAllPost() {
         try {
             List<Post> postList = postService.getAllPosts();

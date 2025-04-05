@@ -73,7 +73,8 @@ public class UserController {
     public ResponseEntity<ApiResponse> createUser(@RequestBody UserCreateRequest request) {
         try {
             User createUser = userService.createUser(request);
-            return ResponseEntity.ok(new ApiResponse("Success", createUser));
+            UserDTO userDTO = userService.convertToDTO(createUser);
+            return ResponseEntity.ok(new ApiResponse("Success", userDTO));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse("Error!", e.getMessage()));
@@ -104,6 +105,7 @@ public class UserController {
 
 
     // Delete
+    @Operation
     @DeleteMapping("/user/{userId}/delete")
     public ResponseEntity<ApiResponse> deleteUser(@PathVariable Long userId) {
         try {

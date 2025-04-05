@@ -106,7 +106,7 @@ public class PostService implements IPostService {
                     if (!mediaFile.isEmpty()) {
                         mediaService.saveFile(
                                 mediaFile,
-                                "src/main/resources/uploads/posts/" + newPost.getPostId() + "/", // Use newPost.getPostId()
+                                "src/main/resources/uploads/user/posts/" + newPost.getPostId() + "/",
                                 newPost.getPostId(),
                                 "Post"
                         );

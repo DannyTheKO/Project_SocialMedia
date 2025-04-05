@@ -11,11 +11,10 @@ import java.util.List;
 
 @Data
 public class PostDTO {
-    private User user;
+    private String content;
     private List<Comment> comments;
     private List<Like> likes;
     private List<Media> media;
-    private String content;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 }
