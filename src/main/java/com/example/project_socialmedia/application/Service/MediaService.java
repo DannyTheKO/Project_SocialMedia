@@ -8,6 +8,7 @@ import com.example.project_socialmedia.domain.Model.MediaAssociation;
 import com.example.project_socialmedia.domain.Repository.MediaAssociationRepository;
 import com.example.project_socialmedia.domain.Repository.MediaRepository;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.service.NullServiceException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -125,6 +126,36 @@ public class MediaService implements IMediaService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
+
+    public void removeFile(Long targetId, String targetType, String fileType) {
+        // Find the associated media based on targetId, targetType, and fileType
+        MediaAssociation association = mediaAssociationRepository.findByTargetIdAndTargetType(targetId, targetType)
+                .stream()
+                .filter(a -> a.getMedia().getFileTypeEnum().toString().equalsIgnoreCase(fileType))
+                .findFirst()
+                .orElse(null); // Return null if no association is found
+
+        // If an association exists, proceed with deletion
+        if (association != null) {
+            Media mediaToRemove = association.getMedia();
+            String filePathToRemove = mediaToRemove.getFilePath();
+
+            try {
+                // Delete the file from the system
+                Path filePath = Paths.get(filePathToRemove);
+                Files.deleteIfExists(filePath);
+
+                // Remove the association from the database
+                mediaAssociationRepository.delete(association);
+
+                // Remove the media from the database
+                mediaRepository.delete(mediaToRemove);
+            } catch (IOException e) {
+                // Handle the exception, maybe log it
+                throw new RuntimeException("Error deleting file: " + e.getMessage());
+            }
+        }
+    }
+
 }

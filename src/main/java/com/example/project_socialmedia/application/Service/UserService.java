@@ -115,25 +115,31 @@ public class UserService implements IUserService {
 
             String uploadDir = "src/main/resources/uploads/users/";
             if (request.getProfileImage() != null && !request.getProfileImage().isEmpty()) {
+                // Remove old file
+                mediaService.removeFile(userId, "ProfileImage", "Image");
+
+                // Then added new one
                 Media profileImage = mediaService.saveFile(
                         request.getProfileImage(),
                         uploadDir + existingUser.getUserId() + "/",
                         existingUser.getUserId(),
                         "ProfileImage"
                 );
-
-                existingUser.setProfileImageUrl(profileImage.getUrl());
+                existingUser.setProfileImageUrl(profileImage.getFilePath());
             }
 
             if (request.getBannerImage() != null && !request.getBannerImage().isEmpty()) {
+                // Remove old file
+                mediaService.removeFile(userId, "BannerImage", "Image");
+
+                // Then added new one
                 Media bannerImage = mediaService.saveFile(
                         request.getBannerImage(),
                         uploadDir + existingUser.getUserId() + "/",
                         existingUser.getUserId(),
                         "BannerImage"
                 );
-
-                existingUser.setBannerImageUrl(bannerImage.getUrl());
+                existingUser.setBannerImageUrl(bannerImage.getFilePath());
             }
 
             // Save it in the database

@@ -23,8 +23,8 @@ public class Media {
     @Column(name = "media_id")
     private Long mediaId;
 
-    @Column(name = "url")
-    private String url;
+    @Column(name = "file_path")
+    private String filePath;
     @Column(name = "file_name")
     private String fileName;
     @Column(name = "uploaded_date")
@@ -44,7 +44,7 @@ public class Media {
     private Enum<fileType> fileTypeEnum;
 
     public Media(String filePath, String fileName, Enum<fileType> fileTypeEnum, LocalDateTime uploadedDate) {
-        this.url = filePath;
+        this.filePath = filePath;
         this.fileName = fileName;
         this.fileTypeEnum = fileTypeEnum;
         this.uploadedDate = uploadedDate;
