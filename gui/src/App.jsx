@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-router'
+import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-router-dom'
 import './App.css'
 import Login from './Pages/Login/Login'
 import Register from './Pages/Register/Register'

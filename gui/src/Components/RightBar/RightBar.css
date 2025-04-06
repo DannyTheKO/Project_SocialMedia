@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+
+.rightbar {
+
+    @apply flex-[3] dark:bg-[#222] sticky;
+    height: calc(100vh - 70px);
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    .container>div {
+        -webkit-box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.09);
+        -moz-box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.09);
+        box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.09);
+    }
+
+    .item {
+        @apply p-[20px] mb-[20px] flex flex-col;
+    }
+
+    .user {
+        @apply flex items-center justify-between my-[10px] hover:bg-gray-300 dark:hover:bg-gray-700 p-[10px] rounded-md;
+    }
+
+    .buttons {
+        @apply flex gap-[10px] rounded-md
+    }
+
+    .userInfo {
+        @apply flex items-center gap-[15px];
+    }
+
+    .userInfo p {
+        @apply font-normal dark:text-gray-300;
+    }
+
+    .blue-button {
+        @apply text-white bg-blue-500 hover:bg-blue-700 p-[8px] cursor-pointer
+    }
+
+    .red-button {
+        @apply text-white bg-red-500 hover:bg-red-700 p-[8px] cursor-pointer
+    }
+
+    .green-dot {
+        @apply w-[12px] h-[12px] rounded-full bg-lime-400 absolute top-0 left-[30px]
+    }
+
+    .avatar {
+        @apply w-[40px] h-[40px] rounded-full object-cover
+    }
+
+    .text-color {
+        @apply text-black dark:text-white
+    }
+
+    .time-color {
+        @apply text-gray-500 dark:text-gray-300;
+    }
+}

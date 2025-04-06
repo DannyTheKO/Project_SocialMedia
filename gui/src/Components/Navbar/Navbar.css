@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+.navbar {
+    @apply flex items-center justify-between py-[20px] px-[20px] h-[70px] sticky top-0 border-b border-gray-400 dark:border-[#444] bg-white dark:bg-[#222] z-50;
+}
+
+.navbar .left {
+    @apply flex items-center gap-[30px];
+}
+
+.navbar .right {
+    @apply flex items-center gap-[25px];
+}
+
+.logo {
+    @apply text-blue-800 dark:text-white font-bold text-[24px];
+}
+
+.icon {
+    @apply text-[32px] cursor-pointer rounded-full;
+}
+
+.search {
+    @apply flex items-center gap-[10px] border-1 border-gray-400 rounded-sm p-[8px]
+}
+
+.search-input {
+    @apply border-none w-[600px] text-[20px] outline-none
+}
+
+.text-color {
+    @apply text-black dark:text-slate-200;
+}
+
+.user {
+    @apply flex items-center gap-[10px] font-medium
+}
+
+.avatar {
+    @apply w-[40px] h-[40px] rounded-full object-cover
+}
