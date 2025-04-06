@@ -1,8 +1,8 @@
 package com.example.project_socialmedia.application.Service_Interface;
 
-import com.example.project_socialmedia.domain.Model.Post;
 import com.example.project_socialmedia.controllers.Request.Post.PostCreateRequest;
 import com.example.project_socialmedia.controllers.Request.Post.PostUpdateRequest;
+import com.example.project_socialmedia.domain.Model.Post;
 
 import java.util.List;
 
@@ -16,8 +16,9 @@ public interface IPostService {
 
     /**
      * Get Post By ID
-     * @param postId    Long
-     * @return          Object {Post}
+     *
+     * @param postId Long
+     * @return Object {Post}
      */
     Post getPostById(Long postId);
 

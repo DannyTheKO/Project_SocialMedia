@@ -7,16 +7,11 @@ import com.example.project_socialmedia.controllers.ApiResponse.ApiResponse;
 import com.example.project_socialmedia.controllers.Request.User.UserCreateRequest;
 import com.example.project_socialmedia.controllers.Request.User.UserUpdateRequest;
 import com.example.project_socialmedia.domain.Model.User;
-import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
@@ -30,12 +25,13 @@ public class UserController {
     private final UserService userService;
     private final PostService postService;
 
+    // TODO: When user is login, we update the time login using User Model itself
+
     /**
      * Get All User
      *
      * @return Object {userDTOList}
      */
-    @Operation
     @GetMapping("/all")
     public ResponseEntity<ApiResponse> getAllUser() {
         try {
@@ -48,7 +44,6 @@ public class UserController {
         }
     }
 
-    @Operation
     @GetMapping("/user/{userId}")
     public ResponseEntity<ApiResponse> getUserById(@PathVariable Long userId) {
         try {
@@ -68,12 +63,12 @@ public class UserController {
     }
 
     // Create
-    @Operation
     @PostMapping(value = "/create")
     public ResponseEntity<ApiResponse> createUser(@RequestBody UserCreateRequest request) {
         try {
             User createUser = userService.createUser(request);
-            return ResponseEntity.ok(new ApiResponse("Success", createUser));
+            UserDTO userDTO = userService.convertToDTO(createUser);
+            return ResponseEntity.ok(new ApiResponse("Success", userDTO));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse("Error!", e.getMessage()));
@@ -81,7 +76,6 @@ public class UserController {
     }
 
     // Update
-    @Operation
     @PutMapping(value = "/user/{userId}/update")
     public ResponseEntity<ApiResponse> updateUser(
             @PathVariable Long userId,
@@ -110,7 +104,7 @@ public class UserController {
             userService.deleteUser(userId);
             return ResponseEntity.ok(new ApiResponse("Success", null));
         } catch (Exception e) {
-            return  ResponseEntity.status(INTERNAL_SERVER_ERROR)
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse("Error!", e.getMessage()));
         }
     }

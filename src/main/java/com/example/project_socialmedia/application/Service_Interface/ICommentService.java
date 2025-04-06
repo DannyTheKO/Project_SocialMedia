@@ -1,8 +1,8 @@
 package com.example.project_socialmedia.application.Service_Interface;
 
-import com.example.project_socialmedia.domain.Model.Comment;
 import com.example.project_socialmedia.controllers.Request.Comment.CommentCreateRequest;
 import com.example.project_socialmedia.controllers.Request.Comment.CommentUpdateRequest;
+import com.example.project_socialmedia.domain.Model.Comment;
 
 import java.util.List;
 

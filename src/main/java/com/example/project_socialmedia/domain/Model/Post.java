@@ -40,13 +40,17 @@ public class Post {
     @Column(nullable = false)
     private LocalDateTime modifiedPost;
 
-
-    public Post(User user, String content, LocalDateTime createdPost, LocalDateTime modifiedPost) {
+    public Post(User user, List<Comment> comments, List<Like> likes, String content, LocalDateTime createdPost, LocalDateTime modifiedPost) {
         this.user = user;
+        this.comments = comments;
+        this.likes = likes;
         this.content = content;
         this.createdPost = createdPost;
         this.modifiedPost = modifiedPost;
     }
 
     // ==> Custom Function
+    public void updatedPost(LocalDateTime modifiedPost) {
+        this.modifiedPost = LocalDateTime.now();
+    }
 }

@@ -26,16 +26,8 @@ public class Friend {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id_2", nullable = false)
     private User user2;
-
-    public enum friendStatus {
-        PENDING,
-        ACCEPTED,
-        DECLINED
-    }
-
     @Column(nullable = false)
     private Enum<friendStatus> statusEnum;
-
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
@@ -51,6 +43,12 @@ public class Friend {
         this.user2 = user2;
         this.statusEnum = statusEnum;
         this.createdAt = createdAt;
+    }
+
+    public enum friendStatus {
+        PENDING,
+        ACCEPTED,
+        DECLINED
     }
 
     // ==> Custom Function

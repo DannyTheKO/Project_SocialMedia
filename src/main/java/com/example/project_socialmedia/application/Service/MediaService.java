@@ -1,12 +1,14 @@
 package com.example.project_socialmedia.application.Service;
 
+import com.example.project_socialmedia.application.DTO.MediaDTO;
 import com.example.project_socialmedia.application.Exception.ResourceNotFound;
 import com.example.project_socialmedia.application.Service_Interface.IMediaService;
 import com.example.project_socialmedia.domain.Model.Media;
 import com.example.project_socialmedia.domain.Model.MediaAssociation;
+import com.example.project_socialmedia.domain.Repository.MediaAssociationRepository;
 import com.example.project_socialmedia.domain.Repository.MediaRepository;
-import com.example.project_socialmedia.domain.Repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,16 +27,36 @@ import static com.example.project_socialmedia.domain.Model.Media.fileType.*;
 @RequiredArgsConstructor
 public class MediaService implements IMediaService {
     private final MediaRepository mediaRepository;
-    private final PostRepository postRepository;
+    private final MediaAssociationRepository mediaAssociationRepository;
+
+    private final ModelMapper modelMapper;
 
     public List<Media> getAllMedia() {
         return mediaRepository.findAll();
+    }
+
+    public List<MediaAssociation> getAllMediaAssociation() {
+        return mediaAssociationRepository.findAll();
     }
 
     public Media getMediaById(Long mediaId) {
         return mediaRepository.findById(mediaId)
                 .orElseThrow(() -> new ResourceNotFound("getMediaById: mediaId not found"));
     }
+
+    public MediaAssociation getMediaAssociationById(Long mediaAssociationId) {
+        return mediaAssociationRepository.findById(mediaAssociationId)
+                .orElseThrow(() -> new ResourceNotFound("getMediaAssociationById: mediaAssociationId not found"));
+    }
+
+    public List<MediaDTO> getMediaDTOByTargetIdAndTargetType(Long targetId, String targetType) {
+        List<MediaAssociation> associations = mediaAssociationRepository.findByTargetIdAndTargetType(targetId, targetType);
+
+        return associations.stream()
+                .map(association -> modelMapper.map(association.getMedia(), MediaDTO.class))
+                .toList();
+    }
+
 
     /**
      * Identify the media type when pass in
@@ -58,9 +80,9 @@ public class MediaService implements IMediaService {
     /**
      * Save File Function
      *
-     * @param file Object {MultipartFile}
+     * @param file      Object {MultipartFile}
      * @param uploadDir String
-     * @param targetId Long
+     * @param targetId  Long
      * @return String
      */
     public Media saveFile(MultipartFile file, String uploadDir, Long targetId, String targetType) {
