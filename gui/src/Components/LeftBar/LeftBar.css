@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+.leftbar {
+    height: calc(100vh - 70px);
+    position: sticky;
+    top: 70px;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    -webkit-box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.09);
+    -moz-box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.09);
+    box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.09);
+
+    @apply flex-[2] sticky top-[70px] overflow-auto dark:bg-[#222];
+
+    .menu {
+        @apply flex flex-col gap-[20px];
+    }
+
+    .item {
+        @apply flex items-center gap-[10px] hover:bg-gray-300 dark:hover:bg-gray-700 p-[10px] rounded-md cursor-pointer;
+    }
+
+    .text-color {
+        @apply text-black dark:text-white;
+    }
+
+    .image {
+        @apply w-[35px] h-[35px];
+    }
+
+    hr {
+        @apply my-[20px] border-none h-[0.5px] bg-gray-300;
+    }
+}
