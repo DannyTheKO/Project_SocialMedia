@@ -4,17 +4,15 @@ import com.example.project_socialmedia.application.DTO.PostDTO;
 import com.example.project_socialmedia.application.Service.PostService;
 import com.example.project_socialmedia.application.Service.UserService;
 import com.example.project_socialmedia.controllers.ApiResponse.ApiResponse;
-import com.example.project_socialmedia.domain.Model.Post;
-import com.example.project_socialmedia.domain.Model.User;
 import com.example.project_socialmedia.controllers.Request.Post.PostCreateRequest;
 import com.example.project_socialmedia.controllers.Request.Post.PostUpdateRequest;
-import io.swagger.v3.oas.annotations.Operation;
+import com.example.project_socialmedia.domain.Model.Post;
+import com.example.project_socialmedia.domain.Model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -31,12 +29,6 @@ public class PostController {
     // PostController
     // FIXME: get post doesn't get the media
 
-    /**
-     * Get All Post
-     *
-     * @return Object {PostDTO}
-     */
-    @Operation
     @GetMapping(value = "/all")
     public ResponseEntity<ApiResponse> getAllPost() {
         try {
@@ -49,7 +41,6 @@ public class PostController {
         }
     }
 
-    @Operation
     @GetMapping("/post/{postId}")
     public ResponseEntity<ApiResponse> getPostById(@PathVariable Long postId) {
         try {
@@ -67,20 +58,13 @@ public class PostController {
         }
     }
 
-    @Operation
     @PostMapping(value = "/user/{userId}/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse> createPost(
             @PathVariable Long userId,
-            @RequestPart("content") String content,
-            @RequestPart(value = "media", required = false) List<MultipartFile> mediaFiles) {
+            @ModelAttribute PostCreateRequest request) {
         try {
             User getUser = userService.getUserById(userId);
             if (getUser != null) {
-                // Create PostCreateRequest
-                PostCreateRequest request = new PostCreateRequest();
-                request.setContent(content);
-                request.setMedia(mediaFiles);
-
                 Post newPost = postService.createPost(request, userId);
                 PostDTO postDTO = postService.convertToDTO(newPost);
                 return ResponseEntity.ok(new ApiResponse("Success", postDTO));
@@ -94,7 +78,6 @@ public class PostController {
     }
 
 
-    @Operation
     @PutMapping("/post/{postId}/update")
     public ResponseEntity<ApiResponse> updatePost(Long userId, @PathVariable Long postId, PostUpdateRequest request) {
         try {

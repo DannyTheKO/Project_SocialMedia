@@ -12,7 +12,7 @@ public class UserDTO {
     private String lastName;
     private String bio;
     private String email;
-    private String password;
+    //private String password;
     private String profileImageUrl;
     private String bannerImageUrl;
     private LocalDateTime createdAt;

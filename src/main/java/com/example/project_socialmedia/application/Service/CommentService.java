@@ -2,12 +2,12 @@ package com.example.project_socialmedia.application.Service;
 
 import com.example.project_socialmedia.application.Exception.ResourceNotFound;
 import com.example.project_socialmedia.application.Service_Interface.ICommentService;
+import com.example.project_socialmedia.controllers.Request.Comment.CommentCreateRequest;
+import com.example.project_socialmedia.controllers.Request.Comment.CommentUpdateRequest;
 import com.example.project_socialmedia.domain.Model.Comment;
 import com.example.project_socialmedia.domain.Model.Post;
 import com.example.project_socialmedia.domain.Model.User;
 import com.example.project_socialmedia.domain.Repository.CommentRepository;
-import com.example.project_socialmedia.controllers.Request.Comment.CommentCreateRequest;
-import com.example.project_socialmedia.controllers.Request.Comment.CommentUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -67,9 +67,10 @@ public class CommentService implements ICommentService {
         return existingUser.getComments();
     }
 
+    // TODO: getAllUserCommentsByPostId [Need Testing]
+
     /**
      * Get All User Comment From Post
-     * TODO: getAllUserCommentsByPostId [Need Testing]
      *
      * @param postId Long
      */
@@ -79,9 +80,10 @@ public class CommentService implements ICommentService {
         return getPost.getComments();
     }
 
+    // TODO: addComment [Need Testing]
+
     /**
      * Add Comment
-     * TODO: addComment [Need Testing]
      *
      * @param request Object {CommentCreateRequest}
      */
@@ -99,9 +101,10 @@ public class CommentService implements ICommentService {
         );
     }
 
+    // TODO: deleteCommentById [Need Testing]
+
     /**
      * Delete Comment By ID
-     * TODO: deleteCommentById [Need Testing]
      *
      * @param commentId Long
      */
@@ -113,9 +116,10 @@ public class CommentService implements ICommentService {
         commentRepository.delete(getComment);
     }
 
+    // TODO: updateComment [Need Testing]
+
     /**
      * Update Comment
-     * TODO: updateComment [Need Testing]
      *
      * @param request Object {CommentUpdateRequest}
      */

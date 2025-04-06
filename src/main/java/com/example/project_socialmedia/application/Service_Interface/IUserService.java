@@ -1,12 +1,10 @@
 package com.example.project_socialmedia.application.Service_Interface;
 
 import com.example.project_socialmedia.application.DTO.UserDTO;
-import com.example.project_socialmedia.domain.Model.User;
 import com.example.project_socialmedia.controllers.Request.User.UserCreateRequest;
 import com.example.project_socialmedia.controllers.Request.User.UserUpdateRequest;
-import org.springframework.web.multipart.MultipartFile;
+import com.example.project_socialmedia.domain.Model.User;
 
-import java.io.IOException;
 import java.util.List;
 
 public interface IUserService {

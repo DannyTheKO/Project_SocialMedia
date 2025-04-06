@@ -1,24 +1,25 @@
 package com.example.project_socialmedia.application.Service;
 
+import com.example.project_socialmedia.application.DTO.MediaDTO;
 import com.example.project_socialmedia.application.DTO.PostDTO;
+import com.example.project_socialmedia.application.DTO.UserDTO;
 import com.example.project_socialmedia.application.Exception.ResourceNotFound;
 import com.example.project_socialmedia.application.Service_Interface.IPostService;
-import com.example.project_socialmedia.domain.Model.Media;
-import com.example.project_socialmedia.domain.Model.MediaAssociation;
-import com.example.project_socialmedia.domain.Model.Post;
-import com.example.project_socialmedia.domain.Model.User;
-import com.example.project_socialmedia.domain.Repository.MediaAssociationRepository;
-import com.example.project_socialmedia.domain.Repository.PostRepository;
 import com.example.project_socialmedia.controllers.Request.Post.PostCreateRequest;
 import com.example.project_socialmedia.controllers.Request.Post.PostUpdateRequest;
+import com.example.project_socialmedia.domain.Model.*;
+import com.example.project_socialmedia.domain.Repository.MediaAssociationRepository;
+import com.example.project_socialmedia.domain.Repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+
+// TODO: Need Testing
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +32,8 @@ public class PostService implements IPostService {
 
     private final UserService userService;
     private final MediaService mediaService;
+
+    private final String uploadDir = "src/main/resources/uploads/posts/";
 
 
     /**
@@ -69,8 +72,9 @@ public class PostService implements IPostService {
 
     /**
      * Get Media By Post ID
-     * @param postId    Long
-     * @return          Object {Media}
+     *
+     * @param postId Long
+     * @return Object {Media}
      */
     public List<Media> getMediaByPostId(Long postId) {
         List<MediaAssociation> associations = mediaAssociationRepository.findByTargetIdAndTargetType(postId, "Post");
@@ -92,9 +96,11 @@ public class PostService implements IPostService {
 
             Post newPost = new Post(
                     user,
+                    new ArrayList<Comment>(),
+                    new ArrayList<Like>(),
                     request.getContent(),
-                    LocalDateTime.now(),
-                    LocalDateTime.now()
+                    LocalDateTime.now(),        // CreatedPost
+                    LocalDateTime.now()         // ModifiedPost
             );
 
             postRepository.save(newPost); // Save the post first to get the generated ID
@@ -106,7 +112,7 @@ public class PostService implements IPostService {
                     if (!mediaFile.isEmpty()) {
                         mediaService.saveFile(
                                 mediaFile,
-                                "src/main/resources/uploads/user/posts/" + newPost.getPostId() + "/",
+                                uploadDir + newPost.getPostId() + "/",
                                 newPost.getPostId(),
                                 "Post"
                         );
@@ -134,7 +140,7 @@ public class PostService implements IPostService {
     }
 
     /**
-     * Update Post
+     * FIXME: Update Post
      *
      * @param request Object {PostUpdateRequest}
      * @param userId  Long
@@ -149,7 +155,6 @@ public class PostService implements IPostService {
                     .orElseThrow(() -> new ResourceNotFound("updatePost: Post not found"));
 
             // 2. Verify that the userId from the request matches the post's owner
-            // TODO: Add Authorization
             User existingUser = userService.getUserById(userId);
 
             // 3. If authorized, proceed with the update logic
@@ -165,7 +170,7 @@ public class PostService implements IPostService {
                     if (!mediaFile.isEmpty()) {
                         Media newMedia = mediaService.saveFile(
                                 mediaFile,
-                                "src/main/resources/uploads/posts/" + postId + "/",
+                                uploadDir + postId + "/",
                                 postId,     // This is the targetId
                                 "Post"      // This is the targetType
                         );
@@ -181,7 +186,20 @@ public class PostService implements IPostService {
     }
 
     public PostDTO convertToDTO(Post post) {
-        return modelMapper.map(post, PostDTO.class);
+        PostDTO mappedPostDTO = modelMapper.map(post, PostDTO.class);
+
+        // Set UserDTO
+        UserDTO userDTO = userService.convertToDTO(post.getUser());
+        mappedPostDTO.setUser(userDTO);
+
+        // TODO: Set Comment
+        // TODO: Set Like
+
+        // Set Media
+        List<MediaDTO> mediaDTOList = mediaService.getMediaDTOByTargetIdAndTargetType(post.getPostId(), "Post");
+        mappedPostDTO.setMedia(mediaDTOList);
+
+        return mappedPostDTO;
     }
 
     public List<PostDTO> convertToListDTO(List<Post> postList) {

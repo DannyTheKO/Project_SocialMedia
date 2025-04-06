@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +20,18 @@ import java.util.List;
 public class Media {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "media_id")
     private Long mediaId;
 
+    @Column(name = "url")
     private String url;
+    @Column(name = "file_name")
     private String fileName;
+    @Column(name = "uploaded_date")
     private LocalDateTime uploadedDate;
+
+    @OneToMany(mappedBy = "media", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MediaAssociation> associations = new ArrayList<>();
 
     public enum fileType {
         VIDEO,
@@ -34,16 +40,13 @@ public class Media {
         UNKNOWN
     }
 
+    @Column(name = "file_type_enum")
     private Enum<fileType> fileTypeEnum;
 
-    @OneToMany(mappedBy = "media", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MediaAssociation> associations = new ArrayList<>();
-
-    public Media(String filePath, String fileName, Enum<fileType> fileTypeEnum,  LocalDateTime uploadedDate) {
+    public Media(String filePath, String fileName, Enum<fileType> fileTypeEnum, LocalDateTime uploadedDate) {
         this.url = filePath;
         this.fileName = fileName;
         this.fileTypeEnum = fileTypeEnum;
         this.uploadedDate = uploadedDate;
     }
-
 }

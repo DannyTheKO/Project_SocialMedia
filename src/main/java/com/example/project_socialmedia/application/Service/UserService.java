@@ -4,20 +4,16 @@ import com.example.project_socialmedia.application.DTO.UserDTO;
 import com.example.project_socialmedia.application.Exception.ResourceConflict;
 import com.example.project_socialmedia.application.Exception.ResourceNotFound;
 import com.example.project_socialmedia.application.Service_Interface.IUserService;
+import com.example.project_socialmedia.controllers.Request.User.UserCreateRequest;
+import com.example.project_socialmedia.controllers.Request.User.UserUpdateRequest;
 import com.example.project_socialmedia.domain.Model.Media;
 import com.example.project_socialmedia.domain.Model.User;
 import com.example.project_socialmedia.domain.Repository.UserRepository;
-import com.example.project_socialmedia.controllers.Request.User.UserCreateRequest;
-import com.example.project_socialmedia.controllers.Request.User.UserUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -115,10 +111,13 @@ public class UserService implements IUserService {
             existingUser.setBio(request.getBio());
             existingUser.setBirthDate(request.getBirthDate());
 
+            // TODO: when update, if file image changed, we remove the old and replace the new one
+
+            String uploadDir = "src/main/resources/uploads/users/";
             if (request.getProfileImage() != null && !request.getProfileImage().isEmpty()) {
                 Media profileImage = mediaService.saveFile(
                         request.getProfileImage(),
-                        "src/main/resources/uploads/user/" + existingUser.getUserId() + "/",
+                        uploadDir + existingUser.getUserId() + "/",
                         existingUser.getUserId(),
                         "ProfileImage"
                 );
@@ -129,7 +128,7 @@ public class UserService implements IUserService {
             if (request.getBannerImage() != null && !request.getBannerImage().isEmpty()) {
                 Media bannerImage = mediaService.saveFile(
                         request.getBannerImage(),
-                        "src/main/resources/uploads/user/" + existingUser.getUserId() + "/",
+                        uploadDir + existingUser.getUserId() + "/",
                         existingUser.getUserId(),
                         "BannerImage"
                 );

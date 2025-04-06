@@ -15,7 +15,8 @@ import lombok.Setter;
 public class MediaAssociation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "media_association_id")
+    private Long mediaAssociationId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "media_id")
