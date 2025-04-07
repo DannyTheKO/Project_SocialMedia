@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-import static com.example.project_socialmedia.domain.Model.Media.fileType.*;
-
 @Service
 @RequiredArgsConstructor
 public class MediaService implements IMediaService {
@@ -62,19 +60,25 @@ public class MediaService implements IMediaService {
     /**
      * Identify the media type when pass in
      *
-     * @param url URL of the file type
+     * @param filePath URL of the file type
      * @return return a string type
      */
-    private Enum<Media.fileType> identifyMediaType(String url) {
-        if (url.toLowerCase().endsWith(".jpg") || url.toLowerCase().endsWith(".png") || url.toLowerCase().endsWith(".jpeg")) {
-            return IMAGE;
-        } else if (url.toLowerCase().endsWith(".mp4") || url.toLowerCase().endsWith(".mov") || url.toLowerCase().endsWith(".avi")) {
-            return VIDEO;
-        } else if (url.toLowerCase().endsWith(".gif")) {
-            return GIF;
+    public String identifyMediaType(String filePath) {
+        if (filePath.toLowerCase().endsWith(".jpg") ||
+                filePath.toLowerCase().endsWith(".png") ||
+                filePath.toLowerCase().endsWith(".jpeg")) {
+            return "Image";
+
+        } else if (filePath.toLowerCase().endsWith(".mp4") ||
+                filePath.toLowerCase().endsWith(".mov") ||
+                filePath.toLowerCase().endsWith(".avi")) {
+            return "Video";
+
+        } else if (filePath.toLowerCase().endsWith(".gif")) {
+            return "GIF";
         } else {
             // Or handle other types as needed
-            return UNKNOWN;
+            return "Unknown";
         }
     }
 
@@ -88,9 +92,11 @@ public class MediaService implements IMediaService {
      */
     public Media saveFile(MultipartFile file, String uploadDir, Long targetId, String targetType) {
         try {
-            String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+            String originalFilename = file.getOriginalFilename();
+            String fileExtension = Objects.requireNonNull(originalFilename).substring(originalFilename.lastIndexOf(".") + 1);
+            String fileName = originalFilename.substring(0, originalFilename.lastIndexOf(".")) + "_" + UUID.randomUUID() + "." + fileExtension;
 
-            Enum<Media.fileType> fileType = identifyMediaType(Objects.requireNonNull(file.getOriginalFilename()));
+            String fileType = identifyMediaType(Objects.requireNonNull(file.getOriginalFilename()));
 
             // Create the full path to the file
             Path filePath = Paths.get(uploadDir, fileName);
@@ -132,8 +138,8 @@ public class MediaService implements IMediaService {
         // Find the associated media based on targetId, targetType, and fileType
         MediaAssociation association = mediaAssociationRepository.findByTargetIdAndTargetType(targetId, targetType)
                 .stream()
-                .filter(a -> a.getMedia().getFileTypeEnum().toString().equalsIgnoreCase(fileType))
-                .findFirst()
+                .filter(a -> a.getMedia().getFileType().equalsIgnoreCase(fileType))
+                .findAny()
                 .orElse(null); // Return null if no association is found
 
         // If an association exists, proceed with deletion
@@ -157,5 +163,4 @@ public class MediaService implements IMediaService {
             }
         }
     }
-
 }

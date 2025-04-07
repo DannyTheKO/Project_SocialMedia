@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -115,8 +116,10 @@ public class UserService implements IUserService {
 
             String uploadDir = "src/main/resources/uploads/users/";
             if (request.getProfileImage() != null && !request.getProfileImage().isEmpty()) {
+                String fileType = mediaService.identifyMediaType(Objects.requireNonNull(request.getProfileImage().getOriginalFilename()));
+
                 // Remove old file
-                mediaService.removeFile(userId, "ProfileImage", "Image");
+                mediaService.removeFile(userId, "ProfileImage", fileType);
 
                 // Then added new one
                 Media profileImage = mediaService.saveFile(
@@ -129,8 +132,10 @@ public class UserService implements IUserService {
             }
 
             if (request.getBannerImage() != null && !request.getBannerImage().isEmpty()) {
+                String fileType = mediaService.identifyMediaType(Objects.requireNonNull(request.getBannerImage().getOriginalFilename()));
+
                 // Remove old file
-                mediaService.removeFile(userId, "BannerImage", "Image");
+                mediaService.removeFile(userId, "BannerImage", fileType);
 
                 // Then added new one
                 Media bannerImage = mediaService.saveFile(
