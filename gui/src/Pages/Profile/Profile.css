@@ -1,2 +1,90 @@
-@import '../../index.css'
+@import '../../index.css';
 
+.profile {
+    @apply bg-[whitesmoke] dark:bg-[#343434];
+
+    .images {
+        @apply w-full h-[300px] relative;
+
+        .cover {
+            @apply w-full h-full object-cover;
+        }
+
+        .profilePic {
+            @apply h-[200px] w-[200px] rounded-full object-cover absolute left-0 right-0 m-auto top-[200px];
+        }
+    }
+
+    .profileContainer {
+        @apply py-[20px] px-[30px] max-md:p-[10px] max-xl:px-[100px];
+
+        .profileUserInfo {
+            @apply h-[320px] max-lg:h-[45vh] max-md:h-[40vh] rounded-2xl bg-white dark:bg-[#222] text-black dark:text-slate-200 p-[40px] max-md:p-[20px] flex items-center justify-between m-[10px] max-md:flex-col max-md:mt-[90px];
+            -webkit-box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
+            -moz-box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
+            box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
+
+            .left {
+                @apply flex flex-[1] gap-[10px] max-2xl:flex-col max-md:flex-row;
+            }
+
+            .center {
+                @apply flex-[1] flex flex-col items-center gap-[10px];
+
+                span {
+                    @apply text-[30px] font-medium;
+                }
+
+                .info {
+                    @apply w-full flex items-center gap-[20px];
+
+                    .item {
+                        @apply flex items-center gap-[10px] text-gray-500 dark:text-gray-300 max-lg:flex-col;
+
+                        span {
+                            @apply text-[16px]
+                        }
+                    }
+                }
+
+                button {
+                    @apply border-none bg-[#5271ff] text-white mt-[18px] py-[10px] px-[20px] rounded-md cursor-pointer font-medium hover:bg-blue-800;
+                }
+            }
+
+            .right {
+                @apply flex-[1] flex items-center justify-end gap-[10px]
+            }
+        }
+
+
+        /* POSTS */
+        .container {
+            @apply py-[20px] px-[30px];
+
+            .user {
+                @apply flex items-center justify-between;
+
+                .userInfo {
+                    @apply flex mr-[30px] shadow-none;
+
+                    img {
+                        @apply w-[40px] h-[40px] rounded-full object-cover;
+                    }
+
+                    .details {
+                        @apply flex flex-col;
+
+                        .name {
+                            @apply font-medium text-[18px];
+                        }
+
+                        .date {
+                            @apply text-[14px] text-gray-500 dark:text-gray-300;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

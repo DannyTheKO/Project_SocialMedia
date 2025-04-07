@@ -1,0 +1,43 @@
+@import "../../index.css";
+
+.comments {
+    img {
+        @apply w-[60px] h-[60px] rounded-full object-cover  max-md:w-[50px] max-md:h-[50px];
+    }
+
+    .write {
+        @apply flex items-center justify-between gap-[20px] mt-[25px] mb-[40px] mx-0;
+
+        input {
+            @apply flex-[5] p-[10px] border-1 border-[lightgray] bg-transparent text-[18px] text-black dark:text-gray-200;
+        }
+
+        button {
+            @apply border-none bg-blue-500 text-white p-[14px] cursor-pointer rounded-md font-medium;
+        }
+
+    }
+
+    .comment {
+        @apply my-[30px] mx-0 flex justify-between gap-[20px]
+    }
+
+    .info {
+        @apply flex flex-[5] flex-col gap-[3px] items-start text-[18px] max-md:text-[16px];
+
+        span {
+            @apply font-medium;
+        }
+
+        p {
+            @apply text-gray-700 dark:text-gray-300;
+        }
+    }
+
+    .date {
+        @apply flex-[1] self-center text-gray-500 dark:text-gray-400 text-[16px] max-md:text-[14px];
+
+    }
+
+
+}

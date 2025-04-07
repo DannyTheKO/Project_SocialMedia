@@ -1,13 +1,16 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './Post.css'
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
 import TextsmsOutlinedIcon from "@mui/icons-material/TextsmsOutlined";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import { Link } from "react-router-dom";
+import Comments from '../Comments/Comments'
 
 const Post = ({ post }) => {
-    const [commentOpen, setCommentOpen] = useState(false);
+
+    const [commentOpen, setCommentOpen] = useState(false)
 
     //TEMPORARY
     const liked = false;
@@ -19,16 +22,13 @@ const Post = ({ post }) => {
                     <div className="userInfo">
                         <img src={post.profilePic} alt="" />
                         <div className="details">
-                            <Link
-                                to={`/profile/${post.userId}`}
-                                style={{ textDecoration: "none", color: "inherit" }}
-                            >
-                                <span className="name">{post.name}</span>
+                            <Link to={`/profile/${post.userId}`}>
+                                <span className='name'>{post.name}</span>
                             </Link>
-                            <span className="date">1 min ago</span>
+                            <span className='date'>1 min ago</span>
                         </div>
                     </div>
-                    <MoreHorizIcon />
+                    <MoreHorizIcon style={{ cursor: 'pointer', fontSize: '32px' }} />
                 </div>
                 <div className="content">
                     <p>{post.desc}</p>
@@ -36,7 +36,7 @@ const Post = ({ post }) => {
                 </div>
                 <div className="info">
                     <div className="item">
-                        {liked ? <FavoriteOutlinedIcon /> : <FavoriteBorderOutlinedIcon />}
+                        {liked ? <FavoriteOutlinedIcon style={{ color: "red" }} /> : <FavoriteBorderOutlinedIcon />}
                         12 Likes
                     </div>
                     <div className="item" onClick={() => setCommentOpen(!commentOpen)}>

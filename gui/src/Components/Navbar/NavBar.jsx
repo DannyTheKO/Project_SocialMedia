@@ -8,6 +8,7 @@ import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import ListIcon from '@mui/icons-material/List';
 import { Link } from 'react-router'
 import PlaceHolderImage from '../../assets/login-image.jpg'
 import { ThemeContext } from '../../Context/ThemeContext';
@@ -42,6 +43,9 @@ const NavBar = () => {
             </div>
 
             <div className="right">
+                <div className='listIcon'>
+                    <ListIcon className='text-color' style={{ fontSize: '36px' }} />
+                </div>
                 <PersonOutlineOutlinedIcon className='icon text-color' style={{ fontSize: '32px' }} />
                 <EmailOutlinedIcon className='icon text-color' style={{ fontSize: '32px' }} />
                 <NotificationsOutlinedIcon className='icon text-color' style={{ fontSize: '32px' }} />

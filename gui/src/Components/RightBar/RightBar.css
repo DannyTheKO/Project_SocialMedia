@@ -1,11 +1,9 @@
-@import "tailwindcss";
-
-@custom-variant dark (&:where(.dark, .dark *));
+@import "../../index.css";
 
 
 .rightbar {
 
-    @apply flex-[3] dark:bg-[#222] sticky;
+    @apply flex-[3] bg-[whitesmoke] dark:bg-[#343434] sticky h-full top-[70px] right-0 overflow-scroll max-sm:hidden max-xl:hidden;
     height: calc(100vh - 70px);
 
     &::-webkit-scrollbar {
@@ -19,11 +17,11 @@
     }
 
     .item {
-        @apply p-[20px] mb-[20px] flex flex-col;
+        @apply p-[20px] mb-[20px] flex flex-col dark:bg-[#222];
     }
 
     .user {
-        @apply flex items-center justify-between my-[10px] hover:bg-gray-300 dark:hover:bg-gray-700 p-[10px] rounded-md;
+        @apply flex items-center justify-between my-[3px] hover:bg-gray-300 dark:hover:bg-gray-700 p-[10px] rounded-md;
     }
 
     .buttons {
