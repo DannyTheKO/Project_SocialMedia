@@ -1,23 +1,21 @@
-@import "tailwindcss";
-
-@custom-variant dark (&:where(.dark, .dark *));
+@import "../../index.css";
 
 .stories {
-    @apply flex gap-[10px] h-[285px] mb-[30px] p-[20px];
+    @apply flex gap-[10px] h-[285px] mb-[20px] p-[10px] max-md:justify-between max-md:h-[90px];
 }
 
-.stories .story {
-    @apply flex-[1] relative rounded-2xl;
+.story {
+    @apply flex-[1] overflow-hidden rounded-2xl relative cursor-pointer h-full max-md:flex-none max-md:h-[90px] max-md:w-[90px] max-md:rounded-full;
 }
 
 .stories .story img {
-    @apply w-full h-full object-cover place-items-center
+    @apply w-full h-full object-cover object-center place-items-center;
 }
 
 .stories .story span {
-    @apply absolute bottom-[10px] left-[10px] text-white text-[18px] font-medium
+    @apply absolute bottom-[10px] left-[10px] text-white text-[18px] font-medium max-md:hidden;
 }
 
 .stories .story svg {
-    @apply absolute bottom-[40px] left-[10px] text-blue-500 hover:text-blue-800 bg-white border-none rounded-full h-[40px] w-[40px] cursor-pointer font-medium flex items-center justify-center
+    @apply absolute bottom-[40px] left-[10px] text-blue-500 hover:text-blue-800 bg-white border-none rounded-full h-[40px] w-[40px] cursor-pointer font-medium flex items-center justify-center max-md:h-[30px] max-md:w-[30px] max-md:bottom-[15px] max-md:left-[15px];
 }

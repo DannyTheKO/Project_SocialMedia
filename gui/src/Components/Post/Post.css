@@ -1,0 +1,54 @@
+@import "../../index.css";
+
+.post {
+
+    -webkit-box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
+    -moz-box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
+    box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
+    @apply rounded-xl bg-white text-[#000] dark:text-white dark:bg-[#222] max-xl:w-full;
+
+
+    .container {
+        @apply p-[20px] max-xl:w-full;
+    }
+
+    .user {
+        @apply flex items-center justify-between;
+    }
+
+    .userInfo {
+        @apply flex gap-[20px];
+
+        img {
+            @apply w-[40px] h-[40px] rounded-full object-cover;
+        }
+
+        .details {
+            @apply flex flex-col;
+
+            .name {
+                @apply font-medium text-[18px];
+            }
+
+            .date {
+                @apply text-[14px] text-gray-500 dark:text-gray-300
+            }
+        }
+    }
+
+    .content {
+        @apply my-[20px] mx-0 text-[19px];
+
+        img {
+            @apply max-h-[500px] w-full object-cover mt-[20px]
+        }
+    }
+
+    .info {
+        @apply flex items-center gap-[35px];
+
+        .item {
+            @apply flex items-center gap-[8px] cursor-pointer text-[18px] my-[5px];
+        }
+    }
+}

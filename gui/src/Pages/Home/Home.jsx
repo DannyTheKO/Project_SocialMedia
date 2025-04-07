@@ -5,7 +5,7 @@ import Posts from '../../Components/Posts/Posts'
 
 const Home = () => {
     return (
-        <div className='home bg-white'>
+        <div className='home'>
             <Stories />
             <Posts />
         </div>

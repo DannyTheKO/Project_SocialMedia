@@ -1,3 +1,5 @@
-@import "tailwindcss";
+@import "../../index.css";
 
-@custom-variant dark (&:where(.dark, .dark *));
+.posts {
+    @apply flex flex-col gap-[50px] mb-[30px] p-[10px]
+}

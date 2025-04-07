@@ -26,14 +26,11 @@ const Posts = () => {
     ];
 
 
-    return (
-        // List các post
-        <div className='posts'>
-            {posts.map((post) => {
-                <Post post={post} key={post.id} />
-            })}
-        </div>
-    )
+    return <div className="posts">
+        {posts.map(post => (
+            <Post post={post} key={post.id} />
+        ))}
+    </div>;
 }
 
 export default Posts

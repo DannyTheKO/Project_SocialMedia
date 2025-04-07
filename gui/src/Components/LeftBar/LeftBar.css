@@ -1,11 +1,7 @@
-@import "tailwindcss";
-
-@custom-variant dark (&:where(.dark, .dark *));
+@import "../../index.css";
 
 .leftbar {
     height: calc(100vh - 70px);
-    position: sticky;
-    top: 70px;
 
     &::-webkit-scrollbar {
         display: none;
@@ -15,7 +11,7 @@
     -moz-box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.09);
     box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.09);
 
-    @apply flex-[2] sticky top-[70px] overflow-auto dark:bg-[#222];
+    @apply flex-[2] sticky top-[70px] dark:bg-[#222] overflow-scroll max-sm:hidden max-xl:hidden;
 
     .menu {
         @apply flex flex-col gap-[20px];

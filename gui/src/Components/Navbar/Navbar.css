@@ -1,9 +1,7 @@
-@import "tailwindcss";
-
-@custom-variant dark (&:where(.dark, .dark *));
+@import "../../index.css";
 
 .navbar {
-    @apply flex items-center justify-between py-[20px] px-[20px] h-[70px] sticky top-0 border-b border-gray-400 dark:border-[#444] bg-white dark:bg-[#222] z-50;
+    @apply flex items-center justify-between max-sm:justify-evenly max-xl:justify-between py-[20px] px-[20px] h-[70px] sticky top-0 border-b border-gray-400 dark:border-[#444] bg-white dark:bg-[#222] z-50;
 }
 
 .navbar .left {
@@ -12,14 +10,22 @@
 
 .navbar .right {
     @apply flex items-center gap-[25px];
+
+    .icon {
+        @apply max-lg:hidden
+    }
+
+    .listIcon {
+        @apply cursor-pointer rounded-full text-black dark:text-slate-200 hidden max-lg:block max-lg:ml-[10px];
+    }
 }
 
 .logo {
-    @apply text-blue-800 dark:text-white font-bold text-[24px];
+    @apply text-blue-800 dark:text-white font-bold text-[24px] max-lg:text-[20px];
 }
 
 .icon {
-    @apply text-[32px] cursor-pointer rounded-full;
+    @apply cursor-pointer rounded-full;
 }
 
 .search {
@@ -27,7 +33,7 @@
 }
 
 .search-input {
-    @apply border-none w-[600px] text-[20px] outline-none
+    @apply border-none w-[600px] text-[20px] outline-none max-sm:hidden max-lg:w-[30vw] max-xl:w-[40vw];
 }
 
 .text-color {
@@ -35,7 +41,7 @@
 }
 
 .user {
-    @apply flex items-center gap-[10px] font-medium
+    @apply flex items-center gap-[10px] font-medium max-sm:hidden max-xl:hidden
 }
 
 .avatar {
