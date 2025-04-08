@@ -125,7 +125,7 @@ public class PostService implements IPostService {
     }
 
     /**
-     * TODO: TEST Delete Post
+     * Delete Post
      *
      * @param postId Long
      */
@@ -147,7 +147,7 @@ public class PostService implements IPostService {
     }
 
     /**
-     * TODO: TEST Update Post
+     * Update Post
      *
      * @param request Object {PostUpdateRequest}
      * @param userId  Long
@@ -166,7 +166,7 @@ public class PostService implements IPostService {
             // 3. If authorized, proceed with the update logic
             existingPost.setContent(request.getContent());
 
-            // TODO: Handle Media Updates
+            // Handle Media Updates
             List<MediaAssociation> oldMedia = mediaAssociationRepository.findByTargetIdAndTargetType(postId, "Post");
             List<MultipartFile> newMediaFiles = request.getMedia();
 
