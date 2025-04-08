@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { use, useEffect, useState } from 'react'
 import './Profile.css'
 import FacebookTwoToneIcon from "@mui/icons-material/FacebookTwoTone";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
@@ -10,17 +10,72 @@ import LanguageIcon from "@mui/icons-material/Language";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Posts from '../../Components/Posts/Posts'
+import { useParams } from 'react-router';
+import { getUser } from '../../Services/UserService/userService'
+import DefaultProfilePic from '../../assets/defaultProfilePic.jpg';
 
 const Profile = () => {
+
+    const { id } = useParams();
+    const [userName, setUserName] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [email, setEmail] = useState('');
+    const [bio, setBio] = useState('');
+    const [profileImageUrl, setProfileImageUrl] = useState('');
+    const [bannerImageUrl, setBannerImageUrl] = useState('');
+
+    useEffect(() => {
+        loadUserInfo()
+    }, [id])
+
+    const loadUserInfo = async () => {
+        try {
+            const response = await getUser(id);
+
+            if (response && response.data) {
+                const userData = response.data.data;
+                setUserName(userData.username || '');
+                setFirstName(userData.firstName || '');
+                setLastName(userData.lastName || '');
+                setEmail(userData.email || '');
+                setBio(userData.bio || '');
+                setProfileImageUrl(userData.profileImageUrl || '');
+                setBannerImageUrl(userData.bannerImageUrl || '');
+            } else {
+                console.warn('Invalid data format:', response.data);
+                setUserName('');
+                setFirstName('');
+                setLastName('');
+                setEmail('');
+                setBio('');
+                setProfileImageUrl('');
+                setBannerImageUrl('');
+            }
+
+        } catch (error) {
+            console.error("Lỗi khi lấy dữ liệu người dùng: ", error);
+            setUserName('');
+            setFirstName('');
+            setLastName('');
+            setEmail('');
+            setBio('');
+            setProfileImageUrl('');
+            setBannerImageUrl('');
+        }
+    }
+
     return (
         <div className='profile'>
             <div className='images'>
-                <img src="https://images.pexels.com/photos/13916254/pexels-photo-13916254.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load"
-                    alt=""
+                <img
+                    src={bannerImageUrl || DefaultProfilePic}
+                    alt="Cover"
                     className='cover h-full w-full object-cover'
                 />
-                <img src="https://images.pexels.com/photos/13916254/pexels-photo-13916254.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load"
-                    alt=""
+                <img
+                    src={profileImageUrl || DefaultProfilePic}
+                    alt="Profile"
                     className='profilePic'
                 />
             </div>
@@ -44,7 +99,7 @@ const Profile = () => {
                         </a>
                     </div>
                     <div className="center">
-                        <span>User</span>
+                        <span>{userName || 'User'}</span>
                         <div className="info">
                             <div className="item">
                                 <PlaceIcon />
@@ -52,7 +107,7 @@ const Profile = () => {
                             </div>
                             <div className="item">
                                 <LanguageIcon />
-                                <span>Java Spring Boot</span>
+                                <span>Tiếng Việt</span>
                             </div>
                         </div>
                         <button>Follow</button>
@@ -65,7 +120,6 @@ const Profile = () => {
                 <Posts />
             </div>
         </div>
-
     )
 }
 
