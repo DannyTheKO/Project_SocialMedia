@@ -114,8 +114,6 @@ public class UserService implements IUserService {
             existingUser.setBio(request.getBio());
             existingUser.setBirthDate(request.getBirthDate());
 
-            // TODO: when update, if file image changed, we remove the old and replace the new one
-
             if (request.getProfileImage() != null && !request.getProfileImage().isEmpty()) {
                 String fileType = mediaService.identifyMediaType(Objects.requireNonNull(request.getProfileImage().getOriginalFilename()));
 

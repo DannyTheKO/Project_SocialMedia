@@ -102,7 +102,6 @@ public class PostController {
         }
     }
 
-    // TODO: deletePost
     @DeleteMapping(value = "/post/{postId}/delete")
     public ResponseEntity<ApiResponse> deletePost(@PathVariable Long postId) {
         try {
