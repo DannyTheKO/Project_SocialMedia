@@ -7,7 +7,7 @@ export const getAllPosts = () => {
 };
 
 export const getUserPosts = (userID) => {
-    return axios.get(`${REST_API_BASE_URL}/user/${userID}/posts`);
+    return axios.get(`${REST_API_BASE_URL}/user/${userID}/posts`); // cần làm thêm ở backend
 };
 
 export const createPost = (userID, postInfo) =>
