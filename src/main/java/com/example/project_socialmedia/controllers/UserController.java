@@ -25,7 +25,8 @@ public class UserController {
     private final UserService userService;
     private final PostService postService;
 
-    // TODO: When user is login, we update the time login using User Model itself
+    // TODO: Authentication
+    // TODO: Update time login when user login
 
     /**
      * Get All User
