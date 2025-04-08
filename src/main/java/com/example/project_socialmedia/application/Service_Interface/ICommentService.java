@@ -29,19 +29,19 @@ public interface ICommentService {
      * @param userId Long
      * @return List{Object}: {Comment}
      */
-    List<Comment> getAllUserCommentsByUserId(Long userId);
+    List<Comment> getAllCommentsByUserId(Long userId);
 
     /**
      * Get All User Comment From Post
      */
-    List<Comment> getAllUserCommentsByPostId(Long postId);
+    List<Comment> getAllCommentsByPostId(Long postId);
 
     /**
      * Add Comment
      *
      * @param request Object {CommentCreateRequest}
      */
-    Comment addComment(CommentCreateRequest request, Long userId, Long postId);
+    Comment createComment(Long userId, Long postId, CommentCreateRequest request);
 
     /**
      * Delete Comment By ID
@@ -55,5 +55,5 @@ public interface ICommentService {
      *
      * @param request Object {CommentUpdateRequest}
      */
-    void updateComment(CommentUpdateRequest request, Long commentId);
+    Comment updateComment(Long userId, Long commentId, CommentUpdateRequest request);
 }

@@ -8,5 +8,5 @@ import java.util.List;
 @Data
 public class PostCreateRequest {
     private String content;
-    private List<MultipartFile> media;
+    private List<MultipartFile> mediaFileRequest;
 }

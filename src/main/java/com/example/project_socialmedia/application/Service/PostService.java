@@ -1,5 +1,6 @@
 package com.example.project_socialmedia.application.Service;
 
+import com.example.project_socialmedia.application.DTO.CommentDTO;
 import com.example.project_socialmedia.application.DTO.MediaDTO;
 import com.example.project_socialmedia.application.DTO.PostDTO;
 import com.example.project_socialmedia.application.DTO.UserDTO;
@@ -30,6 +31,7 @@ public class PostService implements IPostService {
 
     private final UserService userService;
     private final MediaService mediaService;
+//    private final CommentService commentService;
 
     private final String uploadDir = "gui/src/asset/uploads/posts/";
 
@@ -104,7 +106,7 @@ public class PostService implements IPostService {
             postRepository.save(newPost); // Save the post first to get the generated ID
 
             // Now handle media
-            List<MultipartFile> mediaFiles = request.getMedia();
+            List<MultipartFile> mediaFiles = request.getMediaFileRequest();
             if (mediaFiles != null) {
                 for (MultipartFile mediaFile : mediaFiles) {
                     if (!mediaFile.isEmpty()) {
@@ -168,7 +170,7 @@ public class PostService implements IPostService {
 
             // Handle Media Updates
             List<MediaAssociation> oldMedia = mediaAssociationRepository.findByTargetIdAndTargetType(postId, "Post");
-            List<MultipartFile> newMediaFiles = request.getMedia();
+            List<MultipartFile> newMediaFiles = request.getMediaFileRequest();
 
             // Add new media files
             if (newMediaFiles != null) {
@@ -201,7 +203,10 @@ public class PostService implements IPostService {
         UserDTO userDTO = userService.convertToDTO(post.getUser());
         mappedPostDTO.setUser(userDTO);
 
-        // TODO: Set Comment
+        // TODO: Set Comment [Need Test]
+//        List<CommentDTO> commentDTOList = commentService.convertToDTOList(post.getComments());
+//        mappedPostDTO.setComments(commentDTOList);
+
         // TODO: Set Like
 
         // Set Media
