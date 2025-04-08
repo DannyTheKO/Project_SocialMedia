@@ -33,20 +33,13 @@ public class Media {
     @OneToMany(mappedBy = "media", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MediaAssociation> associations = new ArrayList<>();
 
-    public enum fileType {
-        VIDEO,
-        IMAGE,
-        GIF,
-        UNKNOWN
-    }
+    @Column(name = "file_type")
+    private String fileType;
 
-    @Column(name = "file_type_enum")
-    private Enum<fileType> fileTypeEnum;
-
-    public Media(String filePath, String fileName, Enum<fileType> fileTypeEnum, LocalDateTime uploadedDate) {
+    public Media(String filePath, String fileName, String fileType, LocalDateTime uploadedDate) {
         this.filePath = filePath;
         this.fileName = fileName;
-        this.fileTypeEnum = fileTypeEnum;
+        this.fileType = fileType;
         this.uploadedDate = uploadedDate;
     }
 }

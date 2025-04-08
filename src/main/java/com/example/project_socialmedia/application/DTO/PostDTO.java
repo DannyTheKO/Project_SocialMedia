@@ -10,13 +10,14 @@ import java.util.List;
 
 @Data
 public class PostDTO {
-    // TODO: get userDTO send information into front-end
-    private UserDTO user;
-
+    private Long postId;
     private String content;
-    private List<Comment> comments;
-    private List<Like> likes;
-    private List<MediaDTO> media;
     private LocalDateTime createdPost;
     private LocalDateTime modifiedPost;
+    private UserDTO user;
+
+    // TODO: these should be DTO
+    private List<MediaDTO> media;
+    private List<Comment> comments;
+    private List<Like> likes;
 }

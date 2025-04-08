@@ -27,13 +27,25 @@ public class PostController {
     private final UserService userService;
 
     // PostController
-    // FIXME: get post doesn't get the media
 
     @GetMapping(value = "/all")
     public ResponseEntity<ApiResponse> getAllPost() {
         try {
             List<Post> postList = postService.getAllPosts();
             List<PostDTO> postDTOList = postService.convertToListDTO(postList);
+            return ResponseEntity.ok(new ApiResponse("Success", postDTOList));
+        } catch (Exception e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error!", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/all/user")
+    public ResponseEntity<ApiResponse> getAllPostByUserId(
+            @RequestParam(required = false) Long userId) {
+        try {
+            List<Post> existingPost = postService.getAllPostsByUserId(userId);
+            List<PostDTO> postDTOList = postService.convertToListDTO(existingPost);
             return ResponseEntity.ok(new ApiResponse("Success", postDTOList));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR)
@@ -78,12 +90,29 @@ public class PostController {
     }
 
 
-    @PutMapping("/post/{postId}/update")
+    @PutMapping(value = "/post/{postId}/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse> updatePost(Long userId, @PathVariable Long postId, PostUpdateRequest request) {
         try {
             Post updatedPost = postService.updatePost(userId, postId, request);
             PostDTO postDTO = postService.convertToDTO(updatedPost);
             return ResponseEntity.ok(new ApiResponse("Success", postDTO));
+        } catch (Exception e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error!", e.getMessage()));
+        }
+    }
+
+    @DeleteMapping(value = "/post/{postId}/delete")
+    public ResponseEntity<ApiResponse> deletePost(@PathVariable Long postId) {
+        try {
+            Post existingPost = postService.getPostById(postId);
+            if (existingPost != null) {
+                postService.deletePost(postId);
+                return ResponseEntity.ok(new ApiResponse("Success", null));
+            }
+
+            return ResponseEntity.status(NOT_FOUND)
+                    .body(new ApiResponse("Post not found", null));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse("Error!", e.getMessage()));
