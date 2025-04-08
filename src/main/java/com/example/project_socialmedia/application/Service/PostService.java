@@ -19,8 +19,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: Need Testing
-
 @Service
 @RequiredArgsConstructor
 public class PostService implements IPostService {
@@ -33,7 +31,7 @@ public class PostService implements IPostService {
     private final UserService userService;
     private final MediaService mediaService;
 
-    private final String uploadDir = "src/main/resources/uploads/posts/";
+    private final String uploadDir = "gui/src/asset/uploads/posts/";
 
 
     /**
@@ -54,8 +52,7 @@ public class PostService implements IPostService {
      */
     @Override
     public Post getPostById(Long postId) {
-        return postRepository.findById(postId)
-                .orElseThrow(() -> new ResourceNotFound("getPostById: post not found"));
+        return postRepository.findById(postId).orElseThrow(() -> new ResourceNotFound("getPostById: post not found"));
     }
 
     /**
@@ -72,6 +69,7 @@ public class PostService implements IPostService {
 
     /**
      * Get Media By Post ID
+     * <p> dev note: why is this here :'(
      *
      * @param postId Long
      * @return Object {Media}
@@ -133,14 +131,23 @@ public class PostService implements IPostService {
      */
     @Override
     public void deletePost(Long postId) {
-        Post existingPost = postRepository.findById(postId)
-                .orElseThrow(() -> new ResourceNotFound("deletePost: Post not found"));
+        try {
+            Post existingPost = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFound("deletePost: Post not found"));
 
-        postRepository.delete(existingPost);
+            List<MediaAssociation> mediaAssociationList = mediaAssociationRepository.findByTargetIdAndTargetType(postId, "Post");
+            mediaAssociationList.forEach(mediaAssociation -> {
+                mediaService.removeFile(postId, "Post", mediaAssociation.getMedia().getFileType());
+            });
+
+            postRepository.delete(existingPost);
+        } catch (Exception e) {
+            // Include original exception for better debugging
+            throw new RuntimeException("Error deleting post: " + e.getMessage(), e);
+        }
     }
 
     /**
-     * FIXME: Update Post
+     * Update Post
      *
      * @param request Object {PostUpdateRequest}
      * @param userId  Long
@@ -151,27 +158,29 @@ public class PostService implements IPostService {
     public Post updatePost(Long userId, Long postId, PostUpdateRequest request) {
         try {
             // 1. Retrieve the post using postId
-            Post existingPost = postRepository.findById(postId)
-                    .orElseThrow(() -> new ResourceNotFound("updatePost: Post not found"));
+            Post existingPost = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFound("updatePost: Post not found"));
 
-            // 2. Verify that the userId from the request matches the post's owner
-            User existingUser = userService.getUserById(userId);
+            // TODO 2. Verify that the userId from the request matches the post's owner (Authentication)
+            // User existingUser = userService.getUserById(userId);
 
             // 3. If authorized, proceed with the update logic
             existingPost.setContent(request.getContent());
 
-            //Handle Media Updates:
-            List<Media> existingMedia = getMediaByPostId(postId);
+            // Handle Media Updates
+            List<MediaAssociation> oldMedia = mediaAssociationRepository.findByTargetIdAndTargetType(postId, "Post");
             List<MultipartFile> newMediaFiles = request.getMedia();
 
             // Add new media files
             if (newMediaFiles != null) {
+                // Remove old file from local machine
+                oldMedia.forEach(mediaAssociation -> {
+                    mediaService.removeFile(postId, "Post", mediaAssociation.getMedia().getFileType());
+                });
+
+                // Add new file into local machine
                 for (MultipartFile mediaFile : newMediaFiles) {
                     if (!mediaFile.isEmpty()) {
-                        Media newMedia = mediaService.saveFile(
-                                mediaFile,
-                                uploadDir + postId + "/",
-                                postId,     // This is the targetId
+                        Media newMedia = mediaService.saveFile(mediaFile, uploadDir + postId + "/", postId,     // This is the targetId
                                 "Post"      // This is the targetType
                         );
                     }

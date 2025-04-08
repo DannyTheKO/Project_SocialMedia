@@ -23,8 +23,8 @@ public class Media {
     @Column(name = "media_id")
     private Long mediaId;
 
-    @Column(name = "url")
-    private String url;
+    @Column(name = "file_path")
+    private String filePath;
     @Column(name = "file_name")
     private String fileName;
     @Column(name = "uploaded_date")
@@ -33,20 +33,13 @@ public class Media {
     @OneToMany(mappedBy = "media", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MediaAssociation> associations = new ArrayList<>();
 
-    public enum fileType {
-        VIDEO,
-        IMAGE,
-        GIF,
-        UNKNOWN
-    }
+    @Column(name = "file_type")
+    private String fileType;
 
-    @Column(name = "file_type_enum")
-    private Enum<fileType> fileTypeEnum;
-
-    public Media(String filePath, String fileName, Enum<fileType> fileTypeEnum, LocalDateTime uploadedDate) {
-        this.url = filePath;
+    public Media(String filePath, String fileName, String fileType, LocalDateTime uploadedDate) {
+        this.filePath = filePath;
         this.fileName = fileName;
-        this.fileTypeEnum = fileTypeEnum;
+        this.fileType = fileType;
         this.uploadedDate = uploadedDate;
     }
 }

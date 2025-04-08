@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +26,8 @@ public class UserService implements IUserService {
     private final UserRepository userRepository;
 
     private final MediaService mediaService;
+
+    final String uploadDir = "gui/src/asset/uploads/users/";
 
     /**
      * Get all User from database
@@ -111,29 +114,36 @@ public class UserService implements IUserService {
             existingUser.setBio(request.getBio());
             existingUser.setBirthDate(request.getBirthDate());
 
-            // TODO: when update, if file image changed, we remove the old and replace the new one
-
-            String uploadDir = "src/main/resources/uploads/users/";
             if (request.getProfileImage() != null && !request.getProfileImage().isEmpty()) {
+                String fileType = mediaService.identifyMediaType(Objects.requireNonNull(request.getProfileImage().getOriginalFilename()));
+
+                // Remove old file
+                mediaService.removeFile(userId, "ProfileImage", fileType);
+
+                // Then added new one
                 Media profileImage = mediaService.saveFile(
                         request.getProfileImage(),
                         uploadDir + existingUser.getUserId() + "/",
                         existingUser.getUserId(),
                         "ProfileImage"
                 );
-
-                existingUser.setProfileImageUrl(profileImage.getUrl());
+                existingUser.setProfileImageUrl(profileImage.getFilePath());
             }
 
             if (request.getBannerImage() != null && !request.getBannerImage().isEmpty()) {
+                String fileType = mediaService.identifyMediaType(Objects.requireNonNull(request.getBannerImage().getOriginalFilename()));
+
+                // Remove old file
+                mediaService.removeFile(userId, "BannerImage", fileType);
+
+                // Then added new one
                 Media bannerImage = mediaService.saveFile(
                         request.getBannerImage(),
                         uploadDir + existingUser.getUserId() + "/",
                         existingUser.getUserId(),
                         "BannerImage"
                 );
-
-                existingUser.setBannerImageUrl(bannerImage.getUrl());
+                existingUser.setBannerImageUrl(bannerImage.getFilePath());
             }
 
             // Save it in the database
