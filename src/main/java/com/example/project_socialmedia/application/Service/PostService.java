@@ -69,6 +69,7 @@ public class PostService implements IPostService {
 
     /**
      * Get Media By Post ID
+     * <p> dev note: why is this here :'(
      *
      * @param postId Long
      * @return Object {Media}
@@ -91,7 +92,12 @@ public class PostService implements IPostService {
             // Check if User exist in the database
             User user = userService.getUserById(userId);
 
-            Post newPost = new Post(user, new ArrayList<Comment>(), new ArrayList<Like>(), request.getContent(), LocalDateTime.now(),        // CreatedPost
+            Post newPost = new Post(
+                    user,
+                    new ArrayList<Comment>(),
+                    new ArrayList<Like>(),
+                    request.getContent(),
+                    LocalDateTime.now(),        // CreatedPost
                     LocalDateTime.now()         // ModifiedPost
             );
 
@@ -102,7 +108,12 @@ public class PostService implements IPostService {
             if (mediaFiles != null) {
                 for (MultipartFile mediaFile : mediaFiles) {
                     if (!mediaFile.isEmpty()) {
-                        mediaService.saveFile(mediaFile, uploadDir + newPost.getPostId() + "/", newPost.getPostId(), "Post");
+                        mediaService.saveFile(
+                                mediaFile,
+                                uploadDir + newPost.getPostId() + "/",
+                                newPost.getPostId(),
+                                "Post"
+                        );
                     }
                 }
             }
