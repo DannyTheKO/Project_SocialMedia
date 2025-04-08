@@ -55,7 +55,7 @@ class GetAllUserCommentsByUserIdTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
         // Act
-        List<Comment> comments = commentService.getAllUserCommentsByUserId(userId);
+        List<Comment> comments = commentService.getAllCommentsByUserId(userId);
 
         // Assert
         assertNotNull(comments);
@@ -71,6 +71,6 @@ class GetAllUserCommentsByUserIdTest {
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
         // Act and Assert
-        assertThrows(ResourceNotFound.class, () -> commentService.getAllUserCommentsByUserId(userId));
+        assertThrows(ResourceNotFound.class, () -> commentService.getAllCommentsByUserId(userId));
     }
 }

@@ -70,9 +70,9 @@ public class PostController {
         }
     }
 
-    @PostMapping(value = "/user/{userId}/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/post/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse> createPost(
-            @PathVariable Long userId,
+            @RequestParam Long userId,
             @ModelAttribute PostCreateRequest request) {
         try {
             User getUser = userService.getUserById(userId);
@@ -91,7 +91,10 @@ public class PostController {
 
 
     @PutMapping(value = "/post/{postId}/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse> updatePost(Long userId, @PathVariable Long postId, PostUpdateRequest request) {
+    public ResponseEntity<ApiResponse> updatePost(
+            @RequestParam Long userId,
+            @PathVariable Long postId,
+            @ModelAttribute PostUpdateRequest request) {
         try {
             Post updatedPost = postService.updatePost(userId, postId, request);
             PostDTO postDTO = postService.convertToDTO(updatedPost);
@@ -102,8 +105,8 @@ public class PostController {
         }
     }
 
-    @DeleteMapping(value = "/post/{postId}/delete")
-    public ResponseEntity<ApiResponse> deletePost(@PathVariable Long postId) {
+    @DeleteMapping(value = "/post/delete")
+    public ResponseEntity<ApiResponse> deletePost(@RequestParam Long postId) {
         try {
             Post existingPost = postService.getPostById(postId);
             if (existingPost != null) {
