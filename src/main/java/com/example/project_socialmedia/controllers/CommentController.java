@@ -34,7 +34,6 @@ public class CommentController {
         }
     }
 
-    // TODO: Get all comment from post
     @GetMapping("/all/post")
     public ResponseEntity<ApiResponse> getAllCommentByPostId(
             @RequestParam(required = false) Long postId) {
@@ -48,7 +47,6 @@ public class CommentController {
         }
     }
 
-    // TODO: Get all comment from user
     @GetMapping("/all/user")
     public ResponseEntity<ApiResponse> getAllCommentByUserId(
             @RequestParam(required = false) Long userId) {
@@ -62,7 +60,6 @@ public class CommentController {
         }
     }
 
-    // TODO: Create comment
     @PostMapping("/create")
     public ResponseEntity<ApiResponse> createComment(
             @RequestParam Long userId,
@@ -95,7 +92,6 @@ public class CommentController {
     }
 
 
-    // TODO: Delete comment
     @DeleteMapping("/comment/delete")
     public ResponseEntity<ApiResponse> deleteComment(
             @RequestParam Long commentId

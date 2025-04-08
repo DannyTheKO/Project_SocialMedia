@@ -10,8 +10,10 @@ import java.util.List;
 public class CommentDTO {
     private Long postId;
     private Long commentId;
+    private Long userId;
 
-    private UserDTO user;
+    private String firstName;
+    private String lastName;
     private String content;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

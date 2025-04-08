@@ -11,6 +11,7 @@ import com.example.project_socialmedia.controllers.Request.Post.PostUpdateReques
 import com.example.project_socialmedia.domain.Model.*;
 import com.example.project_socialmedia.domain.Repository.MediaAssociationRepository;
 import com.example.project_socialmedia.domain.Repository.PostRepository;
+import com.example.project_socialmedia.domain.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -26,14 +27,15 @@ public class PostService implements IPostService {
 
     private final ModelMapper modelMapper;
 
+    private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final MediaAssociationRepository mediaAssociationRepository;
 
     private final UserService userService;
     private final MediaService mediaService;
-//    private final CommentService commentService;
+    private final CommentService commentService;
 
-    private final String uploadDir = "gui/src/asset/uploads/posts/";
+    private final String uploadDir = "gui/src/assets/uploads/posts/";
 
 
     /**
@@ -54,7 +56,8 @@ public class PostService implements IPostService {
      */
     @Override
     public Post getPostById(Long postId) {
-        return postRepository.findById(postId).orElseThrow(() -> new ResourceNotFound("getPostById: post not found"));
+        return postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFound("getPostById: post not found"));
     }
 
     /**
@@ -65,7 +68,7 @@ public class PostService implements IPostService {
      */
     @Override
     public List<Post> getAllPostsByUserId(Long userId) {
-        User existingUser = userService.getUserById(userId);
+        User existingUser = userRepository.findUserByUserId(userId);
         return existingUser.getPosts();
     }
 
@@ -92,7 +95,7 @@ public class PostService implements IPostService {
     public Post createPost(PostCreateRequest request, Long userId) {
         try {
             // Check if User exist in the database
-            User user = userService.getUserById(userId);
+            User user = userRepository.findUserByUserId(userId);
 
             Post newPost = new Post(
                     user,
@@ -108,16 +111,14 @@ public class PostService implements IPostService {
             // Now handle media
             List<MultipartFile> mediaFiles = request.getMediaFileRequest();
             if (mediaFiles != null) {
-                for (MultipartFile mediaFile : mediaFiles) {
-                    if (!mediaFile.isEmpty()) {
-                        mediaService.saveFile(
+                mediaFiles.stream()
+                        .filter(mediaFile -> !mediaFile.isEmpty())
+                        .forEach(mediaFile -> mediaService.saveFile(
                                 mediaFile,
                                 uploadDir + newPost.getPostId() + "/",
                                 newPost.getPostId(),
                                 "Post"
-                        );
-                    }
-                }
+                        ));
             }
 
             return newPost;
@@ -127,14 +128,20 @@ public class PostService implements IPostService {
     }
 
     /**
-     * Delete Post
+     * TODO: Delete Post
      *
      * @param postId Long
      */
     @Override
     public void deletePost(Long postId) {
         try {
-            Post existingPost = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFound("deletePost: Post not found"));
+            Post existingPost = postRepository.findById(postId)
+                    .orElseThrow(() -> new ResourceNotFound("deletePost: Post not found"));
+
+            List<Comment> existingComments = existingPost.getComments();
+            existingComments.forEach(comment -> {
+                commentService.deleteCommentById(comment.getCommentId());
+            });
 
             List<MediaAssociation> mediaAssociationList = mediaAssociationRepository.findByTargetIdAndTargetType(postId, "Post");
             mediaAssociationList.forEach(mediaAssociation -> {
@@ -142,7 +149,7 @@ public class PostService implements IPostService {
             });
 
             postRepository.delete(existingPost);
-        } catch (Exception e) {
+        } catch (ResourceNotFound e) {
             // Include original exception for better debugging
             throw new RuntimeException("Error deleting post: " + e.getMessage(), e);
         }
@@ -203,9 +210,8 @@ public class PostService implements IPostService {
         UserDTO userDTO = userService.convertToDTO(post.getUser());
         mappedPostDTO.setUser(userDTO);
 
-        // TODO: Set Comment [Need Test]
-//        List<CommentDTO> commentDTOList = commentService.convertToDTOList(post.getComments());
-//        mappedPostDTO.setComments(commentDTOList);
+        List<CommentDTO> commentDTOList = commentService.convertToDTOList(post.getComments());
+        mappedPostDTO.setComments(commentDTOList);
 
         // TODO: Set Like
 

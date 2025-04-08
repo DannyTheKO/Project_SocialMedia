@@ -20,12 +20,12 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class UserService implements IUserService {
-
-    final String uploadDir = "gui/src/asset/uploads/users/";
     private final ModelMapper modelMapper;
+
     private final UserRepository userRepository;
     private final MediaService mediaService;
 
+    protected final String uploadDir = "gui/src/assets/uploads/users/";
     /**
      * Get all User from database
      *
