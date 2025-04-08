@@ -33,7 +33,7 @@ public class PostService implements IPostService {
     private final UserService userService;
     private final MediaService mediaService;
 
-    private final String uploadDir = "src/main/resources/uploads/posts/";
+    private final String uploadDir = "gui/src/asset/uploads/posts/";
 
 
     /**
@@ -135,6 +135,8 @@ public class PostService implements IPostService {
     public void deletePost(Long postId) {
         Post existingPost = postRepository.findById(postId)
                 .orElseThrow(() -> new ResourceNotFound("deletePost: Post not found"));
+
+        // TODO: delete post also delete the media file that relevant with that post
 
         postRepository.delete(existingPost);
     }

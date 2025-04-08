@@ -40,6 +40,19 @@ public class PostController {
         }
     }
 
+    @GetMapping("/all/user")
+    public ResponseEntity<ApiResponse> getAllPostByUserId(
+            @RequestParam(required = false) Long userId) {
+        try {
+            List<Post> existingPost = postService.getAllPostsByUserId(userId);
+            List<PostDTO> postDTOList = postService.convertToListDTO(existingPost);
+            return ResponseEntity.ok(new ApiResponse("Success", postDTOList));
+        } catch (Exception e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error!", e.getMessage()));
+        }
+    }
+
     @GetMapping("/post/{postId}")
     public ResponseEntity<ApiResponse> getPostById(@PathVariable Long postId) {
         try {

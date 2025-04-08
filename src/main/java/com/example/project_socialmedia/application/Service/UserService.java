@@ -27,6 +27,8 @@ public class UserService implements IUserService {
 
     private final MediaService mediaService;
 
+    final String uploadDir = "gui/src/asset/uploads/users/";
+
     /**
      * Get all User from database
      *
@@ -114,7 +116,6 @@ public class UserService implements IUserService {
 
             // TODO: when update, if file image changed, we remove the old and replace the new one
 
-            String uploadDir = "src/main/resources/uploads/users/";
             if (request.getProfileImage() != null && !request.getProfileImage().isEmpty()) {
                 String fileType = mediaService.identifyMediaType(Objects.requireNonNull(request.getProfileImage().getOriginalFilename()));
 

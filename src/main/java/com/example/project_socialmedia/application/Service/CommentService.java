@@ -17,7 +17,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CommentService implements ICommentService {
-
     private final CommentRepository commentRepository;
 
     private final UserService userService;
@@ -56,6 +55,7 @@ public class CommentService implements ICommentService {
         User existingUser = userService.getUserById(userId);
 
         // Testing
+/*
         System.out.println("Retrieved User: " + existingUser.getUserId());
         System.out.println("User Comments: " + existingUser.getComments()
                 .stream()
@@ -63,30 +63,28 @@ public class CommentService implements ICommentService {
                         "comment: " + comment.getContent() + " created date: " + comment.getCreatedAt())
                 .toList()
         );
+*/
 
         return existingUser.getComments();
     }
-
-    // TODO: getAllUserCommentsByPostId [Need Testing]
 
     /**
      * Get All User Comment From Post
      *
      * @param postId Long
      */
+    // TODO: getAllUserCommentsByPostId [Need Testing]
     @Override
     public List<Comment> getAllUserCommentsByPostId(Long postId) {
         Post getPost = postService.getPostById(postId);
         return getPost.getComments();
     }
-
-    // TODO: addComment [Need Testing]
-
     /**
      * Add Comment
      *
      * @param request Object {CommentCreateRequest}
      */
+    // TODO: addComment [Need Testing]
     @Override
     public Comment addComment(CommentCreateRequest request, Long userId, Long postId) {
         User existingUser = userService.getUserById(userId);
