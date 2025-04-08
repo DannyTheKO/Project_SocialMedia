@@ -1,18 +1,20 @@
-import React, { useState } from 'react'
-import './Post.css'
+import React, { useState } from 'react';
+import './Post.css';
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
 import TextsmsOutlinedIcon from "@mui/icons-material/TextsmsOutlined";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { Link } from "react-router-dom";
-import Comments from '../Comments/Comments'
+import Comments from '../Comments/Comments';
+import DefaultProfilePic from '../../assets/defaultProfilePic.jpg';
+import moment from 'moment/moment';
+import 'moment/locale/vi';
 
-const Post = ({ post }) => {
+moment.locale('vi');    
 
-    const [commentOpen, setCommentOpen] = useState(false)
-
-    //TEMPORARY
+const Post = ({ user, content, comments, likes, media, createdPost, modifiedPost }) => {
+    const [commentOpen, setCommentOpen] = useState(false);
     const liked = false;
 
     return (
@@ -20,28 +22,37 @@ const Post = ({ post }) => {
             <div className="container">
                 <div className="user">
                     <div className="userInfo">
-                        <img src={post.profilePic} alt="" />
+                        <img
+                            src={user?.profileImageUrl || DefaultProfilePic}
+                            alt="Profile"
+                        />
                         <div className="details">
-                            <Link to={`/profile/${post.userId}`}>
-                                <span className='name'>{post.name}</span>
+                            <Link to={`/profile/${user?.userId}`}>
+                                <span className="name">{user?.username || 'Unknown'}</span>
                             </Link>
-                            <span className='date'>1 min ago</span>
+                            <span className="date">
+                                {moment(createdPost).fromNow()}
+                            </span>
                         </div>
                     </div>
                     <MoreHorizIcon style={{ cursor: 'pointer', fontSize: '32px' }} />
                 </div>
                 <div className="content">
-                    <p>{post.desc}</p>
-                    <img src={post.img} alt="" />
+                    <p>{content}</p>
+                    {media && media.length > 0 && <img src={media[0]} alt="Post media" />}
                 </div>
                 <div className="info">
                     <div className="item">
-                        {liked ? <FavoriteOutlinedIcon style={{ color: "red" }} /> : <FavoriteBorderOutlinedIcon />}
-                        12 Likes
+                        {liked ? (
+                            <FavoriteOutlinedIcon style={{ color: "red" }} />
+                        ) : (
+                            <FavoriteBorderOutlinedIcon />
+                        )}
+                        <p>{likes?.length || 0} Likes</p>
                     </div>
                     <div className="item" onClick={() => setCommentOpen(!commentOpen)}>
                         <TextsmsOutlinedIcon />
-                        12 Comments
+                        {comments?.length || 0} Comments
                     </div>
                     <div className="item">
                         <ShareOutlinedIcon />
@@ -51,7 +62,7 @@ const Post = ({ post }) => {
                 {commentOpen && <Comments />}
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Post
+export default Post;

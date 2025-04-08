@@ -7,6 +7,7 @@ import LeftBar from './Components/LeftBar/LeftBar'
 import RightBar from './Components/RightBar/RightBar'
 import Home from './Pages/Home/Home'
 import Profile from './Pages/Profile/Profile'
+import ForgotPassword from './Pages/ForgotPassword/ForgotPassword'
 
 function App() {
 
@@ -62,7 +63,11 @@ function App() {
     {
       path: "/register",
       element: <Register />
-    }
+    },
+    {
+      path: "/forgotPassword",
+      element: <ForgotPassword />
+    },
   ]);
 
   return (
