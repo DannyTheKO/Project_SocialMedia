@@ -78,11 +78,12 @@ public class CommentController {
     @PutMapping("/comment/{commentId}/update")
     public ResponseEntity<ApiResponse> updateComment(
             @RequestParam Long userId,
+            @RequestParam Long postId,
             @PathVariable Long commentId,
             @ModelAttribute CommentUpdateRequest request) {
 
         try {
-            Comment updatedComment = commentService.updateComment(userId, commentId, request);
+            Comment updatedComment = commentService.updateComment(userId, postId, commentId, request);
             CommentDTO updatedCommentDTO = commentService.convertToDTO(updatedComment);
             return ResponseEntity.ok(new ApiResponse("Success", updatedCommentDTO));
         } catch (Exception e) {

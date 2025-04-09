@@ -128,7 +128,7 @@ public class PostService implements IPostService {
     }
 
     /**
-     * TODO: Delete Post
+     * Delete Post
      *
      * @param postId Long
      */
@@ -176,24 +176,25 @@ public class PostService implements IPostService {
             existingPost.setContent(request.getContent());
 
             // Handle Media Updates
-            List<MediaAssociation> oldMedia = mediaAssociationRepository.findByTargetIdAndTargetType(postId, "Post");
-            List<MultipartFile> newMediaFiles = request.getMediaFileRequest();
+            List<MediaAssociation> oldMediaFiles = mediaAssociationRepository.findByTargetIdAndTargetType(postId, "Post");
+            List<MultipartFile> MediaFiles = request.getMediaFileRequest();
 
             // Add new media files
-            if (newMediaFiles != null) {
+            if (MediaFiles != null) {
                 // Remove old file from local machine
-                oldMedia.forEach(mediaAssociation -> {
-                    mediaService.removeFile(postId, "Post", mediaAssociation.getMedia().getFileType());
+                oldMediaFiles.forEach(oldMediaFile -> {
+                    mediaService.removeFile(postId, oldMediaFile.getTargetType(), oldMediaFile.getMedia().getFileType());
                 });
 
                 // Add new file into local machine
-                for (MultipartFile mediaFile : newMediaFiles) {
-                    if (!mediaFile.isEmpty()) {
-                        Media newMedia = mediaService.saveFile(mediaFile, uploadDir + postId + "/", postId,     // This is the targetId
+                MediaFiles.stream()
+                        .filter(mediaFile -> !mediaFile.isEmpty())
+                        .forEach(mediaFile -> mediaService.saveFile(
+                                mediaFile,
+                                uploadDir + postId + "/",
+                                postId,     // This is the targetId
                                 "Post"      // This is the targetType
-                        );
-                    }
-                }
+                        ));
             }
 
             postRepository.save(existingPost);

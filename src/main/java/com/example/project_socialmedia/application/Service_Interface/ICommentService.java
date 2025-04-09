@@ -55,5 +55,5 @@ public interface ICommentService {
      *
      * @param request Object {CommentUpdateRequest}
      */
-    Comment updateComment(Long userId, Long commentId, CommentUpdateRequest request);
+    Comment updateComment(Long userId, Long postId, Long commentId, CommentUpdateRequest request);
 }
