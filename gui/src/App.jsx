@@ -1,4 +1,5 @@
 import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-router-dom'
+import { useContext } from 'react'
 import './App.css'
 import Login from './Pages/Login/Login'
 import Register from './Pages/Register/Register'
@@ -8,6 +9,7 @@ import RightBar from './Components/RightBar/RightBar'
 import Home from './Pages/Home/Home'
 import Profile from './Pages/Profile/Profile'
 import ForgotPassword from './Pages/ForgotPassword/ForgotPassword'
+import { AuthContext } from './Context/AuthContext'
 
 function App() {
 
