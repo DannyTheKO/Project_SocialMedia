@@ -1,6 +1,7 @@
 package com.example.project_socialmedia.application.Service;
 
 import com.example.project_socialmedia.application.DTO.CommentDTO;
+import com.example.project_socialmedia.application.DTO.MediaDTO;
 import com.example.project_socialmedia.application.Exception.ResourceNotFound;
 import com.example.project_socialmedia.application.Service_Interface.ICommentService;
 import com.example.project_socialmedia.controllers.Request.Comment.CommentCreateRequest;
@@ -28,7 +29,7 @@ public class CommentService implements ICommentService {
     private final PostRepository postRepository;
 
     private final MediaService mediaService;
-    private final String uploadDir = "gui/src/assets/uploads/posts/comments";
+    private final String uploadDir = "gui/src/assets/uploads/posts";
     private final MediaAssociationRepository mediaAssociationRepository;
 
     /**
@@ -105,7 +106,7 @@ public class CommentService implements ICommentService {
                         .filter(mediaFile -> !mediaFile.isEmpty())
                         .forEach(mediaFile -> mediaService.saveFile(
                                 mediaFile,
-                                uploadDir + postId + newComment.getCommentId() + "/",
+                                uploadDir + "/" + postId + "/comments/" + newComment.getCommentId() + "/",
                                 newComment.getCommentId(),
                                 "Comment"
                         ));
@@ -138,7 +139,7 @@ public class CommentService implements ICommentService {
                     .filter(mediaFile -> !mediaFile.isEmpty())
                     .forEach(mediaFile -> mediaService.saveFile(
                             mediaFile,
-                            uploadDir + postId + commentId + "/",
+                            uploadDir + "/" + postId + "/comments/" + commentId + "/",
                             commentId,
                             "Comment"
                     ));
@@ -181,9 +182,15 @@ public class CommentService implements ICommentService {
 
         // Set PostId
         mappedDTO.setPostId(comment.getPost().getPostId());
+
+        mappedDTO.setUsername(comment.getPost().getUser().getUsername());
         mappedDTO.setUserId(comment.getUser().getUserId());
         mappedDTO.setFirstName(comment.getUser().getFirstName());
         mappedDTO.setLastName(comment.getUser().getLastName());
+
+        // Set Media
+        List<MediaDTO> mediaDTOList = mediaService.getMediaDTOByTargetIdAndTargetType(comment.getCommentId(), "Comment");
+        mappedDTO.setMedia(mediaDTOList);
 
         // TODO: Set Like
 
