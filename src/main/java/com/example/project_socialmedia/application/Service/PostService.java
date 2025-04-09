@@ -128,7 +128,7 @@ public class PostService implements IPostService {
     }
 
     /**
-     * TODO: Delete Post
+     * Delete Post
      *
      * @param postId Long
      */
