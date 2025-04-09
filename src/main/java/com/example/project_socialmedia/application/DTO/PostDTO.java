@@ -15,8 +15,8 @@ public class PostDTO {
     private LocalDateTime modifiedPost;
     private UserDTO user;
 
-    // TODO: these should be DTO
     private List<MediaDTO> media;
     private List<CommentDTO> comments;
+    // TODO: this should be DTO
     private List<Like> likes;
 }

@@ -5,10 +5,7 @@ import com.example.project_socialmedia.application.Exception.ResourceNotFound;
 import com.example.project_socialmedia.application.Service_Interface.ICommentService;
 import com.example.project_socialmedia.controllers.Request.Comment.CommentCreateRequest;
 import com.example.project_socialmedia.controllers.Request.Comment.CommentUpdateRequest;
-import com.example.project_socialmedia.domain.Model.Comment;
-import com.example.project_socialmedia.domain.Model.MediaAssociation;
-import com.example.project_socialmedia.domain.Model.Post;
-import com.example.project_socialmedia.domain.Model.User;
+import com.example.project_socialmedia.domain.Model.*;
 import com.example.project_socialmedia.domain.Repository.CommentRepository;
 import com.example.project_socialmedia.domain.Repository.MediaAssociationRepository;
 import com.example.project_socialmedia.domain.Repository.PostRepository;
@@ -108,7 +105,7 @@ public class CommentService implements ICommentService {
                         .filter(mediaFile -> !mediaFile.isEmpty())
                         .forEach(mediaFile -> mediaService.saveFile(
                                 mediaFile,
-                                uploadDir + newComment.getCommentId() + "/",
+                                uploadDir + postId + newComment.getCommentId() + "/",
                                 newComment.getCommentId(),
                                 "Comment"
                         ));
@@ -118,6 +115,42 @@ public class CommentService implements ICommentService {
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
+    }
+
+    /**
+     * Update Comment
+     *
+     * @param request Object {CommentUpdateRequest}
+     */
+    @Override
+    public Comment updateComment(Long userId, Long postId, Long commentId, CommentUpdateRequest request) {
+        Comment getComment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new ResourceNotFound("updateComment: commentId not found"));
+
+        List<MediaAssociation> oldMediaFiles = mediaAssociationRepository.findByTargetIdAndTargetType(commentId, "Comment");
+        List<MultipartFile> mediaFiles = request.getMediaFileRequest();
+        if(mediaFiles != null) {
+            oldMediaFiles.forEach(oldMediaFile -> {
+                mediaService.removeFile(commentId, oldMediaFile.getTargetType(), oldMediaFile.getMedia().getFileType());
+            });
+
+            mediaFiles.stream()
+                    .filter(mediaFile -> !mediaFile.isEmpty())
+                    .forEach(mediaFile -> mediaService.saveFile(
+                            mediaFile,
+                            uploadDir + postId + commentId + "/",
+                            commentId,
+                            "Comment"
+                    ));
+        }
+
+        // Change
+        getComment.setContent(request.getContent());
+        getComment.setUpdatedAt(LocalDateTime.now());
+
+        // Send to Database
+        commentRepository.save(getComment);
+        return getComment;
     }
 
     /**
@@ -141,30 +174,6 @@ public class CommentService implements ICommentService {
         } catch (ResourceNotFound e) {
             throw new RuntimeException(e);
         }
-    }
-
-    /**
-     * Update Comment
-     *
-     * @param request Object {CommentUpdateRequest}
-     */
-    @Override
-    public Comment updateComment(Long userId, Long commentId, CommentUpdateRequest request) {
-        Comment getComment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new ResourceNotFound("updateComment: commentId not found"));
-
-        // TODO: handle media change if requested
-
-
-        // Change
-        getComment.setContent(request.getContent());
-        getComment.setUpdatedAt(LocalDateTime.now());
-
-
-
-        // Send to Database
-        commentRepository.save(getComment);
-        return getComment;
     }
 
     public CommentDTO convertToDTO(Comment comment) {

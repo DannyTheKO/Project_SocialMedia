@@ -18,6 +18,6 @@ public class CommentDTO {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    private List<Like> likeList;            // TODO: This should be DTO
-    // private PostDTO post;                // Do we need this to export information that associate with Post ?
+    // TODO: This should be DTO
+    private List<Like> likeList;
 }
