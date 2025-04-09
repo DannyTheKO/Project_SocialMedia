@@ -1,24 +1,29 @@
 import React, { useEffect, useState } from 'react'
 import './Posts.css'
 import Post from '../Post/Post'
-import { getAllPosts } from '../../Services/PostsService/postService'
+import { getAllPosts, getUserPosts } from '../../Services/PostService/postService'
 
-const Posts = () => {
+const Posts = ({ userID }) => {
 
     const [posts, setPosts] = useState([])
 
     useEffect(() => {
-        loadAllPosts()
-    }, [])
+        loadAllPosts(userID)
+    }, [userID])
 
-    const loadAllPosts = async () => {
+    const loadAllPosts = async (userID) => {
         try {
-            const response = await getAllPosts();
+            let response;
 
+            if (userID && userID.trim() !== '') {
+                response = await getUserPosts(userID);
+            } else {
+                response = await getAllPosts();
+            }
             if (response && response.data) {
                 setPosts(response.data.data);
             } else {
-                console.warn('Invalid data format:', response.data);
+                console.warn('Không nhận được dữ liệu API !', response.data);
                 setPosts([]);
             }
         } catch (error) {
