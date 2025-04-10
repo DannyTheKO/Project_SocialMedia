@@ -34,7 +34,8 @@ const Posts = ({ userID }) => {
 
 
     return <div className="posts">
-        {posts.length > 0 ? (
+        {/*Danny: Anh chỉnh từ "posts" sang "posts?", có tí xiu à ^^*/}
+        {posts?.length > 0 ? (
             posts.map((post, index) =>
                 <Post
                     key={index}
