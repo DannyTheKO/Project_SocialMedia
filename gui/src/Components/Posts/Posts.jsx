@@ -23,7 +23,7 @@ const Posts = ({ userID }) => {
             if (response && response.data) {
                 setPosts(response.data.data);
             } else {
-                console.warn('Không nhận được dữ liệu API !', response.data);
+                console.warn('Không nhận được dữ liệu API posts!', response.data);
                 setPosts([]);
             }
         } catch (error) {
@@ -39,6 +39,7 @@ const Posts = ({ userID }) => {
                 <Post
                     key={index}
                     user={post.user}
+                    postId={post.postId}
                     content={post.content}
                     comments={post.comments}
                     likes={post.likes}

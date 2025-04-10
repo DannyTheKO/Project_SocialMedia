@@ -1,43 +1,44 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import './Comments.css'
+import { getPostComment } from '../../Services/CommentService/commentService'
+import DefaultProfilePic from '../../assets/defaultProfilePic.jpg'
+import SendIcon from '@mui/icons-material/Send';
+import CommentCpn from '../Comment/CommentCpn';
 
-const Comments = () => {
+const Comments = ({ postId }) => {
 
-    const comments = [
-        {
-            id: 1,
-            desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem nequeaspernatur ullam aperiam. Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem nequeaspernatur ullam aperiam",
-            name: "John Doe",
-            userId: 1,
-            profilePicture:
-                "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-        },
-        {
-            id: 2,
-            desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem nequeaspernatur ullam aperiam",
-            name: "Jane Doe",
-            userId: 2,
-            profilePicture:
-                "https://images.pexels.com/photos/1036623/pexels-photo-1036623.jpeg?auto=compress&cs=tinysrgb&w=1600",
-        },
-    ];
+    const [comments, setComments] = useState([])
+
+    useEffect(() => {
+        loadPostComments(postId)
+    }, [postId])
+
+    const loadPostComments = async (postId) => {
+        try {
+            let response = await getPostComment(postId)
+
+            if (response && response.data) {
+                setComments(response.data.data)
+            } else {
+                console.warn("Không nhận được dữ liệu API comments!", response.data.data)
+                setComments([])
+            }
+
+        } catch (Error) {
+            Console.error('Lỗi khi lấy dữ liệu comments: ', Error)
+            setComments([])
+        }
+    }
 
     return <div className='comments'>
         <div className="write">
-            <img src="https://images.pexels.com/photos/1036623/pexels-photo-1036623.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="" />
+            <img src={DefaultProfilePic} alt="" />
             <input type="text" placeholder='Write a comment' />
-            <button>Send</button>
+            <button><SendIcon /> </button>
         </div>
 
-        {comments.map((comment) => (
-            <div className="comment" key={comment.id}>
-                <img src={comment.profilePicture} alt="" />
-                <div className="info">
-                    <span>{comment.name}</span>
-                    <p>{comment.desc}</p>
-                </div>
-                <span className="date">1 hour ago</span>
-            </div>
+        {comments.map((comment, index) => (
+            <CommentCpn comment={comment} key={index} />
         ))}
     </div>
 }

@@ -15,7 +15,7 @@ import 'moment/locale/vi';
 
 moment.locale('vi');
 
-const Post = ({ user, content, comments, likes, media, createdPost, modifiedPost }) => {
+const Post = ({ user, postId, content, comments, likes, media, createdPost, modifiedPost }) => {
     // Đóng mở khung bình luận
     const [commentOpen, setCommentOpen] = useState(false);
 
@@ -76,7 +76,7 @@ const Post = ({ user, content, comments, likes, media, createdPost, modifiedPost
                 <div className="user">
                     <div className="userInfo">
                         <img
-                            src={getImageUrl(user?.profileImageUrl) || '../../assets/defaultProfilePic.jpg'}
+                            src={getImageUrl(user?.profileImageUrl) || DefaultProfilePic}
                             alt="Profile"
                         />
                         <div className="details">
@@ -143,19 +143,19 @@ const Post = ({ user, content, comments, likes, media, createdPost, modifiedPost
                                     {/* Nút Prev */}
                                     <button
                                         onClick={handlePrev}
-                                        className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-4 rounded-full hover:opacity-50 text-[36px]"
+                                        className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-4 rounded-full hover:opacity-50 text-[36px] cursor-pointer"
                                     >
                                         ←
                                     </button>
                                     {/* Nút Next */}
                                     <button
                                         onClick={handleNext}
-                                        className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-4 rounded-full hover:opacity-50 text-[36px]"
+                                        className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-4 rounded-full hover:opacity-50 text-[36px] cursor-pointer"
                                     >
                                         →
                                     </button>
                                     {/* Hiển thị số thứ tự media */}
-                                    <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-5 py-3 rounded-full">
+                                    <div className="absolute top-6 right-1 transform -translate-y-[-1/2] bg-gray-800 text-white px-5 py-3 rounded-full">
                                         {currentIndex + 1} / {media.length}
                                     </div>
                                 </div>
@@ -181,7 +181,7 @@ const Post = ({ user, content, comments, likes, media, createdPost, modifiedPost
                         Share
                     </div>
                 </div>
-                {commentOpen && <Comments />}
+                {commentOpen && <Comments postId={postId} isVideo={isVideo} getImageUrl={getImageUrl} />}
             </div>
         </div>
     );
