@@ -1,12 +1,14 @@
 @import "../../index.css";
 
 .comments {
-    img {
-        @apply w-[60px] h-[60px] rounded-full object-cover  max-md:w-[50px] max-md:h-[50px];
+
+    .write>img,
+    .comment>.row-1>img {
+        @apply w-[40px] h-[40px] rounded-full object-cover max-md:w-[30px] max-md:h-[30px];
     }
 
     .write {
-        @apply flex items-center justify-between gap-[20px] mt-[25px] mb-[40px] mx-0;
+        @apply flex items-center justify-between gap-[20px] mt-[25px] mb-[20px] mx-0;
 
         input {
             @apply flex-[5] p-[10px] border-1 border-[lightgray] bg-transparent text-[18px] text-black dark:text-gray-200;
@@ -15,15 +17,23 @@
         button {
             @apply border-none bg-blue-500 text-white p-[14px] cursor-pointer rounded-md font-medium;
         }
-
     }
 
     .comment {
-        @apply my-[30px] mx-0 flex justify-between gap-[20px]
+        @apply w-full flex flex-col;
+
+        .row-1 {
+            @apply w-full mt-[10px] mx-0 flex gap-[20px];
+        }
+    }
+
+    .content {
+        @apply flex flex-col w-full bg-[whitesmoke] dark:bg-[#343434] rounded-lg p-4;
+
     }
 
     .info {
-        @apply flex flex-[5] flex-col gap-[3px] items-start text-[18px] max-md:text-[16px];
+        @apply flex justify-between p-2 gap-[3px] items-start text-[18px] max-md:text-[16px];
 
         span {
             @apply font-medium;
@@ -35,9 +45,7 @@
     }
 
     .date {
-        @apply flex-[1] self-center text-gray-500 dark:text-gray-400 text-[16px] max-md:text-[14px];
+        @apply text-gray-500 dark:text-gray-400 text-[16px] max-md:text-[14px];
 
     }
-
-
 }
