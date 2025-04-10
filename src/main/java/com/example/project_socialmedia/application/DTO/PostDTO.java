@@ -17,6 +17,5 @@ public class PostDTO {
 
     private List<MediaDTO> media;
     private List<CommentDTO> comments;
-    // TODO: this should be DTO
-    private List<Like> likes;
+    private List<LikeDTO> likes;
 }
