@@ -1,0 +1,27 @@
+@import '../../index.css';
+
+.chat {
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    height: calc(100vh - 100px);
+
+    box-shadow: -2px -2px 9px 3px rgba(34, 34, 34, 0.23);
+    -webkit-box-shadow: -2px -2px 9px 3px rgba(34, 34, 34, 0.23);
+    -moz-box-shadow: -2px -2px 9px 3px rgba(34, 34, 34, 0.23);
+
+    @apply min-w-[500px] bg-[whitesmoke] dark:bg-[#222] fixed top-[70px] right-4 rounded-xl overflow-scroll flex flex-col gap-[20px] p-[20px];
+}
+
+.chat .right svg {
+    @apply text-[28px] cursor-pointer;
+}
+
+.notification {
+    @apply p-[10px] rounded-lg;
+}
+
+.notification:hover {
+    @apply hover:bg-gray-300 dark:hover:bg-neutral-700;
+}

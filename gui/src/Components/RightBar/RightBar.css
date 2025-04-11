@@ -20,8 +20,12 @@
         @apply p-[20px] mb-[20px] flex flex-col dark:bg-[#222];
     }
 
+    .item>span {
+        @apply text-[18px]
+    }
+
     .user {
-        @apply flex items-center justify-between my-[3px] hover:bg-gray-300 dark:hover:bg-gray-700 p-[10px] rounded-md;
+        @apply flex items-center justify-between my-[3px] hover:bg-gray-300 dark:hover:bg-neutral-700 p-[10px] rounded-md;
     }
 
     .buttons {
@@ -37,11 +41,11 @@
     }
 
     .blue-button {
-        @apply text-white bg-blue-500 hover:bg-blue-700 p-[8px] cursor-pointer
+        @apply text-white bg-blue-500 hover:bg-blue-700 px-[12px] py-[8px] cursor-pointer text-[18px];
     }
 
     .red-button {
-        @apply text-white bg-red-500 hover:bg-red-700 p-[8px] cursor-pointer
+        @apply text-white bg-red-500 hover:bg-red-700 px-[12px] py-[8px] cursor-pointer text-[18px];
     }
 
     .green-dot {
