@@ -8,11 +8,11 @@ const RightBar = () => {
         <div className='rightbar'>
             <div className="container p-[20px]">
                 <div className="item">
-                    <span className='time-color'>Suggestions For You</span>
+                    <span className='time-color'>Gợi ý kết bạn</span>
                     <div className='user'>
                         <div className="userInfo">
                             <img src={PlaceHolderImage} alt="" className='avatar' />
-                            <span className='text-[18px] text-color font-medium'>Tuan Thai </span>
+                            <span className='text-[20px] text-color font-medium'>Tuan Thai </span>
                         </div>
                         <div className="buttons">
                             <button className='blue-button'>Follow</button>
@@ -22,7 +22,7 @@ const RightBar = () => {
                     <div className='user'>
                         <div className="userInfo">
                             <img src={PlaceHolderImage} alt="" className='avatar' />
-                            <span className='text-[18px] text-color font-medium'>Tuan Thai </span>
+                            <span className='text-[20px] text-color font-medium'>Tuan Thai </span>
                         </div>
                         <div className="buttons">
                             <button className='blue-button'>Follow</button>
@@ -32,12 +32,12 @@ const RightBar = () => {
                 </div>
 
                 <div className="item">
-                    <span className='time-color'>Latest Activities</span>
+                    <span className='time-color'>Hoạt động gần đây</span>
                     <div className='user'>
                         <div className="userInfo">
                             <img src={PlaceHolderImage} alt="" className='avatar' />
                             <p>
-                                <span className='text-[18px] text-color font-medium'>Tuan Thai </span>
+                                <span className='text-[20px] text-color font-medium'>Tuan Thai </span>
                                 changed their cover picture
                             </p>
                         </div>
@@ -47,7 +47,7 @@ const RightBar = () => {
                         <div className="userInfo">
                             <img src={PlaceHolderImage} alt="" className='avatar' />
                             <p>
-                                <span className='text-[18px] text-color font-medium'>Tuan Thai </span>
+                                <span className='text-[20px] text-color font-medium'>Tuan Thai </span>
                                 liked a post
                             </p>
                         </div>
@@ -57,7 +57,7 @@ const RightBar = () => {
                         <div className="userInfo">
                             <img src={PlaceHolderImage} alt="" className='avatar' />
                             <p>
-                                <span className='text-[18px] text-color font-medium'>Tuan Thai </span>
+                                <span className='text-[20px] text-color font-medium'>Tuan Thai </span>
                                 posted
                             </p>
                         </div>
@@ -66,33 +66,33 @@ const RightBar = () => {
                 </div>
 
                 <div className="item">
-                    <span className='time-color'>Online Friends</span>
+                    <span className='time-color'>Bạn bè online</span>
                     <div className='user'>
                         <div className="userInfo relative">
                             <img src={PlaceHolderImage} alt="" className='avatar' />
                             <div className='green-dot' />
-                            <span className='text-[18px] text-color font-medium'>Tuan Thai </span>
+                            <span className='text-[20px] text-color font-medium'>Tuan Thai </span>
                         </div>
                     </div>
                     <div className='user'>
                         <div className="userInfo relative">
                             <img src={PlaceHolderImage} alt="" className='avatar' />
                             <div className='green-dot' />
-                            <span className='text-[18px] text-color font-medium'>Tuan Thai </span>
+                            <span className='text-[20px] text-color font-medium'>Tuan Thai </span>
                         </div>
                     </div>
                     <div className='user'>
                         <div className="userInfo relative">
                             <img src={PlaceHolderImage} alt="" className='avatar' />
                             <div className='green-dot' />
-                            <span className='text-[18px] text-color font-medium'>Tuan Thai </span>
+                            <span className='text-[20px] text-color font-medium'>Tuan Thai </span>
                         </div>
                     </div>
                     <div className='user'>
                         <div className="userInfo relative">
                             <img src={PlaceHolderImage} alt="" className='avatar' />
                             <div className='green-dot' />
-                            <span className='text-[18px] text-color font-medium'>Tuan Thai </span>
+                            <span className='text-[20px] text-color font-medium'>Tuan Thai </span>
                         </div>
                     </div>
                 </div>

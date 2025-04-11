@@ -25,15 +25,20 @@
 }
 
 .icon {
-    @apply cursor-pointer rounded-full;
+    @apply cursor-pointer rounded-full transition-all duration-300 ease-in-out;
+}
+
+.icon:hover {
+    @apply scale-110 bg-[lightgray] dark:bg-gray-600 rounded-full;
+
 }
 
 .search {
-    @apply flex items-center gap-[10px] border-1 border-gray-400 rounded-sm p-[8px]
+    @apply flex items-center gap-[10px] border-1 border-gray-400 rounded-sm p-[8px] ml-[40px] max-md:ml-[0px];
 }
 
 .search-input {
-    @apply border-none w-[600px] text-[20px] outline-none max-sm:hidden max-lg:w-[30vw] max-xl:w-[40vw];
+    @apply border-none w-[650px] text-[20px] outline-none max-sm:hidden max-lg:w-[30vw] max-xl:w-[40vw];
 }
 
 .text-color {

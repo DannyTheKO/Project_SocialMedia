@@ -1,0 +1,14 @@
+@import '../../index.css';
+
+.friends {
+    @apply h-full bg-white dark:bg-[#343434] px-5 py-3 flex flex-col gap-4;
+}
+
+.row-2>div:hover,
+.row-3>div:hover {
+    @apply bg-gray-300 dark:bg-neutral-700
+}
+
+.row-2>div, .row-3>div {
+    @apply pb-[15px] p-[10px] cursor-pointer rounded-lg;
+}

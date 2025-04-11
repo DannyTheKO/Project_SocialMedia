@@ -14,31 +14,31 @@ const LeftBar = () => {
                 <div className="menu">
                     <div className='item font-medium'>
                         <img src={PlaceHolderImage} alt="" className='image rounded-full object-cover' />
-                        <span className='text-[18px] text-color'>Tuan Thai</span>
+                        <span className='text-[20px] text-color font-normal'>Tuan Thai</span>
                     </div>
                     <div className='item'>
                         <img src={Friends} alt="" className='image' />
-                        <span className='text-[18px] text-color'>Friends</span>
+                        <span className='text-[20px] text-color font-normal'>Bạn bè</span>
                     </div>
                     <div className='item'>
                         <img src={Groups} alt="" className='image' />
-                        <span className='text-[18px] text-color'>Groups</span>
+                        <span className='text-[20px] text-color font-normal'>Nhóm</span>
                     </div>
                 </div>
                 <hr />
                 <div className="menu flex flex-col gap-[20px]">
-                    <span className='text-[18px] text-color'>Your shortcuts</span>
+                    <span className='text-[20px] text-color font-normal'>Lối tắt</span>
                     <div className='item'>
                         <img src={Gallery} alt="" className='image' />
-                        <span className='text-[18px] text-color'>Gallery</span>
+                        <span className='text-[20px] text-color font-normal'>Thư viện</span>
                     </div>
                     <div className='item'>
                         <img src={Videos} alt="" className='image' />
-                        <span className='text-[18px] text-color'>Videos</span>
+                        <span className='text-[20px] text-color font-normal'>Videos</span>
                     </div>
                     <div className='item'>
                         <img src={Messages} alt="" className='image' />
-                        <span className='text-[18px] text-color'>Messages</span>
+                        <span className='text-[20px] text-color font-normal'>Tin nhắn</span>
                     </div>
                 </div>
             </div>

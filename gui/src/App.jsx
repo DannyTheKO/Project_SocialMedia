@@ -9,7 +9,9 @@ import RightBar from './Components/RightBar/RightBar'
 import Home from './Pages/Home/Home'
 import Profile from './Pages/Profile/Profile'
 import ForgotPassword from './Pages/ForgotPassword/ForgotPassword'
+import Friends from './Pages/Friends/Friends'
 import { AuthContext } from './Context/AuthContext'
+
 
 function App() {
 
@@ -56,6 +58,10 @@ function App() {
           path: "/profile/:id",
           element: <Profile />
         },
+        {
+          path: "/friends",
+          element: <Friends />
+        }
       ]
     },
     {
