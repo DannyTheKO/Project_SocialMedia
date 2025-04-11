@@ -23,11 +23,11 @@ public class Media {
     @Column(name = "media_id")
     private Long mediaId;
 
-    @Column(name = "file_path")
+    @Column(name = "file_path", nullable = false)
     private String filePath;
-    @Column(name = "file_name")
+    @Column(name = "file_name", nullable = false)
     private String fileName;
-    @Column(name = "uploaded_date")
+    @Column(name = "uploaded_date", nullable = false)
     private LocalDateTime uploadedDate;
 
     @OneToMany(mappedBy = "media", cascade = CascadeType.ALL, orphanRemoval = true)

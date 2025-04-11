@@ -20,7 +20,5 @@ public class CommentDTO {
     private LocalDateTime updatedAt;
 
     private List<MediaDTO> media;
-
-    // TODO: This should be DTO
-    private List<Like> likes;
+    private List<LikeDTO> likes;
 }
