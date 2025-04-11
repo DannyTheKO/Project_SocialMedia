@@ -24,6 +24,21 @@ public interface IUserService {
      */
     User getUserById(Long userId);
 
+    /**
+     * Get User By Username
+     *
+     * @param username String
+     * @return {User}
+     */
+    User getUserByUsername(String username);
+
+    /**
+     * Get User By Email
+     *
+     * @param email String
+     * @return {User}
+     */
+    User getUserByEmail(String email);
 
     /**
      * Create User

@@ -2,7 +2,7 @@ package com.example.project_socialmedia.application.Service;
 
 import com.example.project_socialmedia.application.DTO.*;
 import com.example.project_socialmedia.application.Exception.ResourceNotFound;
-import com.example.project_socialmedia.application.Service_Interface.IPostService;
+import com.example.project_socialmedia.application.Service_Interface.*;
 import com.example.project_socialmedia.controllers.Request.Post.PostCreateRequest;
 import com.example.project_socialmedia.controllers.Request.Post.PostUpdateRequest;
 import com.example.project_socialmedia.domain.Model.*;
@@ -28,10 +28,10 @@ public class PostService implements IPostService {
     private final PostRepository postRepository;
     private final MediaAssociationRepository mediaAssociationRepository;
 
-    private final UserService userService;
-    private final MediaService mediaService;
-    private final CommentService commentService;
-    private final LikeService likeService;
+    private final IUserService userService;
+    private final IMediaService mediaService;
+    private final ICommentService commentService;
+    private final ILikeService likeService;
 
     private final String uploadDir = "gui/src/assets/uploads/posts/";
 

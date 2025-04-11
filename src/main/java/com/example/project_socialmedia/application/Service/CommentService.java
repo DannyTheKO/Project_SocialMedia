@@ -5,6 +5,8 @@ import com.example.project_socialmedia.application.DTO.LikeDTO;
 import com.example.project_socialmedia.application.DTO.MediaDTO;
 import com.example.project_socialmedia.application.Exception.ResourceNotFound;
 import com.example.project_socialmedia.application.Service_Interface.ICommentService;
+import com.example.project_socialmedia.application.Service_Interface.ILikeService;
+import com.example.project_socialmedia.application.Service_Interface.IMediaService;
 import com.example.project_socialmedia.controllers.Request.Comment.CommentCreateRequest;
 import com.example.project_socialmedia.controllers.Request.Comment.CommentUpdateRequest;
 import com.example.project_socialmedia.domain.Model.*;
@@ -30,8 +32,8 @@ public class CommentService implements ICommentService {
     private final PostRepository postRepository;
     private final MediaAssociationRepository mediaAssociationRepository;
 
-    private final MediaService mediaService;
-    private final LikeService likeService;
+    private final IMediaService mediaService;
+    private final ILikeService likeService;
 
     private final String uploadDir = "gui/src/assets/uploads/posts";
 

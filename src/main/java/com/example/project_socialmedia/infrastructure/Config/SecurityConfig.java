@@ -20,7 +20,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable) // Disable CSRF protection for testing
                 .sessionManagement((session) ->
-                        // This is fucking important, so don't fucking touch it, it for the JWT
+                        // This is fucking important, so don't fucking touch it, is for the JWT
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 .authorizeHttpRequests((authorizeHttpRequests) ->
