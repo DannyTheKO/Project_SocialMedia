@@ -1,11 +1,8 @@
 package com.example.project_socialmedia.application.Service;
 
-import com.example.project_socialmedia.application.DTO.CommentDTO;
-import com.example.project_socialmedia.application.DTO.MediaDTO;
-import com.example.project_socialmedia.application.DTO.PostDTO;
-import com.example.project_socialmedia.application.DTO.UserDTO;
+import com.example.project_socialmedia.application.DTO.*;
 import com.example.project_socialmedia.application.Exception.ResourceNotFound;
-import com.example.project_socialmedia.application.Service_Interface.IPostService;
+import com.example.project_socialmedia.application.Service_Interface.*;
 import com.example.project_socialmedia.controllers.Request.Post.PostCreateRequest;
 import com.example.project_socialmedia.controllers.Request.Post.PostUpdateRequest;
 import com.example.project_socialmedia.domain.Model.*;
@@ -31,9 +28,10 @@ public class PostService implements IPostService {
     private final PostRepository postRepository;
     private final MediaAssociationRepository mediaAssociationRepository;
 
-    private final UserService userService;
-    private final MediaService mediaService;
-    private final CommentService commentService;
+    private final IUserService userService;
+    private final IMediaService mediaService;
+    private final ICommentService commentService;
+    private final ILikeService likeService;
 
     private final String uploadDir = "gui/src/assets/uploads/posts/";
 
@@ -214,7 +212,9 @@ public class PostService implements IPostService {
         List<CommentDTO> commentDTOList = commentService.convertToDTOList(post.getComments());
         mappedPostDTO.setComments(commentDTOList);
 
-        // TODO: Set Like
+        // Set Like
+        List<LikeDTO> likeDTOList = likeService.convertToDTOList(post.getLikes());
+        mappedPostDTO.setLikes(likeDTOList);
 
         // Set Media
         List<MediaDTO> mediaDTOList = mediaService.getMediaDTOByTargetIdAndTargetType(post.getPostId(), "Post");

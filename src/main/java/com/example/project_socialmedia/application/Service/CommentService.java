@@ -1,9 +1,12 @@
 package com.example.project_socialmedia.application.Service;
 
 import com.example.project_socialmedia.application.DTO.CommentDTO;
+import com.example.project_socialmedia.application.DTO.LikeDTO;
 import com.example.project_socialmedia.application.DTO.MediaDTO;
 import com.example.project_socialmedia.application.Exception.ResourceNotFound;
 import com.example.project_socialmedia.application.Service_Interface.ICommentService;
+import com.example.project_socialmedia.application.Service_Interface.ILikeService;
+import com.example.project_socialmedia.application.Service_Interface.IMediaService;
 import com.example.project_socialmedia.controllers.Request.Comment.CommentCreateRequest;
 import com.example.project_socialmedia.controllers.Request.Comment.CommentUpdateRequest;
 import com.example.project_socialmedia.domain.Model.*;
@@ -27,10 +30,12 @@ public class CommentService implements ICommentService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
-
-    private final MediaService mediaService;
-    private final String uploadDir = "gui/src/assets/uploads/posts";
     private final MediaAssociationRepository mediaAssociationRepository;
+
+    private final IMediaService mediaService;
+    private final ILikeService likeService;
+
+    private final String uploadDir = "gui/src/assets/uploads/posts";
 
     /**
      * Get Comment By ID
@@ -192,8 +197,9 @@ public class CommentService implements ICommentService {
         List<MediaDTO> mediaDTOList = mediaService.getMediaDTOByTargetIdAndTargetType(comment.getCommentId(), "Comment");
         mappedDTO.setMedia(mediaDTOList);
 
-        // TODO: Set Like
-
+        // Set Like
+        List<LikeDTO> likeDTOList = likeService.convertToDTOList(comment.getLikes());
+        mappedDTO.setLikes(likeDTOList);
 
         return mappedDTO;
     }

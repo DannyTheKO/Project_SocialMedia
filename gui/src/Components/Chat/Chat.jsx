@@ -5,9 +5,10 @@ import ZoomOutMapOutlinedIcon from '@mui/icons-material/ZoomOutMapOutlined';
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import Messages from '../Messages/Messages';
+import DefaultProfilePic from '../../assets/defaultProfilePic.jpg';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 
 const Chat = () => {
-
     return (
         <div className='chat'>
             <div className="header flex justify-between items-center p-2">
@@ -27,7 +28,7 @@ const Chat = () => {
                     className='search-input text-dark dark:text-white' />
             </div>
             <Messages />
-        </div>
+        </div >
     )
 }
 

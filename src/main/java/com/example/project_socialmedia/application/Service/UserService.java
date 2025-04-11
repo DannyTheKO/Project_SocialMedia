@@ -3,6 +3,7 @@ package com.example.project_socialmedia.application.Service;
 import com.example.project_socialmedia.application.DTO.UserDTO;
 import com.example.project_socialmedia.application.Exception.ResourceConflict;
 import com.example.project_socialmedia.application.Exception.ResourceNotFound;
+import com.example.project_socialmedia.application.Service_Interface.IMediaService;
 import com.example.project_socialmedia.application.Service_Interface.IUserService;
 import com.example.project_socialmedia.controllers.Request.User.UserCreateRequest;
 import com.example.project_socialmedia.controllers.Request.User.UserUpdateRequest;
@@ -20,12 +21,15 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class UserService implements IUserService {
+
     private final ModelMapper modelMapper;
 
     private final UserRepository userRepository;
-    private final MediaService mediaService;
 
-    protected final String uploadDir = "gui/src/assets/uploads/users/";
+    private final IMediaService mediaService;
+
+    final String uploadDir = "gui/src/asset/uploads/users/";
+
     /**
      * Get all User from database
      *
@@ -49,24 +53,51 @@ public class UserService implements IUserService {
     }
 
     /**
+     * Get User By Username
+     *
+     * @param username String
+     * @return {User}
+     */
+    public User getUserByUsername(String username) {
+        return userRepository.findUserByUsername(username);
+    }
+
+    /**
+     * Get User By Email
+     *
+     * @param email String
+     * @return {User}
+     */
+    public  User getUserByEmail(String email) {
+        return userRepository.findUserByEmail(email);
+    }
+
+    /**
      * Create User
      *
-     * @param createRequest Object {UserCreateRequest}
+     * @param request Object {UserCreateRequest}
      */
     @Override
-    public User createUser(UserCreateRequest createRequest) {
-        User getUser = userRepository.findUserByEmail(createRequest.getEmail());
-        if (getUser != null) {
+    public User createUser(UserCreateRequest request) {
+        User byEmail = userRepository.findUserByEmail(request.getEmail());
+        User byUsername = userRepository.findUserByUsername(request.getUsername());
+
+        // Validation
+        if (byEmail != null) {
             throw new ResourceConflict("createUser: user email already exists");
+        }
+
+        if (byUsername != null) {
+            throw new ResourceConflict("createUser: username already exists");
         }
 
         // Construct User
         User newUser = new User();
-        newUser.setUsername(createRequest.getUsername());
-        newUser.setFirstName(createRequest.getFirstname());
-        newUser.setLastName(createRequest.getLastname());
-        newUser.setEmail(createRequest.getEmail());
-        newUser.setPassword(createRequest.getPassword());
+        newUser.setUsername(request.getUsername());
+        newUser.setFirstName(request.getFirstname());
+        newUser.setLastName(request.getLastname());
+        newUser.setEmail(request.getEmail());
+        newUser.setPassword(request.getPassword());
         newUser.setCreatedAt(LocalDateTime.now());
         newUser.setLastLogin(LocalDateTime.now());
 
@@ -170,4 +201,5 @@ public class UserService implements IUserService {
     public List<UserDTO> convertToDTOList(List<User> userList) {
         return userList.stream().map(this::convertToDTO).toList();
     }
+
 }

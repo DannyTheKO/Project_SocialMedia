@@ -25,9 +25,6 @@ public class UserController {
     private final UserService userService;
     private final PostService postService;
 
-    // TODO: Authentication
-    // TODO: Update time login when user login
-
     /**
      * Get All User
      *
