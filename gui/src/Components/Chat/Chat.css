@@ -18,10 +18,3 @@
     @apply text-[28px] cursor-pointer;
 }
 
-.message {
-    @apply p-[10px] rounded-lg;
-}
-
-.message:hover {
-    @apply hover:bg-gray-300 dark:hover:bg-neutral-700;
-}
