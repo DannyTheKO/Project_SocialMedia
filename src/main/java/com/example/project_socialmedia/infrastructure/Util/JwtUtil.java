@@ -15,13 +15,12 @@ public class JwtUtil {
 
     // TODO: Add admin role ?
     // Encrypted Function
-    public static String generateToken(String username, String email, String role) {
+    public static String generateToken(String username, String role) {
         Date now = new Date();
         Date expiration = new Date(now.getTime() + EXPIRATION_TIME);
 
         return Jwts.builder()
                 .setSubject(username)
-                .claim("email", email)
                 .claim("role", role)
                 .setIssuedAt(now)
                 .setExpiration(expiration)
