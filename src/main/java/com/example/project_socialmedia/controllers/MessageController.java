@@ -1,5 +1,6 @@
 package com.example.project_socialmedia.controllers;
 
+import com.example.project_socialmedia.application.Service.MessageService;
 import com.example.project_socialmedia.domain.Model.Message;
 import com.example.project_socialmedia.domain.Repository.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +16,13 @@ import java.util.List;
 public class MessageController{
 
     @Autowired
-    private MessageRepository messageRepository;
+    private MessageService messageService;
 
-    // get all messages data between 2 users
     @GetMapping("/{userId1}/{userId2}")
-    public List<Message> getMessagesBetweenUsers(
+    private List<Message> getMessageBetweenUsers(
             @PathVariable Long userId1,
-            @PathVariable Long userId2) {
-        return messageRepository.findBySenderIdAndReceiverIdOrReceiverIdAndSenderIdOrderByTimestampAsc(
-                userId1, userId2, userId2, userId1);
+            @PathVariable Long userId2){
+        return messageService.getMessagesBetweenUsers(userId1, userId2);
     }
 
 }

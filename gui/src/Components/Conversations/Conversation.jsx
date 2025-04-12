@@ -23,10 +23,16 @@ const Conversation = ({ user, onClose }) => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
     }
 
+    // Scroll to latest message every time messages change
+    useEffect(() => {
+        scrollToBottom()
+    }, [messages])
+
     // Get messages data from server whenever open chat frame
     useEffect(() => {
         const fectchMessages = async () => {
             try {
+                // fetch messages of currentUser and choosen User
                 const respone = await getMessagesData(currentUserId, user.id)
                 setMessages(respone.data)
             }
@@ -38,24 +44,29 @@ const Conversation = ({ user, onClose }) => {
         fectchMessages();
     }, [user.id])
 
+    // Connect Socker server of currentUser and choosen user
     useEffect(() => {
-        WebSocketService.connect((chatMessage) => {
-            setMessages((prevMessages) => {
-                const updatedMessages = [...prevMessages, chatMessage];
-                return updatedMessages
-            })
+        WebSocketService.connect(currentUserId, (chatMessage) => {
+            if (
+                (chatMessage.senderId === currentUserId && chatMessage.receiverId === user.id) ||
+                (chatMessage.senderId === user.id && chatMessage.receiverId === currentUserId)
+            ) {
+                setMessages((prevMessages) => {
+                    const updatedMessages = [...prevMessages, chatMessage];
+                    // Debug log
+                    console.log("Updated messages:", updatedMessages);
+                    return updatedMessages;
+                });
+            }
         })
 
         return () => {
             WebSocketService.disconnect();
         }
-    }, [])
+    }, [currentUserId, user.id]) // change everytime 1 of 2 userId changed
 
-    // Scroll to latest message every time messages change
-    useEffect(() => {
-        scrollToBottom()
-    }, [messages])
 
+    // Handle message structure and sendMessage function
     const handleSendMessage = (e) => {
         e.preventDefault();
         if (newMessage.trim()) {

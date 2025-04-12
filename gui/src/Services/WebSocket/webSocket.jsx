@@ -7,7 +7,7 @@ class WebSocketService {
         this.connected = false;
     }
 
-    connect(onMessageReceived) {
+    connect(userId, onMessageReceived) {
         const socket = new SockJS('http://localhost:8080/ws');
         this.client = new Client({
             webSocketFactory: () => socket,
@@ -15,9 +15,11 @@ class WebSocketService {
             onConnect: () => {
                 console.log("Connected to WebSocket");
                 this.connected = true;
-                this.client.subscribe('/topic/public', (message) => {
+                this.client.subscribe(`/topic/messages/${userId}`, (message) => {
                     if (message.body) {
                         const chatMessage = JSON.parse(message.body);
+                        // Debug log
+                        console.log("Received message:", chatMessage);
                         onMessageReceived(chatMessage)
                     }
                 })
