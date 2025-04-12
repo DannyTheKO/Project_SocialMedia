@@ -4,6 +4,10 @@ import './index.css'
 import App from './App.jsx'
 import { ThemeProvider } from './Context/ThemeContext.jsx'
 
+if (typeof global === 'undefined') {
+  window.global = window;
+}
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ThemeProvider>

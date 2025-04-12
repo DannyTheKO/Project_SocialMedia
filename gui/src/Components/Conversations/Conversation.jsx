@@ -1,27 +1,49 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './Conversation.css';
-// import WebSocketService from '../../Services/WebSocket/webSocket';
+import WebSocketService from '../../Services/WebSocket/webSocket';
 import CloseIcon from '@mui/icons-material/Close';
 import CallIcon from '@mui/icons-material/Call';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import MoreVertIcon from '@mui/icons-material/MoreVert'
+import SendIcon from '@mui/icons-material/Send';
+import { getMessagesData } from '../../Services/MessageService/messageService';
 
-const Conversation = () => {
+const Conversation = ({ user, onClose }) => {
 
-    const [messages, setMessages] = useState([
-        { sender: 'Thái Tuấn', content: 'moi lam ao cong cai bao nhiem bao viet', type: 'CHAT' },
-        { sender: 'User', content: 'mình khám bv khác', type: 'CHAT' },
-        { sender: 'Thái Tuấn', content: 'ben hoa hào tơi 7tr', type: 'CHAT' },
-        { sender: 'Thái Tuấn', content: 'khám bệnh có hoàn dc', type: 'CHAT' },
-        { sender: 'User', content: 'đang hiu có hoàn dc', type: 'CHAT' },
-        { sender: 'Thái Tuấn', content: 'oke', type: 'CHAT' },
-    ]);
+    const [messages, setMessages] = useState([]);
 
     const [newMessage, setNewMessage] = useState('');
 
+    const messagesEndRef = useRef(null)
+
+    const currentUserId = 2 // user real UserId
+
+    // Scroll to latest message function
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    }
+
+    // Get messages data from server whenever open chat frame
+    useEffect(() => {
+        const fectchMessages = async () => {
+            try {
+                const respone = await getMessagesData(currentUserId, user.id)
+                setMessages(respone.data)
+            }
+            catch (error) {
+                console.error('Error fetching messages data from MongoDB: ', error);
+            }
+        }
+
+        fectchMessages();
+    }, [user.id])
+
     useEffect(() => {
         WebSocketService.connect((chatMessage) => {
-            setMessages((prevMessages) => [...prevMessages, chatMessage])
+            setMessages((prevMessages) => {
+                const updatedMessages = [...prevMessages, chatMessage];
+                return updatedMessages
+            })
         })
 
         return () => {
@@ -29,19 +51,25 @@ const Conversation = () => {
         }
     }, [])
 
+    // Scroll to latest message every time messages change
+    useEffect(() => {
+        scrollToBottom()
+    }, [messages])
+
     const handleSendMessage = (e) => {
         e.preventDefault();
         if (newMessage.trim()) {
             const message = {
-                sender: 'User',
+                senderId: currentUserId,
+                receiverId: user.id,
                 content: newMessage,
                 type: 'CHAT'
             }
             WebSocketService.sendMessage(message);
-            setMessages('');
+            // Clear the input field
+            setNewMessage('');
         }
     }
-
 
     return (
         <div className="conversation">
@@ -58,10 +86,10 @@ const Conversation = () => {
                 </div>
             </div>
             <div className="conversation-messages">
-                {messages.map((msg, index) => (
+                {Array.isArray(messages) && messages.map((msg, index) => (
                     <div
                         key={index}
-                        className={`message ${msg.sender === 'User' ? 'message-right' : 'message-left'
+                        className={`message ${msg.senderId === currentUserId ? 'message-right' : 'message-left'
                             }`}
                     >
                         {msg.sender !== 'User' && (
@@ -72,6 +100,7 @@ const Conversation = () => {
                         </div>
                     </div>
                 ))}
+                <div ref={messagesEndRef}></div>
             </div>
             <form onSubmit={handleSendMessage} className="conversation-input">
                 <input
@@ -82,7 +111,7 @@ const Conversation = () => {
                     className="input-field"
                 />
                 <button type="submit" className="send-button">
-                    Send
+                    <SendIcon style={{ fontSize: '28px' }} />
                 </button>
             </form>
         </div>

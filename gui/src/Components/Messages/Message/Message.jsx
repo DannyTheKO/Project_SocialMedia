@@ -30,7 +30,7 @@ const Message = () => {
             isUnread: false,
         },
         {
-            id: 2,
+            id: 3,
             name: 'KO',
             lastMessage: 'KO: xin chào',
             date: '7h',
@@ -38,7 +38,7 @@ const Message = () => {
             isUnread: true,
         },
         {
-            id: 3,
+            id: 4,
             name: 'Danny',
             lastMessage: 'Danny: xin chào',
             date: '7h',

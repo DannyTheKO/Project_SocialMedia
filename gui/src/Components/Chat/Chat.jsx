@@ -5,8 +5,6 @@ import ZoomOutMapOutlinedIcon from '@mui/icons-material/ZoomOutMapOutlined';
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import Messages from '../Messages/Messages';
-import DefaultProfilePic from '../../assets/defaultProfilePic.jpg';
-import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 
 const Chat = () => {
     return (
