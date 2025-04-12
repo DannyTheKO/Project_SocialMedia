@@ -16,6 +16,7 @@ import com.example.project_socialmedia.domain.Repository.PostRepository;
 import com.example.project_socialmedia.domain.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -88,6 +89,7 @@ public class CommentService implements ICommentService {
      * @param request Object {CommentCreateRequest}
      */
     @Override
+    @PreAuthorize("hasRole('ROLE_USER') and hasRole('ROLE_ADMIN')")
     public Comment createComment(Long userId, Long postId, CommentCreateRequest request) {
         try {
             User existingUser = userRepository.findUserByUserId(userId);
