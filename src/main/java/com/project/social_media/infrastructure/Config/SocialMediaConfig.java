@@ -10,8 +10,8 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-@EnableJpaRepositories(basePackages = "com.example.project_socialmedia.domain.Repository")
-@EntityScan(basePackages = "com.example.project_socialmedia.domain.Model")
+@EnableJpaRepositories(basePackages = "com.project.social_media.domain.Repository")
+@EntityScan(basePackages = "com.project.social_media.domain.Model")
 public class SocialMediaConfig implements WebMvcConfigurer {
     @Bean
     public ModelMapper modelMapper() {
