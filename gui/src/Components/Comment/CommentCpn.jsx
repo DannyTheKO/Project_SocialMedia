@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, {useState} from 'react'
 import DefaultProfilePic from '../../assets/defaultProfilePic.jpg'
 import './CommentCpn.css'
 import moment from 'moment'
@@ -6,7 +6,7 @@ import 'moment/locale/vi';
 
 moment.locale('vi');
 
-const CommentCpn = ({ comment }) => {
+const CommentCpn = ({comment}) => {
     // State slider nếu comment có nhiều ảnh
     const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -62,7 +62,7 @@ const CommentCpn = ({ comment }) => {
     return (
         <div className="comment" key={comment.commentId}>
             <div className="row-1">
-                <img src={DefaultProfilePic} className="avatar" alt="" />
+                <img src={DefaultProfilePic} className="avatar" alt=""/>
                 <div className="content">
                     <div className="info">
                         <div className='left'>
@@ -81,12 +81,12 @@ const CommentCpn = ({ comment }) => {
                                 // 1 media
                                 // nếu là Audio
                                 isAudio(comment.media[0].filePath) ? (
-                                    <audio
-                                        src={getImageUrl(comment.media[0].filePath)}
-                                        controls
-                                        className="w-full rounded-md"
-                                    />
-                                ) :
+                                        <audio
+                                            src={getImageUrl(comment.media[0].filePath)}
+                                            controls
+                                            className="w-full rounded-md"
+                                        />
+                                    ) :
                                     // nếu là Video
                                     isVideo(comment.media[0].filePath) ? (
                                         <video
@@ -142,7 +142,8 @@ const CommentCpn = ({ comment }) => {
                                         →
                                     </button>
 
-                                    <div className="absolute top-14 right-1 transform -translate-y-1/2 bg-gray-800 text-white px-5 py-3 rounded-full">
+                                    <div
+                                        className="absolute top-14 right-1 transform -translate-y-1/2 bg-gray-800 text-white px-5 py-3 rounded-full">
                                         {currentIndex + 1} / {comment.media.length}
                                     </div>
                                 </div>

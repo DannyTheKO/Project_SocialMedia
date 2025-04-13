@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, {useState} from 'react';
 import './Post.css';
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
 import TextsmsOutlinedIcon from "@mui/icons-material/TextsmsOutlined";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import Comments from '../Comments/Comments';
 import DefaultProfilePic from '../../assets/defaultProfilePic.jpg';
 import moment from 'moment/moment';
@@ -13,7 +13,7 @@ import 'moment/locale/vi';
 
 moment.locale('vi');
 
-const Post = ({ user, postId, content, comments, likes, media, createdPost, modifiedPost }) => {
+const Post = ({user, postId, content, comments, likes, media, createdPost, modifiedPost}) => {
     // Đóng mở khung bình luận
     const [commentOpen, setCommentOpen] = useState(false);
 
@@ -84,7 +84,7 @@ const Post = ({ user, postId, content, comments, likes, media, createdPost, modi
                             </span>
                         </div>
                     </div>
-                    <MoreHorizIcon style={{ cursor: 'pointer', fontSize: '32px' }} />
+                    <MoreHorizIcon style={{cursor: 'pointer', fontSize: '32px'}}/>
                 </div>
                 <div className="content">
                     <p>{content}</p>
@@ -151,7 +151,8 @@ const Post = ({ user, postId, content, comments, likes, media, createdPost, modi
                                         →
                                     </button>
                                     {/* Hiển thị số thứ tự media */}
-                                    <div className="absolute top-6 right-1 transform -translate-y-[-1/2] bg-gray-800 text-white px-5 py-3 rounded-full">
+                                    <div
+                                        className="absolute top-6 right-1 transform -translate-y-[-1/2] bg-gray-800 text-white px-5 py-3 rounded-full">
                                         {currentIndex + 1} / {media.length}
                                     </div>
                                 </div>
@@ -162,22 +163,22 @@ const Post = ({ user, postId, content, comments, likes, media, createdPost, modi
                 <div className="info">
                     <div className="item">
                         {liked ? (
-                            <FavoriteOutlinedIcon style={{ color: "red" }} />
+                            <FavoriteOutlinedIcon style={{color: "red"}}/>
                         ) : (
-                            <FavoriteBorderOutlinedIcon />
+                            <FavoriteBorderOutlinedIcon/>
                         )}
                         <p>{likes?.length || 0} Likes</p>
                     </div>
                     <div className="item" onClick={() => setCommentOpen(!commentOpen)}>
-                        <TextsmsOutlinedIcon />
+                        <TextsmsOutlinedIcon/>
                         {comments?.length || 0} Comments
                     </div>
                     <div className="item">
-                        <ShareOutlinedIcon />
+                        <ShareOutlinedIcon/>
                         Share
                     </div>
                 </div>
-                {commentOpen && <Comments postId={postId} isVideo={isVideo} getImageUrl={getImageUrl} />}
+                {commentOpen && <Comments postId={postId} isVideo={isVideo} getImageUrl={getImageUrl}/>}
             </div>
         </div>
     );

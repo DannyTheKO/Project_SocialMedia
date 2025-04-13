@@ -49,7 +49,7 @@ public class LikeService implements ILikeService {
     @Override
     public List<Like> getAllLikeByCommentId(Long commentId) {
         Comment existingComment = commentRepository.findCommentByCommentId(commentId);
-        if  (existingComment != null) {
+        if (existingComment != null) {
             return existingComment.getLikes();
         }
 
@@ -83,7 +83,7 @@ public class LikeService implements ILikeService {
     /**
      * Toggle Like
      *
-     * @param userId Long
+     * @param userId  Long
      * @param request {LikeRequest}
      */
     @Override

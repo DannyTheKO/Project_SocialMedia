@@ -8,7 +8,7 @@ public interface IChatService {
      * sendMessage
      *
      * @param message Message
-    */
+     */
     Message sendMessage(Message message);
 
 
@@ -16,6 +16,6 @@ public interface IChatService {
      * addUser
      *
      * @param message Message
-    */
+     */
     Message addUser(Message message);
 }

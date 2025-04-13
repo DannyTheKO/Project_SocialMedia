@@ -29,43 +29,27 @@ public class User {
     private String bio;
     private String profileImageUrl;
     private String bannerImageUrl;
-
-    public enum userRole {
-        USER,
-        ADMIN,
-    }
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, name = "user_role")
     private userRole userRole;
-
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date birthDate;
-
     @Column(nullable = false)
     private String username;
-
     @Column(nullable = false)
     private String email;
-
     @Column(nullable = false)
     private String password;
-
     @Column(nullable = false)
     private LocalDateTime createdAt;
-
     @Column(nullable = false)
     private LocalDateTime lastLogin;
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts;
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes;
-
-
 
     /**
      * User Constructor
@@ -89,8 +73,6 @@ public class User {
         this.lastLogin = lastLogin;
     }
 
-    // ==> Custom Function
-
     /**
      * Update the User last login
      *
@@ -98,5 +80,12 @@ public class User {
      */
     public void updateUserLastLogin(LocalDateTime lastLogin) {
         this.lastLogin = lastLogin;
+    }
+
+    // ==> Custom Function
+
+    public enum userRole {
+        USER,
+        ADMIN,
     }
 }

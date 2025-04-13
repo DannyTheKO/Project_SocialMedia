@@ -9,7 +9,6 @@ import com.project.social_media.application.Service_Interface.ILikeService;
 import com.project.social_media.application.Service_Interface.IMediaService;
 import com.project.social_media.controllers.Request.Comment.CommentCreateRequest;
 import com.project.social_media.controllers.Request.Comment.CommentUpdateRequest;
-import com.example.project_socialmedia.domain.Model.*;
 import com.project.social_media.domain.Model.Comment;
 import com.project.social_media.domain.Model.MediaAssociation;
 import com.project.social_media.domain.Model.Post;
@@ -112,7 +111,7 @@ public class CommentService implements ICommentService {
 
             // Handle media
             List<MultipartFile> mediaFiles = request.getMediaFileRequest();
-            if(mediaFiles != null) {
+            if (mediaFiles != null) {
                 mediaFiles.stream()
                         .filter(mediaFile -> !mediaFile.isEmpty())
                         .forEach(mediaFile -> mediaService.saveFile(
@@ -141,7 +140,7 @@ public class CommentService implements ICommentService {
 
         List<MediaAssociation> oldMediaFiles = mediaAssociationRepository.findByTargetIdAndTargetType(commentId, "Comment");
         List<MultipartFile> mediaFiles = request.getMediaFileRequest();
-        if(mediaFiles != null) {
+        if (mediaFiles != null) {
             oldMediaFiles.forEach(oldMediaFile -> {
                 mediaService.removeFile(commentId, oldMediaFile.getTargetType(), oldMediaFile.getMedia().getFileType());
             });

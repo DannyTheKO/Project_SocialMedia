@@ -1,6 +1,5 @@
-import React from 'react'
+import React, {useState} from 'react'
 import DefaultProfilePic from '../../../assets/defaultProfilePic.jpg';
-import { useState } from 'react';
 import './Message.css'
 import Conversation from '../../Conversations/Conversation';
 
@@ -68,7 +67,7 @@ const Message = () => {
                                     className={`lastest-msg font-medium text-[20px] ${conv.isUnread
                                         ? 'text-black dark:text-white'
                                         : 'text-gray-500 dark:text-gray-400'
-                                        }`}
+                                    }`}
                                 >
                                     {conv.lastMessage}
                                 </p>
@@ -76,7 +75,7 @@ const Message = () => {
                                     className={`date font-medium text-[20px] ${conv.isUnread
                                         ? 'text-black dark:text-white'
                                         : 'text-gray-500 dark:text-gray-400'
-                                        }`}
+                                    }`}
                                 >
                                     {conv.date}
                                 </p>
@@ -91,7 +90,7 @@ const Message = () => {
 
             {/* Hiển thị khung chat khi click vào một cuộc hội thoại */}
             {openConversation && selectedUser && (
-                <Conversation user={selectedUser} onClose={handleCloseConversation} />
+                <Conversation user={selectedUser} onClose={handleCloseConversation}/>
             )}
         </div>
     );

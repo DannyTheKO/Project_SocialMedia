@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState } from 'react'
+import React, {useEffect, useState} from 'react'
 import './Profile.css'
 import FacebookTwoToneIcon from "@mui/icons-material/FacebookTwoTone";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
@@ -10,13 +10,13 @@ import LanguageIcon from "@mui/icons-material/Language";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Posts from '../../Components/Posts/Posts'
-import { useParams } from 'react-router';
-import { getUser } from '../../Services/UserService/userService'
+import {useParams} from 'react-router';
+import {getUser} from '../../Services/UserService/userService'
 import DefaultProfilePic from '../../assets/defaultProfilePic.jpg';
 
 const Profile = () => {
 
-    const { id } = useParams();
+    const {id} = useParams();
     const [userName, setUserName] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -111,41 +111,41 @@ const Profile = () => {
                 <div className="profileUserInfo">
                     <div className="left">
                         <a href="http://facebook.com" className='text-gray-500'>
-                            <FacebookTwoToneIcon fontSize="large" />
+                            <FacebookTwoToneIcon fontSize="large"/>
                         </a>
                         <a href="http://facebook.com" className='text-gray-500'>
-                            <InstagramIcon fontSize="large" />
+                            <InstagramIcon fontSize="large"/>
                         </a>
                         <a href="http://facebook.com" className='text-gray-500'>
-                            <TwitterIcon fontSize="large" />
+                            <TwitterIcon fontSize="large"/>
                         </a>
                         <a href="http://facebook.com" className='text-gray-500'>
-                            <LinkedInIcon fontSize="large" />
+                            <LinkedInIcon fontSize="large"/>
                         </a>
                         <a href="http://facebook.com" className='text-gray-500'>
-                            <PinterestIcon fontSize="large" />
+                            <PinterestIcon fontSize="large"/>
                         </a>
                     </div>
                     <div className="center">
                         <span>{userName || 'User'}</span>
                         <div className="info">
                             <div className="item">
-                                <PlaceIcon />
+                                <PlaceIcon/>
                                 <span>Viet Nam</span>
                             </div>
                             <div className="item">
-                                <LanguageIcon />
+                                <LanguageIcon/>
                                 <span>Tiếng Việt</span>
                             </div>
                         </div>
                         <button>Follow</button>
                     </div>
                     <div className="right">
-                        <EmailOutlinedIcon style={{ cursor: 'pointer' }} />
-                        <MoreVertIcon style={{ cursor: 'pointer' }} />
+                        <EmailOutlinedIcon style={{cursor: 'pointer'}}/>
+                        <MoreVertIcon style={{cursor: 'pointer'}}/>
                     </div>
                 </div>
-                <Posts userID={id} />
+                <Posts userID={id}/>
             </div>
         </div>
     )

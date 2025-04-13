@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, {useEffect, useState} from 'react'
 import './Posts.css'
 import Post from '../Post/Post'
-import { getAllPosts, getUserPosts } from '../../Services/PostService/postService'
+import {getAllPosts, getUserPosts} from '../../Services/PostService/postService'
 
-const Posts = ({ userID }) => {
+const Posts = ({userID}) => {
 
     const [posts, setPosts] = useState([])
 

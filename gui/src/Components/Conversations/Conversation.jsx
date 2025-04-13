@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import './Conversation.css';
 import WebSocketService from '../../Services/WebSocket/webSocket';
 import CloseIcon from '@mui/icons-material/Close';
@@ -6,9 +6,9 @@ import CallIcon from '@mui/icons-material/Call';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import SendIcon from '@mui/icons-material/Send';
-import { getMessagesData } from '../../Services/MessageService/messageService';
+import {getMessagesData} from '../../Services/MessageService/messageService';
 
-const Conversation = ({ user, onClose }) => {
+const Conversation = ({user, onClose}) => {
 
     const [messages, setMessages] = useState([]);
 
@@ -20,7 +20,7 @@ const Conversation = ({ user, onClose }) => {
 
     // Scroll to latest message function
     const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+        messagesEndRef.current?.scrollIntoView({behavior: 'smooth'})
     }
 
     // Scroll to latest message every time messages change
@@ -35,8 +35,7 @@ const Conversation = ({ user, onClose }) => {
                 // fetch messages of currentUser and choosen User
                 const respone = await getMessagesData(currentUserId, user.id)
                 setMessages(respone.data)
-            }
-            catch (error) {
+            } catch (error) {
                 console.error('Error fetching messages data from MongoDB: ', error);
             }
         }
@@ -86,14 +85,14 @@ const Conversation = ({ user, onClose }) => {
         <div className="conversation">
             <div className="conversation-header">
                 <div className="header-left">
-                    <img src={user.avatar} alt="" className="avatar" />
+                    <img src={user.avatar} alt="" className="avatar"/>
                     <span className="name">{user.name}</span>
                 </div>
                 <div className="header-right">
-                    <CallIcon className="action-icon" style={{ fontSize: '28px' }} />
-                    <VideocamIcon className="action-icon" style={{ fontSize: '28px' }} />
-                    <MoreVertIcon className="action-icon" style={{ fontSize: '28px' }} />
-                    <CloseIcon className="action-icon" onClick={onClose} />
+                    <CallIcon className="action-icon" style={{fontSize: '28px'}}/>
+                    <VideocamIcon className="action-icon" style={{fontSize: '28px'}}/>
+                    <MoreVertIcon className="action-icon" style={{fontSize: '28px'}}/>
+                    <CloseIcon className="action-icon" onClick={onClose}/>
                 </div>
             </div>
             <div className="conversation-messages">
@@ -101,10 +100,10 @@ const Conversation = ({ user, onClose }) => {
                     <div
                         key={index}
                         className={`message ${msg.senderId === currentUserId ? 'message-right' : 'message-left'
-                            }`}
+                        }`}
                     >
                         {msg.sender !== 'User' && (
-                            <img src={user.avatar} alt="" className="message-avatar" />
+                            <img src={user.avatar} alt="" className="message-avatar"/>
                         )}
                         <div className="message-content">
                             <p>{msg.content}</p>
@@ -122,7 +121,7 @@ const Conversation = ({ user, onClose }) => {
                     className="input-field"
                 />
                 <button type="submit" className="send-button">
-                    <SendIcon style={{ fontSize: '28px' }} />
+                    <SendIcon style={{fontSize: '28px'}}/>
                 </button>
             </form>
         </div>

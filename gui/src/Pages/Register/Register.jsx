@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import {Link} from 'react-router-dom'
 import RegisterImage from '../../assets/register-image-2.jpg'
 
 const Register = () => {
@@ -16,11 +16,13 @@ const Register = () => {
                 >
                     <h1 className='text-[65px] leading-[60px] font-bold'>Social Media</h1>
                     <p className='text-[20px] font-medium'>
-                        Tạo tài khoản để bắt đầu hành trình kết nối, chia sẻ và khám phá nội dung chất lượng trong cộng đồng hiện đại, năng động và luôn sẵn sàng đồng hành cùng bạn.
+                        Tạo tài khoản để bắt đầu hành trình kết nối, chia sẻ và khám phá nội dung chất lượng trong cộng
+                        đồng hiện đại, năng động và luôn sẵn sàng đồng hành cùng bạn.
                     </p>
                     <span className='text-[20px] mt-[30px] font-medium'>Đã có tài khoản ?</span>
                     <Link to="/login">
-                        <button className='w-1/2 py-[12px] text-[24px] bg-white text-blue-700 font-bold cursor-pointer rounded-xl hover:bg-blue-500 hover:text-white'>
+                        <button
+                            className='w-1/2 py-[12px] text-[24px] bg-white text-blue-700 font-bold cursor-pointer rounded-xl hover:bg-blue-500 hover:text-white'>
                             Đăng nhập
                         </button>
                     </Link>
@@ -35,10 +37,10 @@ const Register = () => {
                                 placeholder='Họ'
                                 className='border-b border-gray-300 py-[20px] outline-none text-[20px]'
                             /><input
-                                type="Lastname"
-                                placeholder='Tên'
-                                className='border-b border-gray-300 py-[20px] outline-none text-[20px]'
-                            />
+                            type="Lastname"
+                            placeholder='Tên'
+                            className='border-b border-gray-300 py-[20px] outline-none text-[20px]'
+                        />
                         </div>
                         <div className='private-info items-center flex justify-between px-[10px]'>
                             <label className='flex-[1] text-[20px]'>Ngày sinh: </label>
@@ -57,7 +59,8 @@ const Register = () => {
                             placeholder='Password'
                             className='border-b border-gray-300 px-[10px] py-[20px] outline-none text-[20px]'
                         />
-                        <button className='w-1/2 py-[12px] text-[20px] bg-blue-500 hover:bg-[lightgray] hover:text-[#222] mt-[20px] text-white font-bold rounded-xl cursor-pointer'>
+                        <button
+                            className='w-1/2 py-[12px] text-[20px] bg-blue-500 hover:bg-[lightgray] hover:text-[#222] mt-[20px] text-white font-bold rounded-xl cursor-pointer'>
                             Đăng ký
                         </button>
                     </form>

@@ -1,8 +1,8 @@
-import { createContext, useEffect, useState } from "react";
+import {createContext, useEffect, useState} from "react";
 
 export const ThemeContext = createContext();
 
-export const ThemeProvider = ({ children }) => {
+export const ThemeProvider = ({children}) => {
     const [darkMode, setDarkMode] = useState(false)
     // Mặc định là light mode
 
@@ -15,8 +15,7 @@ export const ThemeProvider = ({ children }) => {
             // Nghĩa là người dùng click sang Dark Mode
             document.documentElement.classList.add('dark')
             setDarkMode(true)
-        }
-        else {
+        } else {
             document.documentElement.classList.remove('dark')
             setDarkMode(false)
         }
@@ -37,7 +36,7 @@ export const ThemeProvider = ({ children }) => {
 
     return (
         // Bọc các Component con (children) và truyền giá trị cho context
-        <ThemeContext.Provider value={{ darkMode, toggleDarkMode }}>
+        <ThemeContext.Provider value={{darkMode, toggleDarkMode}}>
             {children}
         </ThemeContext.Provider>
     )

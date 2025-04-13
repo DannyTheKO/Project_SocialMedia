@@ -8,7 +8,10 @@ import com.project.social_media.domain.Model.Like;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -49,7 +52,7 @@ public class LikeController {
             List<LikeDTO> likeDTOS = likeService.convertToDTOList(likes);
             return ResponseEntity.ok(new ApiResponse("Success", likeDTOS));
         } catch (Exception e) {
-            return  ResponseEntity.status(INTERNAL_SERVER_ERROR)
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse("Error", e.getMessage()));
         }
     }
@@ -70,7 +73,7 @@ public class LikeController {
         try {
             Integer likeCount = likeService.getLikeCountByCommentId(commentId);
             return ResponseEntity.ok(new ApiResponse("Success", likeCount));
-        }  catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse("Error", e.getMessage()));
         }

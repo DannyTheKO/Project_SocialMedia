@@ -8,9 +8,11 @@ import java.util.List;
 
 public interface ILikeService {
     List<Like> getAllLikeByPostId(Long postId);
+
     List<Like> getAllLikeByCommentId(Long commentId);
 
     Integer getLikeCountByPostId(Long postId);
+
     Integer getLikeCountByCommentId(Long commentId);
 
     void toggleLike(Long userId, LikeRequest request);

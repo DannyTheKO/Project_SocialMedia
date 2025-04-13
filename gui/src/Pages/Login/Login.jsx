@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import {Link} from 'react-router-dom'
 import PlaceHolderImage from '../../assets/login-image-2.jpg'
 
 const Login = () => {
@@ -17,11 +17,13 @@ const Login = () => {
                 >
                     <h1 className='text-[65px] leading-[60px] font-bold'>Social Media</h1>
                     <p className='text-[20px] font-medium'>
-                        Chào mừng bạn đến với nền tảng kết nối hiện đại, đăng nhập để tiếp tục khám phá, chia sẻ thông tin và xây dựng mối quan hệ ý nghĩa cùng cộng đồng của chúng tôi.
+                        Chào mừng bạn đến với nền tảng kết nối hiện đại, đăng nhập để tiếp tục khám phá, chia sẻ thông
+                        tin và xây dựng mối quan hệ ý nghĩa cùng cộng đồng của chúng tôi.
                     </p>
                     <span className='text-[20px] mt-[30px] font-medium'>Chưa có tài khoản Social Media ?</span>
                     <Link to="/register">
-                        <button className='w-1/2 py-[12px] text-[24px] bg-white text-blue-700 font-bold cursor-pointer rounded-xl hover:bg-blue-500 hover:text-white'>
+                        <button
+                            className='w-1/2 py-[12px] text-[24px] bg-white text-blue-700 font-bold cursor-pointer rounded-xl hover:bg-blue-500 hover:text-white'>
                             Đăng ký
                         </button>
                     </Link>
@@ -41,7 +43,8 @@ const Login = () => {
                             className='border-b border-gray-300 px-[10px] py-[20px] outline-none text-[20px]'
                         />
                         <div className='login flex flex-col gap-[10px] justify-center items-center'>
-                            <button className='w-1/2 py-[12px] text-[20px] bg-blue-500 hover:bg-[lightgray] hover:text-[#222] mt-[20px] text-white font-bold rounded-xl cursor-pointer'>
+                            <button
+                                className='w-1/2 py-[12px] text-[20px] bg-blue-500 hover:bg-[lightgray] hover:text-[#222] mt-[20px] text-white font-bold rounded-xl cursor-pointer'>
                                 Đăng nhập
                             </button>
                             <Link to="/forgotPassword">

@@ -1,13 +1,10 @@
 package com.project.social_media.application.Service;
 
-import com.example.project_socialmedia.application.DTO.*;
 import com.project.social_media.application.DTO.*;
 import com.project.social_media.application.Exception.ResourceNotFound;
-import com.example.project_socialmedia.application.Service_Interface.*;
 import com.project.social_media.application.Service_Interface.*;
 import com.project.social_media.controllers.Request.Post.PostCreateRequest;
 import com.project.social_media.controllers.Request.Post.PostUpdateRequest;
-import com.example.project_socialmedia.domain.Model.*;
 import com.project.social_media.domain.Model.*;
 import com.project.social_media.domain.Repository.MediaAssociationRepository;
 import com.project.social_media.domain.Repository.PostRepository;

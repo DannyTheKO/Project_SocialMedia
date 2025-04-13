@@ -7,7 +7,7 @@ const Messages = () => {
     return (
         <div className='messages'>
             {/*  Messages component */}
-            <Message />
+            <Message/>
         </div>
     )
 }

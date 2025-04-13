@@ -13,13 +13,13 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("${api.prefix}/messages")
-public class MessageController{
+public class MessageController {
     private MessageService messageService;
 
     @GetMapping("/{userId1}/{userId2}")
     private List<Message> getMessageBetweenUsers(
             @PathVariable Long userId1,
-            @PathVariable Long userId2){
+            @PathVariable Long userId2) {
         return messageService.getMessagesBetweenUsers(userId1, userId2);
     }
 

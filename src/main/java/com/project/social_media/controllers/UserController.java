@@ -24,7 +24,7 @@ import static org.springframework.http.HttpStatus.*;
 public class UserController {
     private final UserService userService;
 
-    private final Authentication authentication =  SecurityContextHolder.getContext().getAuthentication();
+    private final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
     /**
      * Get All User

@@ -10,7 +10,7 @@
         display: none;
     }
 
-    .container>div {
+    .container > div {
         -webkit-box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.09);
         -moz-box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.09);
         box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.09);
@@ -20,7 +20,7 @@
         @apply p-[20px] mb-[20px] flex flex-col dark:bg-[#222];
     }
 
-    .item>span {
+    .item > span {
         @apply text-[18px]
     }
 

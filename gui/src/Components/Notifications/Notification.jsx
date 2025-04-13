@@ -1,9 +1,6 @@
 import React from 'react'
 import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
-import ZoomOutMapOutlinedIcon from '@mui/icons-material/ZoomOutMapOutlined';
-import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 import DefaultProfilePic from '../../assets/defaultProfilePic.jpg';
-import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import './Notification.css'
 
 const Notification = () => {
@@ -14,22 +11,30 @@ const Notification = () => {
                     Notifications
                 </div>
                 <div className="right flex gap-[15px] items-center dark:text-white">
-                    <MoreHorizOutlinedIcon />
+                    <MoreHorizOutlinedIcon/>
                 </div>
             </div>
             <div className="flex gap-[15px] items-center mx-[10px]">
-                <button className='bg-gray-300 text-black dark:bg-[#4a4a4a] hover:bg-gray-500 dark:text-white px-4 py-2 rounded-3xl font-medium text-[18px] cursor-pointer'>Tất cả</button>
-                <button className='bg-gray-300 text-black dark:bg-[#4a4a4a] hover:bg-gray-500 dark:text-white px-4 py-2 rounded-3xl font-medium text-[18px] cursor-pointer'>Chưa đọc</button>
+                <button
+                    className='bg-gray-300 text-black dark:bg-[#4a4a4a] hover:bg-gray-500 dark:text-white px-4 py-2 rounded-3xl font-medium text-[18px] cursor-pointer'>Tất
+                    cả
+                </button>
+                <button
+                    className='bg-gray-300 text-black dark:bg-[#4a4a4a] hover:bg-gray-500 dark:text-white px-4 py-2 rounded-3xl font-medium text-[18px] cursor-pointer'>Chưa
+                    đọc
+                </button>
             </div>
             {/*  notifications component */}
             <div className="notifications flex flex-col gap-[8px] p-[5px] cursor-pointer">
                 {/* Unread notification */}
                 <div className="notification flex justify-between items-center">
                     <div className='flex gap-[15px] mr-[10px]'>
-                        <img src={DefaultProfilePic} alt="" className='w-[60px] h-[60px] rounded-full object-cover object-center' />
+                        <img src={DefaultProfilePic} alt=""
+                             className='w-[60px] h-[60px] rounded-full object-cover object-center'/>
                         <div className="content flex flex-col">
                             <div className='notification-info items-center'>
-                                <span className="lastest-msg font-medium text-[20px] text-gray-700 dark:text-[lightgray]">
+                                <span
+                                    className="lastest-msg font-medium text-[20px] text-gray-700 dark:text-[lightgray]">
                                     <b className='text-black dark:text-gray-300'>Danny</b> đã bày tỏ cảm xúc về bài viết của bạn
                                 </span>
                             </div>
@@ -42,7 +47,8 @@ const Notification = () => {
 
                 {/* Seen notification */}
                 <div className="notification flex gap-[15px]">
-                    <img src={DefaultProfilePic} alt="" className='w-[60px] h-[60px] rounded-full object-cover object-center' />
+                    <img src={DefaultProfilePic} alt=""
+                         className='w-[60px] h-[60px] rounded-full object-cover object-center'/>
                     <div className="content flex flex-col">
                         <div className='notification-info items-center'>
                             <span className="lastest-msg font-medium text-[20px] text-gray-700 dark:text-[gray]">

@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, {useEffect, useState} from 'react'
 import './Comments.css'
-import { getPostComment } from '../../Services/CommentService/commentService'
+import {getPostComment} from '../../Services/CommentService/commentService'
 import DefaultProfilePic from '../../assets/defaultProfilePic.jpg'
 import SendIcon from '@mui/icons-material/Send';
 import CommentCpn from '../Comment/CommentCpn';
 
-const Comments = ({ postId }) => {
+const Comments = ({postId}) => {
 
     const [comments, setComments] = useState([])
 
@@ -32,13 +32,13 @@ const Comments = ({ postId }) => {
 
     return <div className='comments'>
         <div className="write">
-            <img src={DefaultProfilePic} alt="" />
-            <input type="text" placeholder='Write a comment' />
-            <button><SendIcon /> </button>
+            <img src={DefaultProfilePic} alt=""/>
+            <input type="text" placeholder='Write a comment'/>
+            <button><SendIcon/></button>
         </div>
 
         {comments.map((comment, index) => (
-            <CommentCpn comment={comment} key={index} />
+            <CommentCpn comment={comment} key={index}/>
         ))}
     </div>
 }
