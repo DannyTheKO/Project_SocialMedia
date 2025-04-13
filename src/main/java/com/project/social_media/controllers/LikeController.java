@@ -2,11 +2,17 @@ package com.project.social_media.controllers;
 
 import com.project.social_media.application.DTO.LikeDTO;
 import com.project.social_media.application.Service.LikeService;
+import com.project.social_media.application.Service.UserService;
+import com.project.social_media.application.Service_Interface.IAuthenticationService;
+import com.project.social_media.application.Service_Interface.IUserService;
 import com.project.social_media.controllers.ApiResponse.ApiResponse;
 import com.project.social_media.controllers.Request.Like.LikeRequest;
 import com.project.social_media.domain.Model.Like;
+import com.project.social_media.domain.Model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -14,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
@@ -24,6 +31,8 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @RequestMapping("${api.prefix}/likes")
 public class LikeController {
     private final LikeService likeService;
+    private final IAuthenticationService authenticationService;
+    private final IUserService userService;
 
     @GetMapping("/post")
     public ResponseEntity<ApiResponse> getAllLikesByPostId(@RequestParam Long postId) {
@@ -45,12 +54,12 @@ public class LikeController {
     public ResponseEntity<ApiResponse> getAllLikesByCommentId(@RequestParam Long commentId) {
         try {
             List<Like> likes = likeService.getAllLikeByCommentId(commentId);
-            if (likes.isEmpty()) {
-                return ResponseEntity.ok(new ApiResponse("Retrieve success, but empty value", NOT_FOUND));
+            if (!likes.isEmpty()) {
+                List<LikeDTO> likeDTOS = likeService.convertToDTOList(likes);
+                return ResponseEntity.ok(new ApiResponse("Success", likeDTOS));
             }
 
-            List<LikeDTO> likeDTOS = likeService.convertToDTOList(likes);
-            return ResponseEntity.ok(new ApiResponse("Success", likeDTOS));
+            return ResponseEntity.ok(new ApiResponse("Success", new ArrayList<>()));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse("Error", e.getMessage()));
@@ -81,16 +90,19 @@ public class LikeController {
 
     @PutMapping("/like")
     public ResponseEntity<ApiResponse> toggleLike(
-            @RequestParam Long userId,
             @RequestParam(required = false) Long postId,
             @RequestParam(required = false) Long commentId) {
         try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            authenticationService.authenticationCheck(authentication);
+            User authUser = userService.getUserByUsername(authentication.getName());
+
             LikeRequest request = new LikeRequest();
             request.setPostId(postId);
             request.setCommentId(commentId);
             request.setCreatedAt(LocalDateTime.now());
 
-            likeService.toggleLike(userId, request);
+            likeService.toggleLike(authUser.getUserId(), request);
 
             return ResponseEntity.ok(new ApiResponse("Success", true));
         } catch (Exception e) {

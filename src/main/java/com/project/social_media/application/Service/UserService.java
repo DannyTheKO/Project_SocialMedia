@@ -90,6 +90,7 @@ public class UserService implements IUserService {
 
         // Construct User
         User newUser = new User();
+        newUser.setUserRole(User.userRole.USER);        // Default Role
         newUser.setUsername(request.getUsername());
         newUser.setFirstName(request.getFirstname());
         newUser.setLastName(request.getLastname());

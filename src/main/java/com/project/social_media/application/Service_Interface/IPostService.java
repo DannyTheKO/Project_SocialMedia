@@ -1,5 +1,6 @@
 package com.project.social_media.application.Service_Interface;
 
+import com.project.social_media.application.DTO.PostDTO;
 import com.project.social_media.controllers.Request.Post.PostCreateRequest;
 import com.project.social_media.controllers.Request.Post.PostUpdateRequest;
 import com.project.social_media.domain.Model.Post;
@@ -55,4 +56,8 @@ public interface IPostService {
      * @return Object {Object}
      */
     Post updatePost(Long userId, Long postId, PostUpdateRequest request);
+
+    PostDTO convertToDTO(Post post);
+
+    List<PostDTO> convertToListDTO(List<Post> postList);
 }

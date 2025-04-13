@@ -16,6 +16,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -41,7 +42,7 @@ public class LikeService implements ILikeService {
     }
 
     /**
-     * Get all like by commentId
+     * Get all likes by commentId
      *
      * @param commentId Long
      * @return List{Object}
@@ -50,11 +51,13 @@ public class LikeService implements ILikeService {
     public List<Like> getAllLikeByCommentId(Long commentId) {
         Comment existingComment = commentRepository.findCommentByCommentId(commentId);
         if (existingComment != null) {
-            return existingComment.getLikes();
+            return existingComment.getLikes() != null ? existingComment.getLikes() : new ArrayList<>();
         }
 
-        return null;
+        // Return an empty list if the comment is not found
+        return new ArrayList<>();
     }
+
 
     /**
      * Count like by postId
@@ -77,7 +80,11 @@ public class LikeService implements ILikeService {
     @Override
     public Integer getLikeCountByCommentId(Long commentId) {
         Comment existingComment = commentRepository.findCommentByCommentId(commentId);
-        return existingComment.getLikes().size();
+        if (existingComment != null) {
+            return existingComment.getLikes() != null ? existingComment.getLikes().size() : 0;
+        }
+
+        return 0;
     }
 
     /**
