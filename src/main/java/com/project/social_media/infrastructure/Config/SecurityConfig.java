@@ -19,6 +19,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -55,13 +56,12 @@ public class SecurityConfig {
                                         // Authenticated guest user socket
 
                                         // >> TODO: Admin Page ?
-                                        .requestMatchers("api/v1/admin/**").hasRole("ADMIN")
+                                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
 
                                         // >> Authentication
-                                        .requestMatchers("api/v1/auth/**").permitAll()
+                                        .requestMatchers("/api/v1/auth/**").permitAll()
 
                                         // Guest has access to all GET Method
-                                        // TODO: Like
                                         .requestMatchers(HttpMethod.GET,
                                                 "/api/v1/users/**",
                                                 "/api/v1/posts/**",
@@ -106,9 +106,16 @@ public class SecurityConfig {
                                         @Nonnull FilterChain filterChain)
                 throws ServletException, IOException {
 
-            String authorizationHeader = request.getHeader("Authorization");
+            final String authorizationHeader = request.getHeader("Authorization");
+
+            // Debug print to check header
+            // System.out.println("Auth Header: " + authorizationHeader);
+
             if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
                 String token = authorizationHeader.substring(7);
+
+                // Debug print to check token
+                // System.out.println("Token: " + token);
 
                 if (JwtUtil.validateToken(token)) {
                     try {
@@ -116,14 +123,37 @@ public class SecurityConfig {
                         String username = claims.getSubject();
                         String role = claims.get("role").toString();
 
-                        // Create a list of granted authorities (roles)
-                        List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role)); // Prefix "ROLE_"
+                        // Debug print
+                        // System.out.println("Username from token: " + username);
+                        // System.out.println("Role from token: " + role);
 
-                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, null, authorities);
+                        List<SimpleGrantedAuthority> authorities = List.of(
+                                new SimpleGrantedAuthority("ROLE_" + role)
+                        );
+
+                        UsernamePasswordAuthenticationToken authentication =
+                                new UsernamePasswordAuthenticationToken(
+                                        username,
+                                        null,
+                                        authorities
+                                );
+
+                        // Set details
+                        authentication.setDetails(
+                                new WebAuthenticationDetailsSource().buildDetails(request)
+                        );
+
                         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+                        // Debug print to verify authentication was set
+                        // System.out.println("Set authentication: " + SecurityContextHolder.getContext().getAuthentication());
+
                     } catch (Exception e) {
+                        // Debug print
+                        // System.out.println("Error processing token: " + e.getMessage());
+                        SecurityContextHolder.clearContext();
                         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        return;
                     }
                 }
             }

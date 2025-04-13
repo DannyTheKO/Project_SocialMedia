@@ -2,6 +2,8 @@ package com.project.social_media.controllers;
 
 import com.project.social_media.application.DTO.UserDTO;
 import com.project.social_media.application.Service.UserService;
+import com.project.social_media.application.Service_Interface.IAuthenticationService;
+import com.project.social_media.application.Service_Interface.IUserService;
 import com.project.social_media.controllers.ApiResponse.ApiResponse;
 import com.project.social_media.controllers.Request.User.UserCreateRequest;
 import com.project.social_media.controllers.Request.User.UserUpdateRequest;
@@ -22,9 +24,8 @@ import static org.springframework.http.HttpStatus.*;
 @RequiredArgsConstructor
 @RequestMapping("${api.prefix}/users")
 public class UserController {
-    private final UserService userService;
-
-    private final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    private final IUserService userService;
+    private final IAuthenticationService authenticationService;
 
     /**
      * Get All User
@@ -80,15 +81,18 @@ public class UserController {
             @ModelAttribute UserUpdateRequest request
     ) {
         try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            authenticationService.authenticationCheck(authentication);
             User existingUser = userService.getUserById(userId);
+            String username = authentication.getName();
 
             // Authentication
-            String username = authentication.getName();
             if (!username.equals(existingUser.getUsername())) {
                 return ResponseEntity.status(FORBIDDEN) // 403
                         .body(new ApiResponse("Invalid Permission", username));
             }
 
+            // Update User
             User updatedUser = userService.updateUser(userId, request);
             return ResponseEntity.ok(new ApiResponse("Success", userService.convertToDTO(updatedUser)));
         } catch (Exception e) {
@@ -102,10 +106,12 @@ public class UserController {
     @DeleteMapping("/user/{userId}/delete")
     public ResponseEntity<ApiResponse> deleteUser(@PathVariable Long userId) {
         try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            authenticationService.authenticationCheck(authentication);
             User existingUser = userService.getUserById(userId);
+            String username = authentication.getName();
 
             // Authentication
-            String username = authentication.getName();
             if (!username.equals(existingUser.getUsername())) {
                 return ResponseEntity.status(FORBIDDEN)
                         .body(new ApiResponse("Invalid Permission", username));

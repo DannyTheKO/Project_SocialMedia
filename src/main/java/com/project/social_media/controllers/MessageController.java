@@ -16,6 +16,8 @@ import java.util.List;
 public class MessageController {
     private MessageService messageService;
 
+    // TODO: Message Controller
+
     @GetMapping("/{userId1}/{userId2}")
     private List<Message> getMessageBetweenUsers(
             @PathVariable Long userId1,

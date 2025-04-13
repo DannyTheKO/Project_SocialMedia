@@ -4,16 +4,15 @@ import com.project.social_media.application.Service_Interface.IChatService;
 import com.project.social_media.domain.Model.Message;
 import com.project.social_media.domain.Repository.MessageRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class ChatService implements IChatService {
-    @Autowired
     private MessageRepository messageRepository;
-
-    @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
     @Transactional

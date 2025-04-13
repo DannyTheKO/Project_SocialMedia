@@ -62,8 +62,8 @@ public class User {
      * @param createdAt Date
      * @param lastLogin Date
      */
-    public User(String username, String firstName, String lastName, String email, String password, LocalDateTime createdAt, LocalDateTime lastLogin) {
-        this.userRole = USER;
+    public User(userRole userRole, String username, String firstName, String lastName, String email, String password, LocalDateTime createdAt, LocalDateTime lastLogin) {
+        this.userRole = userRole;
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
