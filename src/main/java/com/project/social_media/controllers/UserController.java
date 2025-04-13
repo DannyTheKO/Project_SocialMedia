@@ -1,7 +1,6 @@
 package com.project.social_media.controllers;
 
 import com.project.social_media.application.DTO.UserDTO;
-import com.project.social_media.application.Service.UserService;
 import com.project.social_media.application.Service_Interface.IAuthenticationService;
 import com.project.social_media.application.Service_Interface.IUserService;
 import com.project.social_media.controllers.ApiResponse.ApiResponse;
@@ -75,25 +74,26 @@ public class UserController {
     }
 
     // Update
-    @PutMapping("/user/{userId}/update")
+    @PutMapping("/user/update")
     public ResponseEntity<ApiResponse> updateUser(
-            @PathVariable Long userId,
+            @RequestParam Long userId,
             @ModelAttribute UserUpdateRequest request
     ) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             authenticationService.authenticationCheck(authentication);
+
+            String authUser = authentication.getName();
             User existingUser = userService.getUserById(userId);
-            String username = authentication.getName();
 
             // Authentication
-            if (!username.equals(existingUser.getUsername())) {
+            if (!authUser.equals(existingUser.getUsername())) {
                 return ResponseEntity.status(FORBIDDEN) // 403
-                        .body(new ApiResponse("Invalid Permission", username));
+                        .body(new ApiResponse("Invalid Permission", null));
             }
 
-            // Update User
-            User updatedUser = userService.updateUser(userId, request);
+            // Update
+            User updatedUser = userService.updateUser(existingUser.getUserId(), request);
             return ResponseEntity.ok(new ApiResponse("Success", userService.convertToDTO(updatedUser)));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR) // 500
@@ -103,21 +103,22 @@ public class UserController {
 
 
     // Delete
-    @DeleteMapping("/user/{userId}/delete")
-    public ResponseEntity<ApiResponse> deleteUser(@PathVariable Long userId) {
+    @DeleteMapping("/user/delete")
+    public ResponseEntity<ApiResponse> deleteUser(@RequestParam Long userId) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             authenticationService.authenticationCheck(authentication);
+
+            String authUser = authentication.getName();
             User existingUser = userService.getUserById(userId);
-            String username = authentication.getName();
 
             // Authentication
-            if (!username.equals(existingUser.getUsername())) {
+            if (!authUser.equals(existingUser.getUsername())) {
                 return ResponseEntity.status(FORBIDDEN)
-                        .body(new ApiResponse("Invalid Permission", username));
+                        .body(new ApiResponse("Invalid Permission", null));
             }
 
-            // Action
+            // Delete
             userService.deleteUser(userId);
             return ResponseEntity.ok(new ApiResponse("Success", null));
         } catch (Exception e) {
