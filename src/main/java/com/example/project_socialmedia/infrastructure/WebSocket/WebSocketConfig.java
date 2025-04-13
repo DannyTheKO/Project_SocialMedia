@@ -1,4 +1,4 @@
-package com.example.project_socialmedia.infrastructure.Config;
+package com.example.project_socialmedia.infrastructure.WebSocket;
 
 
 import org.springframework.context.annotation.Configuration;

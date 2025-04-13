@@ -49,11 +49,16 @@ public class SecurityConfig {
                                         // >> Files
                                         .requestMatchers("/uploads/**").permitAll()
 
+                                        // >> Websocket
+                                        // Unauthenticated guest user socket for all GET method
+                                        .requestMatchers("/ws/**").permitAll()
+                                        // Authenticated guest user socket
+
                                         // >> TODO: Admin Page ?
-                                        .requestMatchers("api/v1/admin/**").hasRole("ADMIN") // Admin Only Page
+                                        .requestMatchers("api/v1/admin/**").hasRole("ADMIN")
 
                                         // >> Authentication
-                                        .requestMatchers("api/v1/auth/**").permitAll() // Allow all to /api/v1/auth/**
+                                        .requestMatchers("api/v1/auth/**").permitAll()
 
                                         // Guest has access to all GET Method
                                         // TODO: Like
@@ -65,6 +70,10 @@ public class SecurityConfig {
                                         ).permitAll()
 
                                         // Guest has to Authenticated to use Controller
+                                        .requestMatchers(HttpMethod.GET,
+                                                "/api/v1/messages/**"
+                                        ).authenticated()
+
                                         .requestMatchers(HttpMethod.POST,
                                                 "/api/v1/users/**",
                                                 "/api/v1/posts/**",
