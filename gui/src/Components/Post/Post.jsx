@@ -5,8 +5,6 @@ import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
 import TextsmsOutlinedIcon from "@mui/icons-material/TextsmsOutlined";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { Link } from "react-router-dom";
 import Comments from '../Comments/Comments';
 import DefaultProfilePic from '../../assets/defaultProfilePic.jpg';
@@ -32,7 +30,6 @@ const Post = ({ user, postId, content, comments, likes, media, createdPost, modi
 
     // Hàm get image từ url public
     const getImageUrl = (filePath) => {
-        console.log("a")
         if (!filePath) return DefaultProfilePic;
 
         const baseUrl = "http://localhost:8080";
@@ -52,7 +49,6 @@ const Post = ({ user, postId, content, comments, likes, media, createdPost, modi
 
             // Tạo URL public
             const fullUrl = `${baseUrl}/uploads/${cleanPath}`;
-            console.log("Generated Image URL:", fullUrl);
             return fullUrl;
         } catch (error) {
             console.error("Lỗi khi tạo URL ảnh:", error, "FilePath:", filePath);

@@ -1,17 +1,18 @@
 package com.example.project_socialmedia.infrastructure.Config;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
+@EnableJpaRepositories(basePackages = "com.example.project_socialmedia.domain.Repository")
+@EntityScan(basePackages = "com.example.project_socialmedia.domain.Model")
 public class SocialMediaConfig implements WebMvcConfigurer {
-
-    //
-
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();

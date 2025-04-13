@@ -1,0 +1,73 @@
+@import '../../index.css';
+
+.conversation {
+    @apply fixed bottom-4 right-[400px] max-xl:right-[10%] w-[450px] h-[550px] bg-[#f5f5f5] dark:bg-[#2e2e2e] rounded-lg shadow-lg flex flex-col z-50;
+}
+
+.conversation-header {
+    @apply flex justify-between items-center p-3 border-b border-gray-200 dark:border-gray-600;
+}
+
+.header-left {
+    @apply flex items-center gap-[15px];
+}
+
+.header-left .avatar {
+    @apply w-10 h-10 rounded-full object-cover;
+}
+
+.header-left .name {
+    @apply font-semibold text-[20px] text-black dark:text-white;
+}
+
+.header-right {
+    @apply flex gap-[20px];
+}
+
+.action-icon {
+    @apply text-gray-500 dark:text-gray-200 cursor-pointer hover:text-blue-500;
+}
+
+.conversation-messages {
+    @apply flex-1 overflow-y-auto p-[10px] flex flex-col gap-[10px];
+}
+
+.message {
+    @apply flex items-start gap-2;
+}
+
+.message-left {
+    @apply justify-start;
+}
+
+.message-right {
+    @apply justify-end;
+}
+
+.message-avatar {
+    @apply w-8 h-8 rounded-full object-cover;
+}
+
+.message-content {
+    @apply max-w-[70%] p-[12px] rounded-lg text-[20px];
+}
+
+.message-left .message-content {
+    @apply bg-gray-200 dark:bg-gray-700 text-black dark:text-white;
+}
+
+.message-right .message-content {
+    @apply bg-blue-500 text-white;
+}
+
+.conversation-input {
+    @apply flex items-center gap-2 p-3 border-t border-gray-200 dark:border-gray-600;
+}
+
+.input-field {
+    @apply flex-1 py-2 px-4 rounded-full bg-gray-100 dark:bg-gray-700 text-black dark:text-white outline-none text-[20px];
+}
+
+.send-button {
+    @apply p-3 text-blue-500 hover:text-blue-700 hover:bg-gray-300 dark:hover:bg-neutral-500 rounded-lg cursor-pointer;
+}
