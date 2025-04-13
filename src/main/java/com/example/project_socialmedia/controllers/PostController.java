@@ -11,13 +11,14 @@ import com.example.project_socialmedia.domain.Model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -26,7 +27,8 @@ public class PostController {
     private final PostService postService;
     private final UserService userService;
 
-    // PostController
+    private final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    // TODO: Validation
 
     @GetMapping(value = "/all")
     public ResponseEntity<ApiResponse> getAllPost() {
@@ -75,14 +77,18 @@ public class PostController {
             @RequestParam Long userId,
             @ModelAttribute PostCreateRequest request) {
         try {
-            User getUser = userService.getUserById(userId);
-            if (getUser != null) {
-                Post newPost = postService.createPost(request, userId);
-                PostDTO postDTO = postService.convertToDTO(newPost);
-                return ResponseEntity.ok(new ApiResponse("Success", postDTO));
+            User existingUser = userService.getUserById(userId);
+
+            // Authentication
+            String username = authentication.getName();
+            if (!username.equals(existingUser.getUsername())) {
+                return ResponseEntity.status(FORBIDDEN)
+                        .body(new ApiResponse("Invalid Permission", username));
             }
-            return ResponseEntity.status(NOT_FOUND)
-                    .body(new ApiResponse("userId not found", null));
+
+            Post newPost = postService.createPost(request, userId);
+            PostDTO postDTO = postService.convertToDTO(newPost);
+            return ResponseEntity.ok(new ApiResponse("Success", postDTO));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse("Error!", e.getMessage()));
@@ -96,6 +102,15 @@ public class PostController {
             @PathVariable Long postId,
             @ModelAttribute PostUpdateRequest request) {
         try {
+            User existingUser = userService.getUserById(userId);
+
+            // Authentication
+            String username = authentication.getName();
+            if (!username.equals(existingUser.getUsername())) {
+                return ResponseEntity.status(FORBIDDEN)
+                        .body(new ApiResponse("Invalid Permission", username));
+            }
+
             Post updatedPost = postService.updatePost(userId, postId, request);
             PostDTO postDTO = postService.convertToDTO(updatedPost);
             return ResponseEntity.ok(new ApiResponse("Success", postDTO));
@@ -106,8 +121,19 @@ public class PostController {
     }
 
     @DeleteMapping(value = "/post/delete")
-    public ResponseEntity<ApiResponse> deletePost(@RequestParam Long postId) {
+    public ResponseEntity<ApiResponse> deletePost(
+            @RequestParam Long postId,
+            @RequestParam Long userId) {
         try {
+            User existingUser = userService.getUserById(userId);
+
+            // Authentication
+            String username = authentication.getName();
+            if (!username.equals(existingUser.getUsername())) {
+                return ResponseEntity.status(FORBIDDEN)
+                        .body(new ApiResponse("Invalid Permission", username));
+            }
+
             Post existingPost = postService.getPostById(postId);
             if (existingPost != null) {
                 postService.deletePost(postId);

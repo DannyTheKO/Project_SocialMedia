@@ -7,15 +7,18 @@ import com.example.project_socialmedia.controllers.ApiResponse.ApiResponse;
 import com.example.project_socialmedia.controllers.Request.User.UserCreateRequest;
 import com.example.project_socialmedia.controllers.Request.User.UserUpdateRequest;
 import com.example.project_socialmedia.domain.Model.User;
+import jakarta.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.*;
 
 
 @Controller
@@ -23,7 +26,8 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @RequestMapping("${api.prefix}/users")
 public class UserController {
     private final UserService userService;
-    private final PostService postService;
+
+    private final Authentication authentication =  SecurityContextHolder.getContext().getAuthentication();
 
     /**
      * Get All User
@@ -35,7 +39,7 @@ public class UserController {
         try {
             List<User> userList = userService.getAllUser();
             List<UserDTO> userDTOList = userService.convertToDTOList(userList);
-            return ResponseEntity.ok(new ApiResponse("Success!", userDTOList));
+            return ResponseEntity.ok(new ApiResponse("Success", userDTOList));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse("Error!", e.getMessage()));
@@ -60,8 +64,7 @@ public class UserController {
         }
     }
 
-    // Create
-    @PostMapping(value = "/create")
+    @PostMapping("/create")
     public ResponseEntity<ApiResponse> createUser(@RequestBody UserCreateRequest request) {
         try {
             User createUser = userService.createUser(request);
@@ -74,22 +77,25 @@ public class UserController {
     }
 
     // Update
-    @PutMapping(value = "/user/{userId}/update")
+    @PutMapping("/user/{userId}/update")
     public ResponseEntity<ApiResponse> updateUser(
             @PathVariable Long userId,
             @ModelAttribute UserUpdateRequest request
     ) {
         try {
-            User getUser = userService.getUserById(userId);
-            if (getUser != null) {
-                User updatedUser = userService.updateUser(userId, request);
-                return ResponseEntity.ok(new ApiResponse("Success", userService.convertToDTO(updatedUser)));
-            } else {
-                return ResponseEntity.status(NOT_FOUND)
-                        .body(new ApiResponse("User Not Found", null));
+            User existingUser = userService.getUserById(userId);
+
+            // Authentication
+            String username = authentication.getName();
+            if (!username.equals(existingUser.getUsername())) {
+                return ResponseEntity.status(FORBIDDEN) // 403
+                        .body(new ApiResponse("Invalid Permission", username));
             }
+
+            User updatedUser = userService.updateUser(userId, request);
+            return ResponseEntity.ok(new ApiResponse("Success", userService.convertToDTO(updatedUser)));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR)
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR) // 500
                     .body(new ApiResponse("Error!", e.getMessage()));
         }
     }
@@ -99,6 +105,16 @@ public class UserController {
     @DeleteMapping("/user/{userId}/delete")
     public ResponseEntity<ApiResponse> deleteUser(@PathVariable Long userId) {
         try {
+            User existingUser = userService.getUserById(userId);
+
+            // Authentication
+            String username = authentication.getName();
+            if (!username.equals(existingUser.getUsername())) {
+                return ResponseEntity.status(FORBIDDEN)
+                        .body(new ApiResponse("Invalid Permission", username));
+            }
+
+            // Action
             userService.deleteUser(userId);
             return ResponseEntity.ok(new ApiResponse("Success", null));
         } catch (Exception e) {

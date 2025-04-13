@@ -1,6 +1,7 @@
 package com.example.project_socialmedia.controllers;
 
 import com.example.project_socialmedia.application.DTO.LikeDTO;
+import com.example.project_socialmedia.application.Exception.ResourceNotFound;
 import com.example.project_socialmedia.application.Service.LikeService;
 import com.example.project_socialmedia.controllers.ApiResponse.ApiResponse;
 import com.example.project_socialmedia.controllers.Request.Like.LikeRequest;
@@ -10,9 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Controller
 @RequiredArgsConstructor
@@ -24,6 +27,10 @@ public class LikeController {
     public ResponseEntity<ApiResponse> getAllLikesByPostId(@RequestParam Long postId) {
         try {
             List<Like> likes = likeService.getAllLikeByPostId(postId);
+            if (likes.isEmpty()) {
+                return ResponseEntity.ok(new ApiResponse("Retrieve success, but empty value", NOT_FOUND));
+            }
+
             List<LikeDTO> likeDTOS = likeService.convertToDTOList(likes);
             return ResponseEntity.ok(new ApiResponse("Success", likeDTOS));
         } catch (Exception e) {
@@ -36,6 +43,10 @@ public class LikeController {
     public ResponseEntity<ApiResponse> getAllLikesByCommentId(@RequestParam Long commentId) {
         try {
             List<Like> likes = likeService.getAllLikeByCommentId(commentId);
+            if (likes.isEmpty()) {
+                return ResponseEntity.ok(new ApiResponse("Retrieve success, but empty value", NOT_FOUND));
+            }
+
             List<LikeDTO> likeDTOS = likeService.convertToDTOList(likes);
             return ResponseEntity.ok(new ApiResponse("Success", likeDTOS));
         } catch (Exception e) {
@@ -70,11 +81,13 @@ public class LikeController {
     public ResponseEntity<ApiResponse> toggleLike(
             @RequestParam Long userId,
             @RequestParam(required = false) Long postId,
-            @RequestParam(required = false) Long commentId,
-            @ModelAttribute LikeRequest request) {
+            @RequestParam(required = false) Long commentId) {
         try {
+            LikeRequest request = new LikeRequest();
             request.setPostId(postId);
             request.setCommentId(commentId);
+            request.setCreatedAt(LocalDateTime.now());
+
             likeService.toggleLike(userId, request);
 
             return ResponseEntity.ok(new ApiResponse("Success", true));

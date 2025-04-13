@@ -1,7 +1,6 @@
 package com.example.project_socialmedia.application.Service;
 
 import com.example.project_socialmedia.application.DTO.LikeDTO;
-import com.example.project_socialmedia.application.Exception.ResourceNotFound;
 import com.example.project_socialmedia.application.Service_Interface.ILikeService;
 import com.example.project_socialmedia.controllers.Request.Like.LikeRequest;
 import com.example.project_socialmedia.domain.Model.Comment;
@@ -50,7 +49,11 @@ public class LikeService implements ILikeService {
     @Override
     public List<Like> getAllLikeByCommentId(Long commentId) {
         Comment existingComment = commentRepository.findCommentByCommentId(commentId);
-        return existingComment.getLikes();
+        if  (existingComment != null) {
+            return existingComment.getLikes();
+        }
+
+        return null;
     }
 
     /**
