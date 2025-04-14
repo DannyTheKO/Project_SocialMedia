@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import './Comments.css'
-import {getPostComment} from '../../Services/CommentService/commentService'
+import {commentApi} from '../../Services/CommentService/commentService'
 import DefaultProfilePic from '../../assets/defaultProfilePic.jpg'
 import SendIcon from '@mui/icons-material/Send';
 import CommentCpn from '../Comment/CommentCpn';
@@ -15,32 +15,40 @@ const Comments = ({postId}) => {
 
     const loadPostComments = async (postId) => {
         try {
-            let response = await getPostComment(postId)
+            const response = await commentApi.getPostComments(postId);
 
-            if (response && response.data) {
-                setComments(response.data.data)
+            // Since Axios interceptor returns response.data directly,
+            // and backend returns ApiResponse with "message" and "data" fields
+            if (response && response.message === "Success") {
+                setComments(response.data || []); // Ensure we set an empty array if data is null/undefined
             } else {
-                console.warn("Không nhận được dữ liệu API comments!", response.data.data)
-                setComments([])
+                console.warn("Invalid API response:", response);
+                setComments([]);
             }
-
-        } catch (Error) {
-            Console.error('Lỗi khi lấy dữ liệu comments: ', Error)
-            setComments([])
+        } catch (error) {
+            console.error('Error fetching comments:', error.response?.data || error.message);
+            setComments([]);
         }
     }
 
-    return <div className='comments'>
-        <div className="write">
-            <img src={DefaultProfilePic} alt=""/>
-            <input type="text" placeholder='Write a comment'/>
-            <button><SendIcon/></button>
-        </div>
+    return (
+        <div className='comments'>
+            <div className="write">
+                <img src={DefaultProfilePic} alt=""/>
+                <input type="text" placeholder='Write a comment'/>
+                <button><SendIcon/></button>
+            </div>
 
-        {comments.map((comment, index) => (
-            <CommentCpn comment={comment} key={index}/>
-        ))}
-    </div>
+            {/* Add null check before mapping */}
+            {comments && comments.length > 0 ? (
+                comments.map((comment, index) => (
+                    <CommentCpn comment={comment} key={index}/>
+                ))
+            ) : (
+                <div>No comments yet</div>
+            )}
+        </div>
+    )
 }
 
 export default Comments

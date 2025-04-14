@@ -1,23 +1,50 @@
-import axios from 'axios';
+import axios from '../axiosConfig.js';
 
-const REST_API_BASE_URL = '/api/v1/posts';
+const POST_API_BASE_URL = '/posts';
 
-export const getAllPosts = () => {
-    return axios.get(`${REST_API_BASE_URL}/all`);
+/*
+* Dev note:
+*
+* anh fix lại cái response handle lại của em á,
+* trước đó anh có thay đổi cái URL request API của back-end nha...
+* */
+
+export const postApi = {
+    // GET /api/v1/posts/all
+    getAllPosts: () =>
+        axios.get(`${POST_API_BASE_URL}/all`),
+
+    // GET /api/v1/posts/all/user?userId={userId}
+    getAllPostsByUserId: (userId) =>
+        axios.get(`${POST_API_BASE_URL}/all/user?userId=${userId}`),
+
+    // GET /api/v1/posts/post/{postId}
+    getPostById: (postId) =>
+        axios.get(`${POST_API_BASE_URL}/post/${postId}`),
+
+    // POST /api/v1/posts/post/create
+    createPost: (postData) => {
+        const formData = new FormData();
+        Object.keys(postData).forEach(key => {
+            formData.append(key, postData[key]);
+        });
+        return axios.post(`${POST_API_BASE_URL}/post/create`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+    },
+
+    // PUT /api/v1/posts/post/{postId}/update
+    updatePost: (userId, postId, postData) => {
+        const formData = new FormData();
+        Object.keys(postData).forEach(key => {
+            formData.append(key, postData[key]);
+        });
+        return axios.put(`${POST_API_BASE_URL}/post/${postId}/update?userId=${userId}`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+    },
+
+    // DELETE /api/v1/posts/post/delete?postId={postId}
+    deletePost: (postId) =>
+        axios.delete(`${POST_API_BASE_URL}/post/delete?postId=${postId}`)
 };
-
-export const getUserPosts = (userID) => {
-    return axios.get(`${REST_API_BASE_URL}/all/user?userId=${userID}`);
-};
-
-export const createPost = (userID, postInfo) =>
-    axios.post(`${REST_API_BASE_URL}/user/${userID}/create`, postInfo);
-
-export const getPost = (postID) =>
-    axios.get(`${REST_API_BASE_URL}/post/${postID}`);
-
-export const updatePost = (postID, postInfo) =>
-    axios.put(`${REST_API_BASE_URL}/post/${postID}/update`, postInfo);
-
-export const deletePost = (postID) =>
-    axios.delete(`${REST_API_BASE_URL}/post/${postID}/delete`);
