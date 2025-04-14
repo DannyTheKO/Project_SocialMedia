@@ -11,8 +11,10 @@ import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Posts from '../../Components/Posts/Posts'
 import {useParams} from 'react-router';
-import {getUser} from '../../Services/UserService/userService'
+import {userApi} from '../../Services/UserService/userService'
 import DefaultProfilePic from '../../assets/defaultProfilePic.jpg';
+import {ApiResponse} from "../../Model/ApiResponse.jsx";
+import {User} from "../../Model/User.jsx";
 
 const Profile = () => {
 
@@ -53,45 +55,55 @@ const Profile = () => {
         }
     };
 
+    /*
+    * Anh clean lại cái này lun nha
+    *
+     */
+
     useEffect(() => {
-        loadUserInfo()
+        // In case of ignored Promise
+        loadUserInfo().then(user => {
+            return user
+        })
     }, [id])
 
     const loadUserInfo = async () => {
         try {
-            const response = await getUser(id);
+            const response = await userApi.getUserById(id);
+            // console.log(response);
 
-            if (response && response.data) {
-                const userData = response.data.data;
-                setUserName(userData.username || '');
-                setFirstName(userData.firstName || '');
-                setLastName(userData.lastName || '');
-                setEmail(userData.email || '');
-                setBio(userData.bio || '');
-                setProfileImageUrl(userData.profileImageUrl || '');
-                setBannerImageUrl(userData.bannerImageUrl || '');
+            // Since Axios interceptor automatically returns response.data
+            // and backend returns ApiResponse with "message" and "data" fields
+            if (response.message === "Success" && response.data) {
+                const userData = new User(response.data); // Create User instance
+                setUserName(userData.username);
+                setFirstName(userData.firstName);
+                setLastName(userData.lastName);
+                setEmail(userData.email);
+                setBio(userData.bio);
+                setProfileImageUrl(userData.profileImageUrl);
+                setBannerImageUrl(userData.bannerImageUrl);
             } else {
-                console.warn('Invalid data format:', response.data);
-                setUserName('');
-                setFirstName('');
-                setLastName('');
-                setEmail('');
-                setBio('');
-                setProfileImageUrl('');
-                setBannerImageUrl('');
+                console.warn('Invalid response:', response);
+                clearUserData();
             }
-
         } catch (error) {
-            console.error("Lỗi khi lấy dữ liệu người dùng: ", error);
-            setUserName('');
-            setFirstName('');
-            setLastName('');
-            setEmail('');
-            setBio('');
-            setProfileImageUrl('');
-            setBannerImageUrl('');
+            console.error("Error fetching user data: ", error.response?.data || error.message);
+            clearUserData();
         }
     }
+
+// Helper function to clear user data
+    const clearUserData = () => {
+        setUserName('');
+        setFirstName('');
+        setLastName('');
+        setEmail('');
+        setBio('');
+        setProfileImageUrl('');
+        setBannerImageUrl('');
+    }
+
 
     return (
         <div className='profile'>

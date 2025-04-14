@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import './Posts.css'
 import Post from '../Post/Post'
-import {getAllPosts, getUserPosts} from '../../Services/PostService/postService'
+import {postApi} from '../../Services/PostService/postService'
 
 const Posts = ({userID}) => {
 
@@ -15,22 +15,27 @@ const Posts = ({userID}) => {
         try {
             let response;
 
-            if (userID && userID.trim() !== '') {
-                response = await getUserPosts(userID);
+            // Check if userID exists and is not empty (if it's a string)
+            if (userID && (typeof userID === 'string' ? userID.trim() !== '' : true)) {
+                response = await postApi.getAllPostsByUserId(userID);
             } else {
-                response = await getAllPosts();
+                response = await postApi.getAllPosts();
             }
-            if (response && response.data) {
-                setPosts(response.data.data);
+
+            // Since Axios interceptor returns response.data directly,
+            // and backend returns ApiResponse with "message" and "data" fields
+            if (response && response.message === "Success") {
+                setPosts(response.data);
             } else {
-                console.warn('Không nhận được dữ liệu API posts!', response.data);
+                console.warn('Invalid API response:', response);
                 setPosts([]);
             }
         } catch (error) {
-            console.error('Lỗi khi lấy dữ liệu:', error);
+            console.error('Error fetching posts:', error.response?.data || error.message);
             setPosts([]);
         }
     };
+
 
 
     return <div className="posts">

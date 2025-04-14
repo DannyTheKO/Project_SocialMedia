@@ -1,15 +1,36 @@
-import axios from 'axios'
+import axios from '../axiosConfig.js'
 
-const REST_API_BASE_URL = '/api/v1/users';
+const USER_API_BASE_URL = '/users';
 
-export const getAllUsers = () => {
-    return axios.get(`${REST_API_BASE_URL}/all`);
-}
+/*
+* Dev note:
+*
+* anh fix lại cái response handle lại của em á,
+* trước đó anh có thay đổi cái URL request API của back-end nha...
+* */
 
-export const createUser = (userInfo) => axios.post(`${REST_API_BASE_URL}/create'`, userInfo);
+// Handle Response
+export const userApi = {
+    // GET /api/v1/users/all
+    getAllUsers: () => axios.get(`${USER_API_BASE_URL}/all`),
 
-export const getUser = (userID) => axios.get(`${REST_API_BASE_URL}/user/${userID}`);
+    // GET /api/v1/users/user/{userId}
+    getUserById: (userId) => axios.get(`${USER_API_BASE_URL}/user/${userId}`),
 
-export const updateUser = (userID, userInfo) => axios.put(`${REST_API_BASE_URL}/user/${userID}/update`, userInfo);
+    // POST /api/v1/users/create
+    createUser: (userData) => axios.post(`${USER_API_BASE_URL}/create`, userData),
 
-export const deleteUser = (userID) => axios.delete(REST_API_BASE_URL + `/user/${userID}/delete`);
+    // PUT /api/v1/users/user/update?userId={userId}
+    updateUser: (userId, userData) => {
+        const formData = new FormData();
+        Object.keys(userData).forEach(key => {
+            formData.append(key, userData[key]);
+        });
+        return axios.put(`${USER_API_BASE_URL}/user/update?userId=${userId}`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+    },
+
+    // DELETE /api/v1/users/user/delete?userId={userId}
+    deleteUser: (userId) => axios.delete(`${USER_API_BASE_URL}/user/delete?userId=${userId}`)
+};
