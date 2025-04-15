@@ -1,9 +1,8 @@
 package com.project.social_media.controllers;
 
 import com.project.social_media.application.DTO.UserDTO;
-import com.project.social_media.application.Exception.ResourceNotFound;
 import com.project.social_media.application.Service.UserService;
-import com.project.social_media.application.Service_Interface.IAuthenticationService;
+import com.project.social_media.application.IService.IAuthenticationService;
 import com.project.social_media.controllers.ApiResponse.ApiResponse;
 import com.project.social_media.controllers.Request.Authentication.LoginRequest;
 import com.project.social_media.controllers.Request.Authentication.TokenForm;

@@ -29,9 +29,8 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    // TODO: Filter UnAuthorize Action
-    // TODO: If a "guest" do action that require "guest" information? redirect them to register/login
-    // TODO: Add admin role ?
+    // TODO: Front-end: If a "guest" do action that require "guest" information? redirect them to register/login
+    // TODO: Add admin role? maybe?
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -72,6 +71,7 @@ public class SecurityConfig {
                                         ).permitAll()
 
                                         // Guest has to Authenticated to use Controller
+                                        // Temp disable for testing
                                         .requestMatchers(HttpMethod.GET,
                                                 "/api/v1/messages/**"
                                         ).authenticated()

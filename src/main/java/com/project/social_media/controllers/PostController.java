@@ -1,11 +1,9 @@
 package com.project.social_media.controllers;
 
 import com.project.social_media.application.DTO.PostDTO;
-import com.project.social_media.application.Service.PostService;
-import com.project.social_media.application.Service.UserService;
-import com.project.social_media.application.Service_Interface.IAuthenticationService;
-import com.project.social_media.application.Service_Interface.IPostService;
-import com.project.social_media.application.Service_Interface.IUserService;
+import com.project.social_media.application.IService.IAuthenticationService;
+import com.project.social_media.application.IService.IPostService;
+import com.project.social_media.application.IService.IUserService;
 import com.project.social_media.controllers.ApiResponse.ApiResponse;
 import com.project.social_media.controllers.Request.Post.PostCreateRequest;
 import com.project.social_media.controllers.Request.Post.PostUpdateRequest;
@@ -30,9 +28,6 @@ public class PostController {
     private final IPostService postService;
     private final IUserService userService;
     private final IAuthenticationService authenticationService;
-
-    private final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    // TODO: Validation
 
     @GetMapping(value = "/all")
     public ResponseEntity<ApiResponse> getAllPost() {
@@ -77,8 +72,7 @@ public class PostController {
     }
 
     @PostMapping(value = "/post/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse> createPost(
-            @ModelAttribute PostCreateRequest request) {
+    public ResponseEntity<ApiResponse> createPost(@ModelAttribute PostCreateRequest request) {
         try {
             // Get Authentication User
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -96,6 +90,9 @@ public class PostController {
     }
 
 
+    // TODO:
+    //  updatePost is an "Admin" role action,
+    //  create a separate API endpoint that correspond with authenticated "User" role
     @PutMapping(value = "/post/{postId}/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse> updatePost(
             @RequestParam Long userId,

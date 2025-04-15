@@ -2,9 +2,8 @@ package com.project.social_media.application.Service;
 
 
 import com.project.social_media.application.Exception.AuthenticationException;
-import com.project.social_media.application.Service_Interface.IAuthenticationService;
-import com.project.social_media.application.Service_Interface.IUserService;
-import com.project.social_media.controllers.ApiResponse.ApiResponse;
+import com.project.social_media.application.IService.IAuthenticationService;
+import com.project.social_media.application.IService.IUserService;
 import com.project.social_media.controllers.Request.Authentication.LoginRequest;
 import com.project.social_media.controllers.Request.Authentication.TokenForm;
 import com.project.social_media.controllers.Request.User.UserCreateRequest;
@@ -12,10 +11,7 @@ import com.project.social_media.domain.Model.User;
 import com.project.social_media.domain.Repository.UserRepository;
 import com.project.social_media.infrastructure.Util.JwtUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -91,9 +87,7 @@ public class AuthenticationService implements IAuthenticationService {
         }
 
         // If token is sent but invalid case
-        User user = userService.getUserByUsername(authentication.getName());
-        if(user == null) {
-            throw new AuthenticationException("Unable to Authenticate");
-        }
+        userRepository.findUserByUsername(authentication.getName())
+                .orElseThrow(() -> new AuthenticationException("Username not found"));
     }
 }

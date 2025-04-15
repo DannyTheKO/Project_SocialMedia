@@ -1,11 +1,10 @@
 package com.project.social_media.controllers;
 
 import com.project.social_media.application.DTO.CommentDTO;
-import com.project.social_media.application.Service.CommentService;
-import com.project.social_media.application.Service_Interface.IAuthenticationService;
-import com.project.social_media.application.Service_Interface.ICommentService;
-import com.project.social_media.application.Service_Interface.IPostService;
-import com.project.social_media.application.Service_Interface.IUserService;
+import com.project.social_media.application.IService.IAuthenticationService;
+import com.project.social_media.application.IService.ICommentService;
+import com.project.social_media.application.IService.IPostService;
+import com.project.social_media.application.IService.IUserService;
 import com.project.social_media.controllers.ApiResponse.ApiResponse;
 import com.project.social_media.controllers.Request.Comment.CommentCreateRequest;
 import com.project.social_media.controllers.Request.Comment.CommentUpdateRequest;

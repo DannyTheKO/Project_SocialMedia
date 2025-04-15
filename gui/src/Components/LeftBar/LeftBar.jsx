@@ -1,11 +1,11 @@
 import React from 'react'
 import './LeftBar.css'
-import Friends from "../../assets/1.png";
-import Groups from "../../assets/2.png";
-import Gallery from "../../assets/8.png";
-import Videos from "../../assets/9.png";
-import Messages from "../../assets/10.png";
-import PlaceHolderImage from '../../assets/login-image.jpg'
+import Friends from "../../Assets/1.png";
+import Groups from "../../Assets/2.png";
+import Gallery from "../../Assets/8.png";
+import Videos from "../../Assets/9.png";
+import Messages from "../../Assets/10.png";
+import PlaceHolderImage from '../../Assets/login-image.jpg'
 
 const LeftBar = () => {
     return (

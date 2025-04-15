@@ -1,6 +1,6 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
-import RegisterImage from '../../assets/register-image-2.jpg'
+import RegisterImage from '../../Assets/register-image-2.jpg'
 
 const Register = () => {
     return (

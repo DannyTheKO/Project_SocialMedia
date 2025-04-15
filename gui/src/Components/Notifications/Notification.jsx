@@ -1,6 +1,6 @@
 import React from 'react'
 import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
-import DefaultProfilePic from '../../assets/defaultProfilePic.jpg';
+import DefaultProfilePic from '../../Assets/defaultProfilePic.jpg';
 import './Notification.css'
 
 const Notification = () => {

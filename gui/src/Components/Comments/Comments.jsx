@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import './Comments.css'
 import {commentApi} from '../../Services/CommentService/commentService'
-import DefaultProfilePic from '../../assets/defaultProfilePic.jpg'
+import DefaultProfilePic from '../../Assets/defaultProfilePic.jpg'
 import SendIcon from '@mui/icons-material/Send';
 import CommentCpn from '../Comment/CommentCpn';
 

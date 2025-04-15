@@ -1,4 +1,4 @@
-package com.project.social_media.application.Service_Interface;
+package com.project.social_media.application.IService;
 
 import com.project.social_media.application.DTO.UserDTO;
 import com.project.social_media.controllers.Request.User.UserCreateRequest;

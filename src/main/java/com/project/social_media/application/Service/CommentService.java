@@ -4,9 +4,9 @@ import com.project.social_media.application.DTO.CommentDTO;
 import com.project.social_media.application.DTO.LikeDTO;
 import com.project.social_media.application.DTO.MediaDTO;
 import com.project.social_media.application.Exception.ResourceNotFound;
-import com.project.social_media.application.Service_Interface.ICommentService;
-import com.project.social_media.application.Service_Interface.ILikeService;
-import com.project.social_media.application.Service_Interface.IMediaService;
+import com.project.social_media.application.IService.ICommentService;
+import com.project.social_media.application.IService.ILikeService;
+import com.project.social_media.application.IService.IMediaService;
 import com.project.social_media.controllers.Request.Comment.CommentCreateRequest;
 import com.project.social_media.controllers.Request.Comment.CommentUpdateRequest;
 import com.project.social_media.domain.Model.Comment;
@@ -39,7 +39,7 @@ public class CommentService implements ICommentService {
     private final IMediaService mediaService;
     private final ILikeService likeService;
 
-    private final String uploadDir = "gui/src/assets/uploads/posts";
+    private final String uploadDir = "gui/src/Assets/uploads/posts";
 
     /**
      * Get Comment By ID
@@ -71,8 +71,9 @@ public class CommentService implements ICommentService {
      */
     @Override
     public List<Comment> getAllCommentsByUserId(Long userId) {
-        User existingUser = userRepository.findUserByUserId(userId);
-        return existingUser.getComments();
+        return userRepository.findUserByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFound("getAllCommentsByUserId: userId not found"))
+                .getComments();
     }
 
     /**
@@ -82,7 +83,8 @@ public class CommentService implements ICommentService {
      */
     @Override
     public List<Comment> getAllCommentsByPostId(Long postId) {
-        Post getPost = postRepository.findPostByPostId(postId);
+        Post getPost = postRepository.findPostByPostId(postId)
+                .orElse(new Post());
         return getPost.getComments();
     }
 
@@ -95,8 +97,11 @@ public class CommentService implements ICommentService {
     @PreAuthorize("hasRole('ROLE_USER') and hasRole('ROLE_ADMIN')")
     public Comment createComment(Long userId, Long postId, CommentCreateRequest request) {
         try {
-            User existingUser = userRepository.findUserByUserId(userId);
-            Post existingPost = postRepository.findPostByPostId(postId);
+            User existingUser = userRepository.findUserByUserId(userId)
+                    .orElseThrow(() -> new ResourceNotFound("createComment: userId not found"));
+
+            Post existingPost = postRepository.findPostByPostId(postId)
+                    .orElseThrow(() -> new ResourceNotFound("createComment: postId not found"));
 
             Comment newComment = new Comment(
                     existingUser,

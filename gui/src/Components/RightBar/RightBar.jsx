@@ -1,6 +1,6 @@
 import React from 'react'
 import './RightBar.css'
-import PlaceHolderImage from '../../assets/login-image.jpg'
+import PlaceHolderImage from '../../Assets/login-image.jpg'
 
 const RightBar = () => {
 

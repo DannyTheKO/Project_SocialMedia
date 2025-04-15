@@ -2,7 +2,7 @@ package com.project.social_media.application.Service;
 
 import com.project.social_media.application.DTO.RelationshipsDTO;
 import com.project.social_media.application.DTO.UserDTO;
-import com.project.social_media.application.Service_Interface.IRelationshipsService;
+import com.project.social_media.application.IService.IRelationshipsService;
 import com.project.social_media.domain.Model.Relationships;
 import com.project.social_media.domain.Model.User;
 import com.project.social_media.domain.Repository.RelationshipsRepository;
