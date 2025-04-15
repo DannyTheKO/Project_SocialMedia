@@ -1,9 +1,9 @@
 package com.project.social_media.controllers;
 
 import com.project.social_media.application.DTO.RelationshipsDTO;
-import com.project.social_media.application.Service_Interface.IAuthenticationService;
-import com.project.social_media.application.Service_Interface.IRelationshipsService;
-import com.project.social_media.application.Service_Interface.IUserService;
+import com.project.social_media.application.IService.IAuthenticationService;
+import com.project.social_media.application.IService.IRelationshipsService;
+import com.project.social_media.application.IService.IUserService;
 import com.project.social_media.controllers.ApiResponse.ApiResponse;
 import com.project.social_media.controllers.Request.Relationships.RelationshipsCreateRequest;
 import com.project.social_media.controllers.Request.Relationships.RelationshipsUpdateRequest;

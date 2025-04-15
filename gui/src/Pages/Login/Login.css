@@ -16,7 +16,7 @@
 
         .left {
             flex: 1;
-            background: linear-gradient(rgba(39, 11, 96, 0.4), rgba(39, 11, 96, 0.4)), url('../../assets/login-image.jpg');
+            background: linear-gradient(rgba(39, 11, 96, 0.4), rgba(39, 11, 96, 0.4)), url('../../Assets/login-image.jpg');
             background-size: cover;
             background-position: center;
             padding: 50px;

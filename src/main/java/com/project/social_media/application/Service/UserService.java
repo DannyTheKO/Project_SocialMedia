@@ -3,8 +3,8 @@ package com.project.social_media.application.Service;
 import com.project.social_media.application.DTO.UserDTO;
 import com.project.social_media.application.Exception.ResourceConflict;
 import com.project.social_media.application.Exception.ResourceNotFound;
-import com.project.social_media.application.Service_Interface.IMediaService;
-import com.project.social_media.application.Service_Interface.IUserService;
+import com.project.social_media.application.IService.IMediaService;
+import com.project.social_media.application.IService.IUserService;
 import com.project.social_media.controllers.Request.User.UserCreateRequest;
 import com.project.social_media.controllers.Request.User.UserUpdateRequest;
 import com.project.social_media.domain.Model.Media;
@@ -26,7 +26,7 @@ public class UserService implements IUserService {
     private final UserRepository userRepository;
     private final IMediaService mediaService;
 
-    final String uploadDir = "gui/src/assets/uploads/users/";
+    final String uploadDir = "gui/src/Assets/uploads/users/";
 
     /**
      * Get all User from database
@@ -57,7 +57,8 @@ public class UserService implements IUserService {
      * @return {User}
      */
     public User getUserByUsername(String username) {
-        return userRepository.findUserByUsername(username);
+        return userRepository.findUserByUsername(username)
+                .orElseThrow(() -> new ResourceNotFound("getUserByUsername: username not found"));
     }
 
     /**
@@ -67,7 +68,8 @@ public class UserService implements IUserService {
      * @return {User}
      */
     public User getUserByEmail(String email) {
-        return userRepository.findUserByEmail(email);
+        return userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new ResourceNotFound("getUserByEmail: email not found"));
     }
 
     /**
@@ -77,17 +79,16 @@ public class UserService implements IUserService {
      */
     @Override
     public User createUser(UserCreateRequest request) {
-        User byEmail = userRepository.findUserByEmail(request.getEmail());
-        User byUsername = userRepository.findUserByUsername(request.getUsername());
-
         // Validation
-        if (byEmail != null) {
-            throw new ResourceConflict("createUser: user email already exists");
-        }
+        userRepository.findUserByEmail(request.getEmail())
+                .ifPresent(email -> {
+                    throw new ResourceConflict("Email '" + request.getEmail() + "' already exists");
+                });
 
-        if (byUsername != null) {
-            throw new ResourceConflict("createUser: username already exists");
-        }
+        userRepository.findUserByUsername(request.getUsername())
+                .ifPresent(user -> {
+                    throw new ResourceConflict("Username '" + request.getUsername() + "' already exists");
+                });
 
         // Construct User
         User newUser = new User();

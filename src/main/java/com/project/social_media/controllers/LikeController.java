@@ -2,9 +2,8 @@ package com.project.social_media.controllers;
 
 import com.project.social_media.application.DTO.LikeDTO;
 import com.project.social_media.application.Service.LikeService;
-import com.project.social_media.application.Service.UserService;
-import com.project.social_media.application.Service_Interface.IAuthenticationService;
-import com.project.social_media.application.Service_Interface.IUserService;
+import com.project.social_media.application.IService.IAuthenticationService;
+import com.project.social_media.application.IService.IUserService;
 import com.project.social_media.controllers.ApiResponse.ApiResponse;
 import com.project.social_media.controllers.Request.Like.LikeRequest;
 import com.project.social_media.domain.Model.Like;

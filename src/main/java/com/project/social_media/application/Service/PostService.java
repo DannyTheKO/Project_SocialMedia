@@ -2,7 +2,7 @@ package com.project.social_media.application.Service;
 
 import com.project.social_media.application.DTO.*;
 import com.project.social_media.application.Exception.ResourceNotFound;
-import com.project.social_media.application.Service_Interface.*;
+import com.project.social_media.application.IService.*;
 import com.project.social_media.controllers.Request.Post.PostCreateRequest;
 import com.project.social_media.controllers.Request.Post.PostUpdateRequest;
 import com.project.social_media.domain.Model.*;
@@ -33,7 +33,7 @@ public class PostService implements IPostService {
     private final ICommentService commentService;
     private final ILikeService likeService;
 
-    private final String uploadDir = "gui/src/assets/uploads/posts/";
+    private final String uploadDir = "gui/src/Assets/uploads/posts/";
 
 
     /**
@@ -66,8 +66,9 @@ public class PostService implements IPostService {
      */
     @Override
     public List<Post> getAllPostsByUserId(Long userId) {
-        User existingUser = userRepository.findUserByUserId(userId);
-        return existingUser.getPosts();
+        return userRepository.findUserByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFound("User not found with id: " + userId))
+                .getPosts();
     }
 
     /**
@@ -93,7 +94,8 @@ public class PostService implements IPostService {
     public Post createPost(PostCreateRequest request, Long userId) {
         try {
             // Check if User exist in the database
-            User user = userRepository.findUserByUserId(userId);
+            User user = userRepository.findUserByUserId(userId)
+                    .orElseThrow(() -> new ResourceNotFound("createPost: userId not found"));
 
             Post newPost = new Post(
                     user,
@@ -166,9 +168,6 @@ public class PostService implements IPostService {
         try {
             // 1. Retrieve the post using postId
             Post existingPost = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFound("updatePost: Post not found"));
-
-            // TODO 2. Verify that the userId from the request matches the post's owner (Authentication)
-            // User existingUser = userService.getUserById(userId);
 
             // 3. If authorized, proceed with the update logic
             existingPost.setContent(request.getContent());

@@ -9,7 +9,7 @@ import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import ListIcon from '@mui/icons-material/List';
 import {Link} from 'react-router'
-import PlaceHolderImage from '../../assets/login-image.jpg'
+import PlaceHolderImage from '../../Assets/login-image.jpg'
 import {ThemeContext} from '../../Context/ThemeContext';
 import Chat from '../Chat/Chat';
 import Notification from '../Notifications/Notification';

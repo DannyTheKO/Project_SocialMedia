@@ -1,8 +1,8 @@
 package com.project.social_media.controllers;
 
 import com.project.social_media.application.DTO.UserDTO;
-import com.project.social_media.application.Service_Interface.IAuthenticationService;
-import com.project.social_media.application.Service_Interface.IUserService;
+import com.project.social_media.application.IService.IAuthenticationService;
+import com.project.social_media.application.IService.IUserService;
 import com.project.social_media.controllers.ApiResponse.ApiResponse;
 import com.project.social_media.controllers.Request.User.UserCreateRequest;
 import com.project.social_media.controllers.Request.User.UserUpdateRequest;

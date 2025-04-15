@@ -1,7 +1,8 @@
 package com.project.social_media.application.Service;
 
 import com.project.social_media.application.DTO.LikeDTO;
-import com.project.social_media.application.Service_Interface.ILikeService;
+import com.project.social_media.application.Exception.ResourceNotFound;
+import com.project.social_media.application.IService.ILikeService;
 import com.project.social_media.controllers.Request.Like.LikeRequest;
 import com.project.social_media.domain.Model.Comment;
 import com.project.social_media.domain.Model.Like;
@@ -37,7 +38,9 @@ public class LikeService implements ILikeService {
      */
     @Override
     public List<Like> getAllLikeByPostId(Long postId) {
-        Post existingPost = postRepository.findPostByPostId(postId);
+        Post existingPost = postRepository.findPostByPostId(postId)
+                .orElse(new Post());
+
         return existingPost.getLikes();
     }
 
@@ -49,13 +52,10 @@ public class LikeService implements ILikeService {
      */
     @Override
     public List<Like> getAllLikeByCommentId(Long commentId) {
-        Comment existingComment = commentRepository.findCommentByCommentId(commentId);
-        if (existingComment != null) {
-            return existingComment.getLikes() != null ? existingComment.getLikes() : new ArrayList<>();
-        }
+        Comment existingComment = commentRepository.findCommentByCommentId(commentId)
+                .orElse(new Comment()); // Return empty Comment object
 
-        // Return an empty list if the comment is not found
-        return new ArrayList<>();
+        return existingComment.getLikes() != null ? existingComment.getLikes() : new ArrayList<>();
     }
 
 
@@ -67,7 +67,9 @@ public class LikeService implements ILikeService {
      */
     @Override
     public Integer getLikeCountByPostId(Long postId) {
-        Post existingPost = postRepository.findPostByPostId(postId);
+        Post existingPost = postRepository.findPostByPostId(postId)
+                .orElse(new Post());
+
         return existingPost.getLikes().size();
     }
 
@@ -79,12 +81,10 @@ public class LikeService implements ILikeService {
      */
     @Override
     public Integer getLikeCountByCommentId(Long commentId) {
-        Comment existingComment = commentRepository.findCommentByCommentId(commentId);
-        if (existingComment != null) {
-            return existingComment.getLikes() != null ? existingComment.getLikes().size() : 0;
-        }
+        Comment existingComment = commentRepository.findCommentByCommentId(commentId)
+                .orElse(new Comment());
 
-        return 0;
+        return existingComment.getLikes() != null ? existingComment.getLikes().size() : 0;
     }
 
     /**
@@ -95,10 +95,13 @@ public class LikeService implements ILikeService {
      */
     @Override
     public void toggleLike(Long userId, LikeRequest request) throws RuntimeException {
-        User existingUser = userRepository.findUserByUserId(userId);
+        User existingUser = userRepository.findUserByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFound("toggleLike: userId not found"));
 
         if (request.getPostId() != null) {
-            Post existingPost = postRepository.findPostByPostId(request.getPostId());
+            Post existingPost = postRepository.findPostByPostId(request.getPostId())
+                    .orElseThrow(() -> new ResourceNotFound("toggleLike: postId not found"));
+
             Like existingLike = likeRepository.findLikesByPost(existingPost)
                     .stream()
                     .filter(like -> like.getUser().getUserId().equals(userId))
@@ -120,7 +123,8 @@ public class LikeService implements ILikeService {
             }
         } else if (request.getCommentId() != null) { // request.getCommentId != null
 
-            Comment existingComment = commentRepository.findCommentByCommentId(request.getCommentId());
+            Comment existingComment = commentRepository.findCommentByCommentId(request.getCommentId())
+                    .orElseThrow(() -> new ResourceNotFound("toggleLike: commentId not found"));
 
             Like existingLike = likeRepository.findLikesByComment(existingComment)
                     .stream()

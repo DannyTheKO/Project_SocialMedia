@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import DefaultProfilePic from '../../../assets/defaultProfilePic.jpg';
+import DefaultProfilePic from '../../../Assets/defaultProfilePic.jpg';
 import './Message.css'
 import Conversation from '../../Conversations/Conversation';
 

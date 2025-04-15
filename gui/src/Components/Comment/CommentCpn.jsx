@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import DefaultProfilePic from '../../assets/defaultProfilePic.jpg'
+import DefaultProfilePic from '../../Assets/defaultProfilePic.jpg'
 import './CommentCpn.css'
 import moment from 'moment'
 import 'moment/locale/vi';

@@ -1,6 +1,6 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
-import PlaceHolderImage from '../../assets/login-image-2.jpg'
+import PlaceHolderImage from '../../Assets/login-image-2.jpg'
 
 const Login = () => {
     return (

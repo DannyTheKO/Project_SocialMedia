@@ -28,6 +28,9 @@ class WebSocketService {
                 this.client.publish({
                     destination: '/app/chat.addUser',
                     body: JSON.stringify({
+                        // TODO:
+                        //  Get token from user when login,
+                        //  send packet to server with token header
                         sender: 2, // user real UserId
                         type: 'JOIN'
                     })

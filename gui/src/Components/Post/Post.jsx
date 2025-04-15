@@ -7,7 +7,7 @@ import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import {Link} from "react-router-dom";
 import Comments from '../Comments/Comments';
-import DefaultProfilePic from '../../assets/defaultProfilePic.jpg';
+import DefaultProfilePic from '../../Assets/defaultProfilePic.jpg';
 import moment from 'moment/moment';
 import 'moment/locale/vi';
 

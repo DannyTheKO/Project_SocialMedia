@@ -2,9 +2,9 @@ package com.project.social_media.controllers;
 
 
 import com.project.social_media.application.DTO.FriendRequestDTO;
-import com.project.social_media.application.Service_Interface.IAuthenticationService;
-import com.project.social_media.application.Service_Interface.IFriendRequestService;
-import com.project.social_media.application.Service_Interface.IUserService;
+import com.project.social_media.application.IService.IAuthenticationService;
+import com.project.social_media.application.IService.IFriendRequestService;
+import com.project.social_media.application.IService.IUserService;
 import com.project.social_media.controllers.ApiResponse.ApiResponse;
 import com.project.social_media.controllers.Request.FriendRequest.FriendRequestCreateRequest;
 import com.project.social_media.controllers.Request.FriendRequest.FriendRequestUpdateRequest;

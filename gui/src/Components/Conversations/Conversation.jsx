@@ -16,6 +16,7 @@ const Conversation = ({user, onClose}) => {
 
     const messagesEndRef = useRef(null)
 
+    // TODO: Set this to token, and send back to server
     const currentUserId = 2 // user real UserId
 
     // Scroll to latest message function
@@ -30,7 +31,7 @@ const Conversation = ({user, onClose}) => {
 
     // Get messages data from server whenever open chat frame
     useEffect(() => {
-        const fectchMessages = async () => {
+        const fetchMessages = async () => {
             try {
                 // fetch messages of currentUser and choosen User
                 const respone = await getMessagesData(currentUserId, user.id)
@@ -40,7 +41,7 @@ const Conversation = ({user, onClose}) => {
             }
         }
 
-        fectchMessages();
+        fetchMessages();
     }, [user.id])
 
     // Connect Socker server of currentUser and choosen user

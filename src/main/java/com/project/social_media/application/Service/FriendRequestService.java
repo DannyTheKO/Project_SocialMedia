@@ -2,7 +2,7 @@ package com.project.social_media.application.Service;
 
 import com.project.social_media.application.DTO.FriendRequestDTO;
 import com.project.social_media.application.DTO.UserDTO;
-import com.project.social_media.application.Service_Interface.IFriendRequestService;
+import com.project.social_media.application.IService.IFriendRequestService;
 import com.project.social_media.domain.Model.FriendRequest;
 import com.project.social_media.domain.Model.User;
 import com.project.social_media.domain.Repository.FriendRequestRepository;

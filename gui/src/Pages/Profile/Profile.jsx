@@ -12,7 +12,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Posts from '../../Components/Posts/Posts'
 import {useParams} from 'react-router';
 import {userApi} from '../../Services/UserService/userService'
-import DefaultProfilePic from '../../assets/defaultProfilePic.jpg';
+import DefaultProfilePic from '../../Assets/defaultProfilePic.jpg';
 import {ApiResponse} from "../../Model/ApiResponse.jsx";
 import {User} from "../../Model/User.jsx";
 
@@ -47,7 +47,7 @@ const Profile = () => {
 
             // Tạo URL public
             const fullUrl = `${baseUrl}/uploads/${cleanPath}`;
-            console.log("Generated Image URL:", fullUrl);
+            // console.log("Generated Image URL:", fullUrl);
             return fullUrl;
         } catch (error) {
             console.error("Lỗi khi tạo URL ảnh:", error, "FilePath:", filePath);

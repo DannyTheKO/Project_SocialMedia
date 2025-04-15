@@ -2,7 +2,7 @@ package com.project.social_media.application.Service;
 
 import com.project.social_media.application.DTO.MediaDTO;
 import com.project.social_media.application.Exception.ResourceNotFound;
-import com.project.social_media.application.Service_Interface.IMediaService;
+import com.project.social_media.application.IService.IMediaService;
 import com.project.social_media.domain.Model.Media;
 import com.project.social_media.domain.Model.MediaAssociation;
 import com.project.social_media.domain.Repository.MediaAssociationRepository;
