@@ -12,6 +12,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+
+// MongoDB collection
 @Document(collection = "messages")
 public class Message {
     @Id

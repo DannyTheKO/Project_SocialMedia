@@ -66,7 +66,9 @@ public class SecurityConfig {
                                                 "/api/v1/users/**",
                                                 "/api/v1/posts/**",
                                                 "/api/v1/comments/**",
-                                                "/api/v1/likes/**"
+                                                "/api/v1/likes/**",
+                                                "/api/v1/relationships/**",
+                                                "/api/v1/friend-requests/**"
                                         ).permitAll()
 
                                         // Guest has to Authenticated to use Controller
@@ -78,14 +80,18 @@ public class SecurityConfig {
                                                 "/api/v1/users/**",
                                                 "/api/v1/posts/**",
                                                 "/api/v1/comments/**",
-                                                "/api/v1/likes/**"
+                                                "/api/v1/likes/**",
+                                                "/api/v1/relationships/**",
+                                                "/api/v1/friend-requests/**"
                                         ).authenticated()
 
                                         .requestMatchers(HttpMethod.PUT,
                                                 "/api/v1/users/**",
                                                 "/api/v1/posts/**",
                                                 "/api/v1/comments/**",
-                                                "/api/v1/likes/**"
+                                                "/api/v1/likes/**",
+                                                "/api/v1/relationships/**",
+                                                "/api/v1/friend-requests/**"
                                         ).authenticated()
 
 
@@ -93,7 +99,9 @@ public class SecurityConfig {
                                                 "/api/v1/users/**",
                                                 "/api/v1/posts/**",
                                                 "/api/v1/comments/**",
-                                                "/api/v1/likes/**"
+                                                "/api/v1/likes/**",
+                                                "/api/v1/relationships/**",
+                                                "/api/v1/friend-requests/**"
                                         ).authenticated()
                 );
         return http.build();
