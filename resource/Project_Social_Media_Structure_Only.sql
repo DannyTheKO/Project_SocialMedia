@@ -59,6 +59,27 @@ CREATE TABLE `friends` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `friends_request`
+--
+
+DROP TABLE IF EXISTS `friends_request`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `friends_request` (
+  `friend_request_id` bigint NOT NULL AUTO_INCREMENT,
+  `created_at` datetime(6) NOT NULL,
+  `status` enum('ACCEPTED','PENDING','REJECTED') NOT NULL,
+  `from_user_id` bigint NOT NULL,
+  `to_user_id` bigint NOT NULL,
+  PRIMARY KEY (`friend_request_id`),
+  KEY `idx_from_to` (`from_user_id`,`to_user_id`),
+  KEY `idx_to_user_status` (`to_user_id`,`status`),
+  CONSTRAINT `FKb0j1hrtktb1m8bbrwbo9wpti6` FOREIGN KEY (`from_user_id`) REFERENCES `users` (`user_id`),
+  CONSTRAINT `FKgestqiy5d0nf5vii1leg71yln` FOREIGN KEY (`to_user_id`) REFERENCES `users` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `likes`
 --
 
@@ -95,7 +116,7 @@ CREATE TABLE `media` (
   `file_path` varchar(255) NOT NULL,
   `file_type` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`media_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -113,7 +134,7 @@ CREATE TABLE `media_association` (
   PRIMARY KEY (`media_association_id`),
   KEY `FK2g6f4t27emckb1yiy03nnwl1v` (`media_id`),
   CONSTRAINT `FK2g6f4t27emckb1yiy03nnwl1v` FOREIGN KEY (`media_id`) REFERENCES `media` (`media_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -139,6 +160,31 @@ CREATE TABLE `messages` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `notification`
+--
+
+DROP TABLE IF EXISTS `notification`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `notification` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `content` varchar(255) NOT NULL,
+  `created_at` datetime(6) NOT NULL,
+  `is_read` bit(1) NOT NULL,
+  `related_id` bigint DEFAULT NULL,
+  `type` tinyint NOT NULL,
+  `receiver_id` bigint NOT NULL,
+  `sender_id` bigint NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKdammjl0v5xfaegi926ugx6254` (`receiver_id`),
+  KEY `FKrg0atx075rr68et2rqrh34qwj` (`sender_id`),
+  CONSTRAINT `FKdammjl0v5xfaegi926ugx6254` FOREIGN KEY (`receiver_id`) REFERENCES `users` (`user_id`),
+  CONSTRAINT `FKrg0atx075rr68et2rqrh34qwj` FOREIGN KEY (`sender_id`) REFERENCES `users` (`user_id`),
+  CONSTRAINT `notification_chk_1` CHECK ((`type` between 0 and 4))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `posts`
 --
 
@@ -154,6 +200,49 @@ CREATE TABLE `posts` (
   PRIMARY KEY (`post_id`),
   KEY `FK5lidm6cqbc7u4xhqpxm898qme` (`user_id`),
   CONSTRAINT `FK5lidm6cqbc7u4xhqpxm898qme` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `refresh_token`
+--
+
+DROP TABLE IF EXISTS `refresh_token`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `refresh_token` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `created_at` datetime(6) NOT NULL,
+  `expiry_date` datetime(6) NOT NULL,
+  `token` varchar(255) NOT NULL,
+  `user_id` bigint NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UKr4k4edos30bx9neoq81mdvwph` (`token`),
+  KEY `FKjtx87i0jvq2svedphegvdwcuy` (`user_id`),
+  CONSTRAINT `FKjtx87i0jvq2svedphegvdwcuy` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `relationships`
+--
+
+DROP TABLE IF EXISTS `relationships`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `relationships` (
+  `relationship_id` bigint NOT NULL AUTO_INCREMENT,
+  `created_at` datetime(6) NOT NULL,
+  `status` enum('BLOCKED','FRIENDS') NOT NULL,
+  `updated_at` datetime(6) NOT NULL,
+  `user_id_1` bigint NOT NULL,
+  `user_id_2` bigint NOT NULL,
+  PRIMARY KEY (`relationship_id`),
+  KEY `idx_users` (`user_id_1`,`user_id_2`),
+  KEY `idx_user1_status` (`user_id_1`,`status`),
+  KEY `FKk7y46upeo3h8h2dvdmrlsfimj` (`user_id_2`),
+  CONSTRAINT `FKk7y46upeo3h8h2dvdmrlsfimj` FOREIGN KEY (`user_id_2`) REFERENCES `users` (`user_id`),
+  CONSTRAINT `FKmlv8lpp7npdrb0oe58igjnamx` FOREIGN KEY (`user_id_1`) REFERENCES `users` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -179,7 +268,7 @@ CREATE TABLE `users` (
   `username` varchar(255) NOT NULL,
   `user_role` enum('USER','ADMIN') NOT NULL,
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -191,4 +280,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-15 11:29:28
+-- Dump completed on 2025-04-19 17:08:11

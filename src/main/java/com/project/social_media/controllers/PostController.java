@@ -29,6 +29,24 @@ public class PostController {
     private final IUserService userService;
     private final IAuthenticationService authenticationService;
 
+    /*
+     * GET Method
+     *
+     * All the GET method will be available to public guest.
+     *
+     * If guest request an action (like create, delete, update Post, Comment, Like... etc.),
+     * Will be redirected to front-end login page for authentication
+     */
+
+    /**
+     * <h1>GET: Get All Posts</h1>
+     * <h5>URL: api/v1/posts/all</h5>
+     * <br>
+     *
+     * <li>Retrieve all posts in the system</li>
+     *
+     * @return {@link ApiResponse} containing a list of {@link PostDTO}
+     */
     @GetMapping(value = "/all")
     public ResponseEntity<ApiResponse> getAllPost() {
         try {
@@ -41,6 +59,16 @@ public class PostController {
         }
     }
 
+    /**
+     * <h1>GET: Get All Posts By User ID</h1>
+     * <h5>URL: api/v1/posts/all/user</h5>
+     * <br>
+     *
+     * <li>Retrieve all posts created by a specific user</li>
+     *
+     * @param userId The ID of the user whose posts to retrieve
+     * @return {@link ApiResponse} containing a list of {@link PostDTO}
+     */
     @GetMapping("/all/user")
     public ResponseEntity<ApiResponse> getAllPostByUserId(
             @RequestParam(required = false) Long userId) {
@@ -54,6 +82,16 @@ public class PostController {
         }
     }
 
+    /**
+     * <h1>GET: Get Post By ID</h1>
+     * <h5>URL: api/v1/posts/post</h5>
+     * <br>
+     *
+     * <li>Retrieve a specific post by its ID</li>
+     *
+     * @param postId The ID of the post to retrieve
+     * @return {@link ApiResponse} containing the requested {@link PostDTO}
+     */
     @GetMapping("/post/{postId}")
     public ResponseEntity<ApiResponse> getPostById(@PathVariable Long postId) {
         try {
@@ -71,6 +109,24 @@ public class PostController {
         }
     }
 
+    /*
+     * POST Method
+     *
+     * Action that required user information will have to authenticate
+     * Otherwise will be redirected to log in page for authentication
+     */
+
+    /**
+     * <h1>POST: Create Post</h1>
+     * <h5>URL: api/v1/posts/create</h5>
+     * <br>
+     *
+     * <li>Creates a new post with the authenticated user as the author</li>
+     * <li>Supports multipart form data for media uploads</li>
+     *
+     * @param request {@link PostCreateRequest} containing post content and media
+     * @return {@link ApiResponse} containing the created {@link PostDTO}
+     */
     @PostMapping(value = "/post/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse> createPost(@ModelAttribute PostCreateRequest request) {
         try {
@@ -89,13 +145,28 @@ public class PostController {
         }
     }
 
+    /*
+     * PUT Method
+     *
+     * Action that required user information will have to authenticate
+     * Otherwise will be redirected to log in page for authentication
+     */
 
-    // TODO:
-    //  updatePost is an "Admin" role action,
-    //  create a separate API endpoint that correspond with authenticated "User" role
+    /**
+     * <h1>PUT: Update Post</h1>
+     * <h5>URL: api/v1/posts/post/{postId}/update</h5>
+     * <br>
+     *
+     * <li>Updates an existing post owned by the authenticated user</li>
+     * <li>Validates that the current user is the owner of the post</li>
+     * <li>Supports multipart form data for media uploads</li>
+     *
+     * @param postId The ID of the post to update
+     * @param request {@link PostUpdateRequest} containing updated post content and media
+     * @return {@link ApiResponse} containing the updated {@link PostDTO}
+     */
     @PutMapping(value = "/post/{postId}/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse> updatePost(
-            @RequestParam Long userId,
             @PathVariable Long postId,
             @ModelAttribute PostUpdateRequest request) {
         try {
@@ -111,7 +182,7 @@ public class PostController {
             }
 
             // Update
-            Post updatedPost = postService.updatePost(userId, postId, request);
+            Post updatedPost = postService.updatePost(authUser.getUserId(), postId, request);
             PostDTO postDTO = postService.convertToDTO(updatedPost);
             return ResponseEntity.ok(new ApiResponse("Success", postDTO));
         } catch (Exception e) {
@@ -120,6 +191,24 @@ public class PostController {
         }
     }
 
+    /*
+     * DELETE Method
+     *
+     * Action that required user information will have to authenticate
+     * Otherwise will be redirected to log in page for authentication
+     */
+
+    /**
+     * <h1>DELETE: Delete Post</h1>
+     * <h5>URL: api/v1/posts/post/delete</h5>
+     * <br>
+     *
+     * <li>Deletes an existing post owned by the authenticated user</li>
+     * <li>Validates that the current user is the owner of the post</li>
+     *
+     * @param postId The ID of the post to delete
+     * @return {@link ApiResponse} confirming successful deletion
+     */
     @DeleteMapping(value = "/post/delete")
     public ResponseEntity<ApiResponse> deletePost(@RequestParam Long postId) {
         try {
