@@ -1,12 +1,27 @@
-import React from 'react'
-import {Link} from 'react-router-dom'
-import PlaceHolderImage from '../../Assets/login-image-2.jpg'
+import React, { useState, useContext } from 'react';
+import { Link } from 'react-router-dom';
+import PlaceHolderImage from '../../Assets/login-image-2.jpg';
+import { AuthContext } from '../../Context/AuthContext';
 
 const Login = () => {
+    const { login } = useContext(AuthContext);
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError(''); // Reset error before call API
+        try {
+            await login(username, password); // Login function from context
+        } catch (err) {
+            setError(err.message || 'Đăng nhập thất bại'); // Display error
+        }
+    };
+
     return (
         <div className='h-screen bg-black flex items-center justify-center'>
             <div className="w-[60%] min-h-[600px] flex bg-white rounded-[10px] overflow-hidden">
-
                 <div
                     className="flex-1 p-[50px] flex flex-col gap-[55px] text-white"
                     style={{
@@ -31,19 +46,27 @@ const Login = () => {
 
                 <div className="flex-1 p-[50px] flex flex-col gap-[40px]">
                     <h1 className='font-bold text-[40px] text-[#555]'>Đăng nhập</h1>
-                    <form className='flex flex-col gap-[30px]'>
+                    <form className='flex flex-col gap-[30px]' onSubmit={handleSubmit}>
                         <input
                             type="text"
                             placeholder='Tên đăng nhập'
                             className='border-b border-gray-300 px-[10px] py-[20px] outline-none text-[20px]'
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
                         />
                         <input
                             type="password"
                             placeholder='Mật khẩu'
                             className='border-b border-gray-300 px-[10px] py-[20px] outline-none text-[20px]'
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
                         />
+                        {error && <p className='text-red-500 text-[16px] text-center'>{error}</p>}
                         <div className='login flex flex-col gap-[10px] justify-center items-center'>
                             <button
+                                type="submit"
                                 className='w-1/2 py-[12px] text-[20px] bg-blue-500 hover:bg-[lightgray] hover:text-[#222] mt-[20px] text-white font-bold rounded-xl cursor-pointer'>
                                 Đăng nhập
                             </button>
@@ -51,12 +74,11 @@ const Login = () => {
                                 <span className='text-blue-500 cursor-pointer hover:text-gray-500 text-[16px]'>Quên mật khẩu ?</span>
                             </Link>
                         </div>
-
                     </form>
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Login
+export default Login;

@@ -1,6 +1,8 @@
 package com.project.social_media.domain.Repository;
 
 import com.project.social_media.domain.Model.FriendRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,5 +15,5 @@ public interface FriendRequestRepository extends JpaRepository<FriendRequest, Lo
     boolean existsByFromUserUserIdAndToUserUserIdAndStatus(Long fromUserId, Long toUserId, FriendRequest.FriendRequestStatus status);
 
     // Lấy danh sách yêu cầu kết bạn đến một người dùng (PENDING)
-    List<FriendRequest> findByToUserUserIdAndStatus(Long toUserId, FriendRequest.FriendRequestStatus status);
+    Page<FriendRequest> findByToUserUserIdAndStatus(Long toUserId, FriendRequest.FriendRequestStatus status, Pageable pageable);
 }

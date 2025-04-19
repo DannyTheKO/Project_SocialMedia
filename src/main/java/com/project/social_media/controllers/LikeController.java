@@ -94,13 +94,14 @@ public class LikeController {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             authenticationService.authenticationCheck(authentication);
-            User authUser = userService.getUserByUsername(authentication.getName());
+            User authUser = userService.getUserByUsername(authentication.getName()).orElse(null);
 
             LikeRequest request = new LikeRequest();
             request.setPostId(postId);
             request.setCommentId(commentId);
             request.setCreatedAt(LocalDateTime.now());
 
+            assert authUser != null;
             likeService.toggleLike(authUser.getUserId(), request);
 
             return ResponseEntity.ok(new ApiResponse("Success", true));

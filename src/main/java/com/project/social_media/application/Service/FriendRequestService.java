@@ -9,6 +9,8 @@ import com.project.social_media.domain.Repository.FriendRequestRepository;
 import com.project.social_media.domain.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,8 +24,9 @@ public class FriendRequestService implements IFriendRequestService {
     private final ModelMapper modelMapper;
 
     @Override
-    public List<FriendRequest> getReceivedFriendRequests(Long userId) {
-        return friendRequestRepository.findByToUserUserIdAndStatus(userId, FriendRequest.FriendRequestStatus.PENDING);
+    public Page<FriendRequest> getReceivedFriendRequests(Long userId, PageRequest pageRequest) {
+        return friendRequestRepository.findByToUserUserIdAndStatus(
+                userId, FriendRequest.FriendRequestStatus.PENDING, pageRequest);
     }
 
     @Override

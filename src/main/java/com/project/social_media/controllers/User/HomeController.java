@@ -67,7 +67,7 @@ public class HomeController {
 
         // Check Flag
         try {
-            User authUser = userService.getUserByUsername(authentication.getName());
+            User authUser = userService.getUserByUsername(authentication.getName()).orElse(null);
             UserDTO userDTO = userService.convertToDTO(authUser);
 
             return ResponseEntity.ok(new ApiResponse("Success", userDTO));
@@ -123,7 +123,7 @@ public class HomeController {
             // Get Authentication User
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             authenticationService.authenticationCheck(authentication);
-            User authUser = userService.getUserByUsername(authentication.getName());
+            User authUser = userService.getUserByUsername(authentication.getName()).orElse(null);
 
             // Create
             Post newPost = postService.createPost(request, authUser.getUserId());
@@ -160,7 +160,7 @@ public class HomeController {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             authenticationService.authenticationCheck(authentication);
-            User authUser = userService.getUserByUsername(authentication.getName());
+            User authUser = userService.getUserByUsername(authentication.getName()).orElse(null);
             Post existingPost = postService.getPostById(postId);
 
             // Authentication

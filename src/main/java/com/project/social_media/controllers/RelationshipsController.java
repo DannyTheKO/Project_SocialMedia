@@ -42,7 +42,7 @@ public class RelationshipsController {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             authenticationService.authenticationCheck(authentication);
-            User authUser = userService.getUserByUsername(authentication.getName());
+            User authUser = userService.getUserByUsername(authentication.getName()).orElse(null);
 
             List<Relationships> friends = relationshipsService.getFriends(authUser.getUserId());
             List<RelationshipsDTO> friendDTOs = relationshipsService.convertToListDTO(friends);
@@ -62,7 +62,7 @@ public class RelationshipsController {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             authenticationService.authenticationCheck(authentication);
-            User authUser = userService.getUserByUsername(authentication.getName());
+            User authUser = userService.getUserByUsername(authentication.getName()).orElse(null);
 
             Relationships newRelationship = relationshipsService.createRelationship(authUser.getUserId(),
                     request.getUserId2(),
@@ -83,7 +83,7 @@ public class RelationshipsController {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             authenticationService.authenticationCheck(authentication);
-            User authUser = userService.getUserByUsername(authentication.getName());
+            User authUser = userService.getUserByUsername(authentication.getName()).orElse(null);
 
             Relationships existingRelationship = relationshipsService.getRelationshipById(relationshipId);
             // Auth: chỉ một trong hai người dùng được cập nhật
@@ -109,7 +109,7 @@ public class RelationshipsController {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             authenticationService.authenticationCheck(authentication);
-            User authUser = userService.getUserByUsername(authentication.getName());
+            User authUser = userService.getUserByUsername(authentication.getName()).orElse(null);
 
             Relationships existingRelationship = relationshipsService.getRelationshipById(relationshipId);
             // Auth: chỉ một trong hai người dùng được xóa

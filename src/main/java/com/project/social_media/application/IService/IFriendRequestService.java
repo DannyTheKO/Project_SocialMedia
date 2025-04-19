@@ -2,6 +2,8 @@ package com.project.social_media.application.IService;
 
 import com.project.social_media.application.DTO.FriendRequestDTO;
 import com.project.social_media.domain.Model.FriendRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 
@@ -10,9 +12,9 @@ public interface IFriendRequestService {
      * Get received friend requests by user ID
      *
      * @param userId Long
-     * @return List<FriendRequest>
+     * @return Page<FriendRequest> (Pageable)
      */
-    List<FriendRequest> getReceivedFriendRequests(Long userId);
+    Page<FriendRequest> getReceivedFriendRequests(Long userId, PageRequest pageRequest);
 
     /**
      * Get friend request by ID

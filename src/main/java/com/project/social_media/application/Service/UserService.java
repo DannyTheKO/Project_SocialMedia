@@ -14,9 +14,12 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -56,9 +59,8 @@ public class UserService implements IUserService {
      * @param username String
      * @return {User}
      */
-    public User getUserByUsername(String username) {
-        return userRepository.findUserByUsername(username)
-                .orElseThrow(() -> new ResourceNotFound("getUserByUsername: username not found"));
+    public Optional<User> getUserByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
     /**
@@ -85,7 +87,7 @@ public class UserService implements IUserService {
                     throw new ResourceConflict("Email '" + request.getEmail() + "' already exists");
                 });
 
-        userRepository.findUserByUsername(request.getUsername())
+        userRepository.findByUsername(request.getUsername())
                 .ifPresent(user -> {
                     throw new ResourceConflict("Username '" + request.getUsername() + "' already exists");
                 });
@@ -100,6 +102,15 @@ public class UserService implements IUserService {
         newUser.setPassword(request.getPassword());
         newUser.setCreatedAt(LocalDateTime.now());
         newUser.setLastLogin(LocalDateTime.now());
+
+        if (request.getBirthday() != null && !request.getBirthday().isEmpty()) {
+            try {
+                LocalDateTime birthday = LocalDateTime.parse(request.getBirthday());
+                newUser.setBirthDay(birthday);
+            } catch (DateTimeParseException e) {
+               System.out.println("Unexpected error when create user with birthday: " + e.getMessage());
+            }
+        }
 
         // Send to database
         userRepository.save(newUser);
@@ -140,7 +151,7 @@ public class UserService implements IUserService {
             existingUser.setEmail(request.getEmail());
             existingUser.setPassword(request.getPassword());
             existingUser.setBio(request.getBio());
-            existingUser.setBirthDate(request.getBirthDate());
+            existingUser.setBirthDay(request.getBirthDate());
 
             if (request.getProfileImage() != null && !request.getProfileImage().isEmpty()) {
                 String fileType = mediaService.identifyMediaType(Objects.requireNonNull(request.getProfileImage().getOriginalFilename()));

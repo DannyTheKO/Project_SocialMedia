@@ -77,7 +77,7 @@ public class PostController {
             // Get Authentication User
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             authenticationService.authenticationCheck(authentication);
-            User authUser = userService.getUserByUsername(authentication.getName());
+            User authUser = userService.getUserByUsername(authentication.getName()).orElse(null);
 
             // Create
             Post newPost = postService.createPost(request, authUser.getUserId());
@@ -101,7 +101,7 @@ public class PostController {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             authenticationService.authenticationCheck(authentication);
-            User authUser = userService.getUserByUsername(authentication.getName());
+            User authUser = userService.getUserByUsername(authentication.getName()).orElse(null);
             Post existingPost = postService.getPostById(postId);
 
             // Authentication
@@ -125,7 +125,7 @@ public class PostController {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             authenticationService.authenticationCheck(authentication);
-            User authUser = userService.getUserByUsername(authentication.getName());
+            User authUser = userService.getUserByUsername(authentication.getName()).orElse(null);
             Post existingPost = postService.getPostById(postId);
 
             // Authentication
