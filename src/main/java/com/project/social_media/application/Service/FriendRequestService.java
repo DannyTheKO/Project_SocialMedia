@@ -23,6 +23,8 @@ public class FriendRequestService implements IFriendRequestService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
 
+    private final NotificationService notificationService;
+
     @Override
     public Page<FriendRequest> getReceivedFriendRequests(Long userId, PageRequest pageRequest) {
         return friendRequestRepository.findByToUserUserIdAndStatus(
@@ -49,7 +51,11 @@ public class FriendRequestService implements IFriendRequestService {
 
         FriendRequest request = new FriendRequest(
                 fromUser, toUser, FriendRequest.FriendRequestStatus.PENDING, LocalDateTime.now());
-        return friendRequestRepository.save(request);
+
+        FriendRequest savedRequest = friendRequestRepository.save(request);
+        notificationService.createFriendRequestNotification(fromUserId, toUserId, savedRequest.getFriendRequestId());
+
+        return savedRequest;
     }
 
     @Override
