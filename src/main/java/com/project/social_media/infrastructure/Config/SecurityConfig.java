@@ -5,6 +5,7 @@ import io.jsonwebtoken.Claims;
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
@@ -20,9 +21,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -34,7 +39,15 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable) // Disable CSRF protection for testing
+        http.cors(cors -> cors.configurationSource(request -> {
+                    CorsConfiguration config = new CorsConfiguration();
+                    config.setAllowedOrigins(List.of("http://localhost:3000"));
+                    config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    config.setAllowedHeaders(List.of("*"));
+                    config.setAllowCredentials(true); // Accept for cookie
+                    return config;
+                }))
+                .csrf(AbstractHttpConfigurer::disable) // Disable CSRF protection for testing
                 .sessionManagement((session) ->
                         // This is fucking important, so don't fucking touch it, is for the JWT
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -107,6 +120,18 @@ public class SecurityConfig {
         return http.build();
     }
 
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("http://localhost:3000"));
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
+    }
+
     public static class JwtAuthenticationFilter extends OncePerRequestFilter {
         @Override
         protected void doFilterInternal(HttpServletRequest request,
@@ -114,56 +139,72 @@ public class SecurityConfig {
                                         @Nonnull FilterChain filterChain)
                 throws ServletException, IOException {
 
-            final String authorizationHeader = request.getHeader("Authorization");
+            // Ignore public API
+            String path = request.getRequestURI();
+            if (path.startsWith("/api/v1/auth/register") ||
+                    path.startsWith("/api/v1/auth/login") ||
+                    path.startsWith("/api/v1/auth/refresh")) {
+                filterChain.doFilter(request, response);
+                return;
+            }
 
-            // Debug print to check header
-            // System.out.println("Auth Header: " + authorizationHeader);
-
-            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-                String token = authorizationHeader.substring(7);
-
-                // Debug print to check token
-                // System.out.println("Token: " + token);
-
-                if (JwtUtil.validateToken(token)) {
-                    try {
-                        Claims claims = JwtUtil.extractAllClaims(token);
-                        String username = claims.getSubject();
-                        String role = claims.get("role").toString();
-
-                        // Debug print
-                        // System.out.println("Username from token: " + username);
-                        // System.out.println("Role from token: " + role);
-
-                        List<SimpleGrantedAuthority> authorities = List.of(
-                                new SimpleGrantedAuthority("ROLE_" + role)
-                        );
-
-                        UsernamePasswordAuthenticationToken authentication =
-                                new UsernamePasswordAuthenticationToken(
-                                        username,
-                                        null,
-                                        authorities
-                                );
-
-                        // Set details
-                        authentication.setDetails(
-                                new WebAuthenticationDetailsSource().buildDetails(request)
-                        );
-
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-                        // Debug print to verify authentication was set
-                        // System.out.println("Set authentication: " + SecurityContextHolder.getContext().getAuthentication());
-
-                    } catch (Exception e) {
-                        // Debug print
-                        // System.out.println("Error processing token: " + e.getMessage());
-                        SecurityContextHolder.clearContext();
-                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                        return;
+            // Get access token from cookie
+            String token = null;
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if ("accessToken".equals(cookie.getName())) {
+                        token = cookie.getValue();
+                        break;
                     }
                 }
+            }
+
+            // If access token from cookie not found, check in header Authorization ( for API testing )
+            if (token == null) {
+                String authHeader = request.getHeader("Authorization");
+                if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                    token = authHeader.substring(7);
+                }
+            }
+
+            System.out.println("Token from cookie or header: " + token);
+
+            if (token != null && JwtUtil.validateToken(token)) {
+                try {
+                    Claims claims = JwtUtil.extractAllClaims(token);
+                    String username = claims.getSubject();
+                    String role = claims.get("role").toString();
+
+                    System.out.println("Username from token: " + username);
+                    System.out.println("Role from token: " + role);
+
+                    List<SimpleGrantedAuthority> authorities = List.of(
+                            new SimpleGrantedAuthority("ROLE_" + role)
+                    );
+
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(
+                                    username,
+                                    null,
+                                    authorities
+                            );
+
+                    authentication.setDetails(
+                            new WebAuthenticationDetailsSource().buildDetails(request)
+                    );
+
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                    System.out.println("Set authentication: " + SecurityContextHolder.getContext().getAuthentication());
+                } catch (Exception e) {
+                    System.out.println("Error processing token: " + e.getMessage());
+                    SecurityContextHolder.clearContext();
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    return;
+                }
+            } else {
+                System.out.println("No valid token found in cookie");
             }
 
             filterChain.doFilter(request, response);

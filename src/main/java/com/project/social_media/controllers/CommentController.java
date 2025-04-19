@@ -74,7 +74,7 @@ public class CommentController {
             // Get authenticate user
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             authenticationService.authenticationCheck(authentication);
-            User authUser = userService.getUserByUsername(authentication.getName());
+            User authUser = userService.getUserByUsername(authentication.getName()).orElse(null);
 
             // Create
             Comment newComment = commentService.createComment(authUser.getUserId(), postId, request);
@@ -94,7 +94,7 @@ public class CommentController {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             authenticationService.authenticationCheck(authentication);
-            User authUser = userService.getUserByUsername(authentication.getName());
+            User authUser = userService.getUserByUsername(authentication.getName()).orElse(null);
             Comment existingComment = commentService.getCommentById(commentId);
 
             // Authentication Check
@@ -119,7 +119,7 @@ public class CommentController {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             authenticationService.authenticationCheck(authentication);
-            User user = userService.getUserByUsername(authentication.getName());
+            User user = userService.getUserByUsername(authentication.getName()).orElse(null);
             Comment existingComment = commentService.getCommentById(commentId);
 
             // Authentication Check

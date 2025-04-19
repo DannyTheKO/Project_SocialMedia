@@ -6,6 +6,7 @@ import com.project.social_media.controllers.Request.User.UserUpdateRequest;
 import com.project.social_media.domain.Model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IUserService {
 
@@ -30,7 +31,7 @@ public interface IUserService {
      * @param username String
      * @return {User}
      */
-    User getUserByUsername(String username);
+    Optional<User> getUserByUsername(String username);
 
     /**
      * Get User By Email

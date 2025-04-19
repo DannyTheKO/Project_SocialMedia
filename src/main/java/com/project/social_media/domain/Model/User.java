@@ -5,14 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import static com.project.social_media.domain.Model.User.userRole.USER;
 
 @Getter
 @Setter
@@ -35,8 +32,10 @@ public class User {
     @Column(nullable = false, name = "user_role")
     private userRole userRole;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date birthDate;
+    @Getter
+    @Setter
+    @Column(name = "birth_date", nullable = false)
+    private LocalDateTime birthDay;
 
     @Column(nullable = false)
     private String username;
@@ -52,6 +51,17 @@ public class User {
 
     @Column(nullable = false)
     private LocalDateTime lastLogin;
+
+    @PrePersist
+    public void prePersist(){
+        LocalDateTime now = LocalDateTime.now();
+        if (createdAt == null) {
+            createdAt = now;
+        }
+        if (lastLogin == null) {
+            lastLogin = now;
+        }
+    }
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts;
