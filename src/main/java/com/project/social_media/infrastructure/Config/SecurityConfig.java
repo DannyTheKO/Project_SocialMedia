@@ -160,8 +160,15 @@ public class SecurityConfig {
                 }
             }
 
-            // Debug print
-            System.out.println("Token from cookie: " + token);
+            // If access token from cookie not found, check in header Authorization ( for API testing )
+            if (token == null) {
+                String authHeader = request.getHeader("Authorization");
+                if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                    token = authHeader.substring(7);
+                }
+            }
+
+            System.out.println("Token from cookie or header: " + token);
 
             if (token != null && JwtUtil.validateToken(token)) {
                 try {
