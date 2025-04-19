@@ -26,10 +26,23 @@ public class UserController {
     private final IUserService userService;
     private final IAuthenticationService authenticationService;
 
-    /**
-     * Get All User
+    /*
+     * GET Method
      *
-     * @return Object {userDTOList}
+     * All the GET method will be available to public guest.
+     *
+     * If guest request an action (like create, delete, update Post, Comment, Like... etc.),
+     * Will be redirected to front-end login page,
+     */
+
+    /**
+     * <h1>GET: Get All User</h1>
+     * <h5>URL: api/v1/users/all</h5>
+     * <br>
+     *
+     * <li>Retrieve all users from database</li>
+     *
+     * @return {@link ApiResponse#ApiResponse(String, Object)}
      */
     @GetMapping("/all")
     public ResponseEntity<ApiResponse> getAllUser() {
@@ -43,6 +56,15 @@ public class UserController {
         }
     }
 
+    /**
+     * <h1>GET: Get User By ID</h1>
+     * <h5>URL: api/v1/users/user/{userId}</h5>
+     * <br>
+     *
+     * <li>Retrieve single user by ID</li>
+     * @param userId {@link User#getUserId()}
+     * @return {@link ApiResponse}
+     */
     @GetMapping("/user/{userId}")
     public ResponseEntity<ApiResponse> getUserById(@PathVariable Long userId) {
         try {
@@ -61,6 +83,25 @@ public class UserController {
         }
     }
 
+    /*
+     * POST Method
+     *
+     * Action that required user information will have to authenticate
+     * Otherwise will be redirected to log in page for authentication
+     */
+
+    /**
+     * <h1>POST: Create User</h1>
+     * <h5>URL: api/vi/users/create</h5>
+     * <br>
+     *
+     * @deprecated
+     * <li>Should be an Admin action</li>
+     * <li>This {@link AuthenticationController#register} API endpoint is more suitable for user</li>
+     *
+     * @param request {@link UserCreateRequest}
+     * @return {@link ApiResponse#ApiResponse(String, Object)}
+     */
     @PostMapping("/create")
     public ResponseEntity<ApiResponse> createUser(@RequestBody UserCreateRequest request) {
         try {
@@ -73,18 +114,31 @@ public class UserController {
         }
     }
 
-    // Update
+    /*
+     * PUT Method
+     *
+     * Action that required user information will have to authenticate
+     * Otherwise will be redirected to log in page for authentication
+     */
+
+    /**
+     * <h1>PUT: Update User</h1>
+     * <h5>URL: api/vi/users/user/update</h5>
+     * <br>
+     *
+     * <li>This action should only update the current user, not other</li>
+     *
+     * @param request {@link UserUpdateRequest}
+     * @return {@link ApiResponse#ApiResponse(String, Object)}
+     */
     @PutMapping("/user/update")
-    public ResponseEntity<ApiResponse> updateUser(
-            @RequestParam Long userId,
-            @ModelAttribute UserUpdateRequest request
-    ) {
+    public ResponseEntity<ApiResponse> updateUser(@ModelAttribute UserUpdateRequest request) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             authenticationService.authenticationCheck(authentication);
 
             String authUser = authentication.getName();
-            User existingUser = userService.getUserById(userId);
+            User existingUser = userService.getUserByUsername(authUser).orElse(null);
 
             // Authentication
             if (!authUser.equals(existingUser.getUsername())) {
@@ -101,25 +155,33 @@ public class UserController {
         }
     }
 
+    /*
+     * DELETE Method
+     *
+     * Action that required user information will have to authenticate
+     * Otherwise will be redirected to log in page for authentication
+     */
 
-    // Delete
+    /**
+     * <h1>DELETE: Delete User</h1>
+     * <h5>URL: api/vi/users/user/delete</h5>
+     * <br>
+     *
+     * <li> Delete User self, prevent other</li>
+     *
+     * @return {@link ApiResponse}
+     */
     @DeleteMapping("/user/delete")
-    public ResponseEntity<ApiResponse> deleteUser(@RequestParam Long userId) {
+    public ResponseEntity<ApiResponse> deleteUser() {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             authenticationService.authenticationCheck(authentication);
 
             String authUser = authentication.getName();
-            User existingUser = userService.getUserById(userId);
-
-            // Authentication
-            if (!authUser.equals(existingUser.getUsername())) {
-                return ResponseEntity.status(FORBIDDEN)
-                        .body(new ApiResponse("Invalid Permission", null));
-            }
+            User existingUser = userService.getUserByUsername(authUser).orElse(null);
 
             // Delete
-            userService.deleteUser(userId);
+            userService.deleteUser(existingUser.getUserId());
             return ResponseEntity.ok(new ApiResponse("Success", null));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR)
