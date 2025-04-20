@@ -1,7 +1,11 @@
 @import "../../index.css";
 
 .stories {
-    @apply flex gap-[10px] h-[285px] mb-[20px] p-[10px] max-md:justify-between max-md:h-[110px];
+    @apply mb-[20px] p-[10px] max-md:justify-between transition-transform duration-500 ease-in-out overflow-hidden;
+}
+
+.stories-container {
+    @apply flex gap-[10px] h-[285px] max-lg:h-[180px] max-md:h-[110px] max-md:justify-evenly transition-transform duration-500 ease-in-out;
 }
 
 .story {
@@ -48,4 +52,12 @@
 
 .close-button {
     @apply absolute top-4 right-8 text-white text-[24px] w-[40px] h-[40px] flex items-center justify-center bg-gray-800 hover:bg-gray-600 rounded-full cursor-pointer;
+}
+
+.next-button {
+    @apply absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white w-[50px] h-[50px] flex items-center justify-center rounded-full hover:bg-gray-600 max-md:w-[30px] max-md:h-[30px] z-10 cursor-pointer max-md:hidden;
+}
+
+.prev-button {
+    @apply absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white w-[50px] h-[50px] flex items-center justify-center rounded-full hover:bg-gray-600 max-md:w-[30px] max-md:h-[30px] z-10 cursor-pointer max-md:hidden;
 }

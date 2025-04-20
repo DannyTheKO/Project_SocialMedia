@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import './LeftBar.css'
 import Friends from "../../Assets/1.png";
 import Groups from "../../Assets/2.png";
@@ -6,38 +6,45 @@ import Gallery from "../../Assets/8.png";
 import Videos from "../../Assets/9.png";
 import Messages from "../../Assets/10.png";
 import PlaceHolderImage from '../../Assets/login-image.jpg'
+import { AuthContext } from '../../Context/AuthContext';
+import { Link } from 'react-router';
 
 const LeftBar = () => {
+
+    const { currentUser, setCurrentUser } = useContext(AuthContext)
+
     return (
         <div className='leftbar'>
             <div className="container p-[20px]">
                 <div className="menu">
-                    <div className='item font-medium'>
-                        <img src={PlaceHolderImage} alt="" className='image rounded-full object-cover'/>
-                        <span className='text-[20px] text-color font-normal'>Tuan Thai</span>
-                    </div>
+                    <Link to={`/profile/${currentUser.id}`}>
+                        <div className='item font-medium'>
+                            <img src={PlaceHolderImage} alt="" className='image rounded-full object-cover' />
+                            <span className='text-[20px] text-color font-normal'>Tuan Thai</span>
+                        </div>
+                    </Link>
                     <div className='item'>
-                        <img src={Friends} alt="" className='image'/>
+                        <img src={Friends} alt="" className='image' />
                         <span className='text-[20px] text-color font-normal'>Bạn bè</span>
                     </div>
                     <div className='item'>
-                        <img src={Groups} alt="" className='image'/>
+                        <img src={Groups} alt="" className='image' />
                         <span className='text-[20px] text-color font-normal'>Nhóm</span>
                     </div>
                 </div>
-                <hr/>
+                <hr />
                 <div className="menu flex flex-col gap-[20px]">
                     <span className='text-[20px] text-color font-normal'>Lối tắt</span>
                     <div className='item'>
-                        <img src={Gallery} alt="" className='image'/>
+                        <img src={Gallery} alt="" className='image' />
                         <span className='text-[20px] text-color font-normal'>Thư viện</span>
                     </div>
                     <div className='item'>
-                        <img src={Videos} alt="" className='image'/>
+                        <img src={Videos} alt="" className='image' />
                         <span className='text-[20px] text-color font-normal'>Videos</span>
                     </div>
                     <div className='item'>
-                        <img src={Messages} alt="" className='image'/>
+                        <img src={Messages} alt="" className='image' />
                         <span className='text-[20px] text-color font-normal'>Tin nhắn</span>
                     </div>
                 </div>

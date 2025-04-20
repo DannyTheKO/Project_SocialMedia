@@ -1,7 +1,7 @@
 @import "../../index.css";
 
 .navbar {
-    @apply flex items-center justify-between max-sm:justify-evenly max-xl:justify-between py-[20px] px-[20px] h-[70px] sticky top-0 border-b border-gray-400 dark:border-[#444] bg-white dark:bg-[#222] z-50;
+    @apply flex items-center justify-between max-sm:justify-evenly max-xl:justify-between py-[20px] px-[20px] h-[70px] sticky top-0 border-b border-gray-400 dark:border-[#444] bg-white dark:bg-[#222] z-40;
 }
 
 .navbar .left {
@@ -16,7 +16,7 @@
     }
 
     .listIcon {
-        @apply cursor-pointer rounded-full text-black dark:text-slate-200 hidden max-lg:block max-lg:ml-[10px];
+        @apply cursor-pointer rounded-full text-black dark:text-slate-200 hidden max-lg:block max-lg:ml-[30px];
     }
 }
 
@@ -38,7 +38,7 @@
 }
 
 .search-input {
-    @apply border-none w-[650px] text-[20px] outline-none max-sm:hidden max-lg:w-[30vw] max-xl:w-[40vw];
+    @apply border-none w-[650px] text-[20px] outline-none max-sm:hidden max-lg:w-[45vw] max-[1080px]:w-[35vw] max-[1440px]:w-[40vw];
 }
 
 .text-color {

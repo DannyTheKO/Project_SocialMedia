@@ -8,22 +8,22 @@ import { authApi } from "../Services/Auth/authApi";
 export const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
-    const [currentUser, setCurrentUser] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [currentUser, setCurrentUser] = useState(true);
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     // Call whoAmI when loading
-    useEffect(() => {
-        authApi.whoAmI()
-            .then((response) => {
-                setCurrentUser(response.data); // response.data = UserDTO
-                setLoading(false);
-            })
-            .catch(() => {
-                setCurrentUser(null);
-                setLoading(false);
-            });
-    }, []);
+    // useEffect(() => {
+    //     authApi.whoAmI()
+    //         .then((response) => {
+    //             setCurrentUser(response.data); // response.data = UserDTO
+    //             setLoading(false);
+    //         })
+    //         .catch(() => {
+    //             setCurrentUser(null);
+    //             setLoading(false);
+    //         });
+    // }, []);
 
 
     // login function
@@ -51,7 +51,7 @@ export const AuthContextProvider = ({ children }) => {
         }
     };
 
-    // Hàm logout function
+    // logout function
     const logout = async () => {
         try {
             await authApi.logout(); // TODO: build logout controller
