@@ -10,6 +10,7 @@ import ForgotPassword from "./Pages/ForgotPassword/ForgotPassword";
 import NavBar from "./Components/Navbar/NavBar";
 import LeftBar from "./Components/LeftBar/LeftBar";
 import RightBar from "./Components/RightBar/RightBar";
+import { ToastContainer } from "react-toastify";
 
 const Layout = () => {
     return (
@@ -30,6 +31,18 @@ function App() {
     return (
         <BrowserRouter>
             <AuthContextProvider>
+                <ToastContainer
+                    position="top-right"
+                    autoClose={3000}
+                    hideProgressBar={false}
+                    newestOnTop={true}
+                    closeOnClick
+                    pauseOnHover
+                    draggable
+                    theme="dark"
+                    toastClassName="custom-toast"
+                    bodyClassName="custom-toast-body"
+                />
                 <Routes>
                     <Route
                         path="/"

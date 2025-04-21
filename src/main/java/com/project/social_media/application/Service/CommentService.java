@@ -7,6 +7,7 @@ import com.project.social_media.application.Exception.ResourceNotFound;
 import com.project.social_media.application.IService.ICommentService;
 import com.project.social_media.application.IService.ILikeService;
 import com.project.social_media.application.IService.IMediaService;
+import com.project.social_media.application.IService.INotificationService;
 import com.project.social_media.controllers.Request.Comment.CommentCreateRequest;
 import com.project.social_media.controllers.Request.Comment.CommentUpdateRequest;
 import com.project.social_media.domain.Model.Comment;
@@ -38,6 +39,7 @@ public class CommentService implements ICommentService {
 
     private final IMediaService mediaService;
     private final ILikeService likeService;
+    private final INotificationService notificationService;
 
     private final String uploadDir = "gui/src/Assets/uploads/posts";
 
@@ -103,7 +105,7 @@ public class CommentService implements ICommentService {
             Post existingPost = postRepository.findPostByPostId(postId)
                     .orElseThrow(() -> new ResourceNotFound("createComment: postId not found"));
 
-            Comment newComment = new Comment(
+            Comment comment = new Comment(
                     existingUser,
                     existingPost,
                     request.getContent(),
@@ -112,7 +114,7 @@ public class CommentService implements ICommentService {
             );
 
             // Set CommentID first
-            commentRepository.save(newComment);
+            Comment newComment = commentRepository.save(comment);
 
             // Handle media
             List<MultipartFile> mediaFiles = request.getMediaFileRequest();
@@ -126,6 +128,10 @@ public class CommentService implements ICommentService {
                                 "Comment"
                         ));
             }
+
+            // create notification to post owner
+            notificationService.createCommentPostNotification(userId, existingPost.getUser().getUserId(), newComment.getCommentId());
+
             return newComment;
 
         } catch (Exception e) {

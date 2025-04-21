@@ -2,22 +2,74 @@ import React, { useState } from 'react'
 import './CreatePostModal.css'
 import CloseIcon from '@mui/icons-material/Close';
 import CollectionsIcon from '@mui/icons-material/Collections';
+import { postApi } from '../../../Services/PostService/postService';
+import { toast } from 'react-toastify';
 
 const CreatePostModal = ({ isOpen, onClose }) => {
 
     const [content, setContent] = useState("");
+    const [files, setFiles] = useState([]);
     const [privacy, setPrivacy] = useState("Công khai");
+    const [error, setError] = useState(null);
 
     if (!isOpen) return null;
 
-    const handleSubmit = (e) => {
+    const handleFileChange = (e) => {
+        console.log(e.target.files)
+        setFiles((prevFiles) => [...prevFiles, ...Array.from(e.target.files)]);
+    };
+
+    const removeFile = (index) => {
+        setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         // Debug log 
         console.log("Post content:", content, "Privacy:", privacy);
 
-        setContent("") // reset content after submit
-        onClose(); // close modal
+        if (!content.trim() && files.length === 0) {
+            setError("Vui lòng nhập nội dung hoặc thêm ảnh/video!");
+            toast.error("Vui lòng nhập nội dung hoặc thêm ảnh/video!");
+            return;
+        }
+
+        const postData = {
+            content: content
+        }
+
+        // add media files to postData
+        files.forEach((file, index) => {
+            postData[`files[${index}]`] = file;
+        });
+
+        try {
+            const response = await postApi.createPost(postData);
+            const result = response.data;
+
+            // Debug data log
+            // console.log(result)
+
+            if (response.message === "Success") {
+                // console.log("Post created successfully: ", result.data); 
+                // result data is PostDTO
+
+                toast.success("Đăng bài viết thành công !");
+                setContent("");
+                setPrivacy("Công khai");
+                setError(null);
+                onClose();
+            }
+            else {
+                setError(result.message || "Đã có lỗi xảy ra khi đăng bài!");
+                toast.error(result.message || "Đã có lỗi xảy ra khi đăng bài!");
+            }
+        } catch (error) {
+            console.error("Error creating post: ", error);
+            setError("Đã có lỗi xảy ra khi đăng bài. Vui lòng thử lại!");
+            toast.error("Đã có lỗi xảy ra khi đăng bài. Vui lòng thử lại!");
+        }
     }
 
     return (
@@ -58,14 +110,56 @@ const CreatePostModal = ({ isOpen, onClose }) => {
                         className="w-full bg-transparent dark:text-white placeholder-gray-400 border-none outline-none resize-none h-24 mb-4"
                     />
 
+                    {/* Preview selected files */}
+                    {files.length > 0 && (
+                        <div className="grid grid-cols-3 gap-2 mb-4">
+                            {files.map((file, index) => (
+                                <div key={index} className="relative">
+                                    {file.type.startsWith("image/") ? (
+                                        <img
+                                            src={URL.createObjectURL(file)}
+                                            alt={file.name}
+                                            className="w-full max-h-[100px] object-cover rounded-lg"
+                                        />
+                                    ) : (
+                                        <video
+                                            src={URL.createObjectURL(file)}
+                                            className="w-full max-h-[100px] object-cover rounded-lg"
+                                            controls
+                                        />
+                                    )}
+                                    <button
+                                        onClick={() => removeFile(index)}
+                                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-[20px] h-[20px] flex items-center justify-center"
+                                    >
+                                        ×
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+
                     {/* Drag/drop media files */}
                     <div className="rounded-lg p-3 mb-4 flex items-center justify-center cursor-pointer outline-none bg-neutral-300 hover:bg-neutral-400 dark:bg-neutral-700 dark:hover:bg-neutral-600">
-                        <button className="flex flex-col items-center gap-2 dark:text-gray-300 font-normal cursor-pointer text-[20px]">
+                        <label className="flex flex-col items-center gap-2 dark:text-gray-300 font-normal cursor-pointer text-[20px]">
                             <CollectionsIcon style={{ fontSize: "36px", color: "green" }} />
-                            <span className='text-[28px] font-semibold'>Add photos/videos</span>
+                            <span className="text-[28px] font-semibold">Add photos/videos</span>
                             or drag and drop
-                        </button>
+                            <input
+                                type="file"
+                                multiple
+                                onChange={handleFileChange}
+                                className="hidden"
+                                accept="image/*,video/*"
+                            />
+                        </label>
                     </div>
+
+                    {/* Display Error */}
+                    {error && (
+                        <div className="text-red-500 text-center mb-4">{error}</div>
+                    )}
 
                     {/* Post button */}
                     <button onClick={handleSubmit} className="w-full bg-[#1b74e4] text-white font-semibold py-2 rounded-lg hover:bg-blue-700 cursor-pointer">

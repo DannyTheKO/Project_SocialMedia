@@ -8,5 +8,8 @@ import java.util.List;
 @Data
 public class PostCreateRequest {
     private String content;
-    private List<MultipartFile> mediaFileRequest;
+
+//    Em sửa tên chỗ này để frontend gửi trùng key lên nhe anh :3
+//    private List<MultipartFile> mediaFileRequest;
+    private List<MultipartFile> files;
 }

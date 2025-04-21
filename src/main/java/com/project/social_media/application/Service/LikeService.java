@@ -30,6 +30,8 @@ public class LikeService implements ILikeService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
 
+    private final NotificationService notificationService;
+
     /**
      * Get all like by postId
      *
@@ -119,6 +121,7 @@ public class LikeService implements ILikeService {
                 newLike.setCreatedAt(LocalDateTime.now());
 
                 likeRepository.save(newLike);
+                notificationService.createLikePostNotification(userId, existingPost.getUser().getUserId(), existingPost.getPostId());
 
             }
         } else if (request.getCommentId() != null) { // request.getCommentId != null

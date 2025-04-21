@@ -8,9 +8,12 @@ import { authApi } from "../Services/Auth/authApi";
 export const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
-    const [currentUser, setCurrentUser] = useState(true);
-    const [loading, setLoading] = useState(false);
+    const [currentUser, setCurrentUser] = useState(true); // false, set true for testing
+    const [loading, setLoading] = useState(false); // set true if want to custom loading page
     const navigate = useNavigate();
+
+
+    // temp comment code for testing ( ingore login )
 
     // Call whoAmI when loading
     // useEffect(() => {
