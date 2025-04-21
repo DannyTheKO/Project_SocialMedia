@@ -30,6 +30,22 @@ public class AuthenticationController {
     private final IUserService userService;
     private final IRefreshTokenService refreshTokenService;
 
+    /*
+     * GET Method
+     *
+     * User information endpoints require authentication
+     */
+
+    /**
+     * <h1>GET: Who Am I</h1>
+     * <h5>URL: api/v1/auth/whoAmI</h5>
+     * <br>
+     *
+     * <li>Returns information about the currently authenticated user</li>
+     * <li>Requires a valid authentication token</li>
+     *
+     * @return {@link ApiResponse} containing current user information
+     */
     @GetMapping("/whoAmI")
     public ResponseEntity<ApiResponse> whoAmI() {
         try {
@@ -54,6 +70,23 @@ public class AuthenticationController {
         }
     }
 
+    /*
+     * POST Method
+     *
+     * Authentication endpoints are available to public guests for registration and login
+     */
+
+    /**
+     * <h1>POST: Register</h1>
+     * <h5>URL: api/v1/auth/register</h5>
+     * <br>
+     *
+     * <li>Creates a new user account with the provided credentials</li>
+     * <li>Validates username and email uniqueness</li>
+     *
+     * @param request {@link UserCreateRequest} containing user registration details
+     * @return {@link ApiResponse} containing authentication token and user information
+     */
     @PostMapping("/register")
     public ResponseEntity<ApiResponse> register(@RequestBody UserCreateRequest request, HttpServletResponse response) {
         try {
@@ -100,6 +133,17 @@ public class AuthenticationController {
         }
     }
 
+    /**
+     * <h1>POST: Login</h1>
+     * <h5>URL: api/v1/auth/login</h5>
+     * <br>
+     *
+     * <li>Authenticates a user with the provided credentials</li>
+     * <li>Creates and returns a JWT token on successful authentication</li>
+     *
+     * @param request {@link LoginRequest} containing login credentials
+     * @return {@link ApiResponse} containing authentication token and user information
+     */
     @PostMapping("/login")
     public ResponseEntity<ApiResponse> login(@RequestBody LoginRequest request, HttpServletResponse response) {
         try {
@@ -137,6 +181,20 @@ public class AuthenticationController {
         }
     }
 
+    /**
+     * <h1>POST: Refresh Token</h1>
+     * <h5>URL: api/v1/auth/refresh</h5>
+     * <br>
+     *
+     * <li>Refreshes an expired access token using a valid refresh token</li>
+     * <li>Issues a new access token via HttpOnly cookie</li>
+     * <li>Maintains the same refresh token if it's still valid</li>
+     *
+     * @param request {@link RefreshTokenRequest} containing the refresh token
+     * @param response {@link HttpServletResponse} for setting the cookie
+     * @return {@link ApiResponse} containing new token information
+     */
+    // Dev Note: This should be in SecurityConfig.java ?
     @PostMapping("/refresh")
     public ResponseEntity<ApiResponse> refreshToken(@RequestBody RefreshTokenRequest request, HttpServletResponse response) {
         try {

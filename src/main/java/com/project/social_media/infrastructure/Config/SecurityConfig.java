@@ -39,7 +39,8 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.cors(cors -> cors.configurationSource(request -> {
+        http
+                .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
                     config.setAllowedOrigins(List.of("http://localhost:3000"));
                     config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
@@ -47,7 +48,9 @@ public class SecurityConfig {
                     config.setAllowCredentials(true); // Accept for cookie
                     return config;
                 }))
+
                 .csrf(AbstractHttpConfigurer::disable) // Disable CSRF protection for testing
+
                 .sessionManagement((session) ->
                         // This is fucking important, so don't fucking touch it, is for the JWT
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -56,8 +59,8 @@ public class SecurityConfig {
                 .addFilterBefore(new JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
 
                 .authorizeHttpRequests((request) ->
-                                // Permit all requests >> For Testing Purpose
                                 request
+                                // Permit all requests >> For Testing Purpose
 //                                .anyRequest().permitAll() // Uncomment this for testing
                                         // >> Files
                                         .requestMatchers("/uploads/**").permitAll()
