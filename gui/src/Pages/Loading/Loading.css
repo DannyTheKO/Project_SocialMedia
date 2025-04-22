@@ -1,0 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Michroma&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import '../../index.css';
+
+.loading {
+    font-family: "Michroma", sans-serif;
+}

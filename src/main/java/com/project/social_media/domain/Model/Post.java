@@ -34,10 +34,10 @@ public class Post {
     @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false)
+    @Column(name = "created_post", nullable = false)
     private LocalDateTime createdPost;
 
-    @Column(nullable = false)
+    @Column(name = "modified_post", nullable = false)
     private LocalDateTime modifiedPost;
 
     public Post(User user, List<Comment> comments, List<Like> likes, String content, LocalDateTime createdPost, LocalDateTime modifiedPost) {

@@ -8,22 +8,25 @@ import { authApi } from "../Services/Auth/authApi";
 export const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
-    const [currentUser, setCurrentUser] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [currentUser, setCurrentUser] = useState(true); // false, set true for testing
+    const [loading, setLoading] = useState(false); // set true if want to custom loading page
     const navigate = useNavigate();
 
+
+    // temp comment code for testing ( ingore login )
+
     // Call whoAmI when loading
-    useEffect(() => {
-        authApi.whoAmI()
-            .then((response) => {
-                setCurrentUser(response.data); // response.data = UserDTO
-                setLoading(false);
-            })
-            .catch(() => {
-                setCurrentUser(null);
-                setLoading(false);
-            });
-    }, []);
+    // useEffect(() => {
+    //     authApi.whoAmI()
+    //         .then((response) => {
+    //             setCurrentUser(response.data); // response.data = UserDTO
+    //             setLoading(false);
+    //         })
+    //         .catch(() => {
+    //             setCurrentUser(null);
+    //             setLoading(false);
+    //         });
+    // }, []);
 
 
     // login function
@@ -51,7 +54,7 @@ export const AuthContextProvider = ({ children }) => {
         }
     };
 
-    // Hàm logout function
+    // logout function
     const logout = async () => {
         try {
             await authApi.logout(); // TODO: build logout controller

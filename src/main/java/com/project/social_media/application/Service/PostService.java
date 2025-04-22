@@ -43,7 +43,7 @@ public class PostService implements IPostService {
      */
     @Override
     public List<Post> getAllPosts() {
-        return postRepository.findAll();
+        return postRepository.findAllOrderByCreatedPostDesc();
     }
 
     /**
@@ -109,7 +109,7 @@ public class PostService implements IPostService {
             postRepository.save(newPost); // Save the post first to get the generated ID
 
             // Now handle media
-            List<MultipartFile> mediaFiles = request.getMediaFileRequest();
+            List<MultipartFile> mediaFiles = request.getFiles();
             if (mediaFiles != null) {
                 mediaFiles.stream()
                         .filter(mediaFile -> !mediaFile.isEmpty())

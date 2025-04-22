@@ -1,6 +1,6 @@
 package com.project.social_media.application.Service;
 
-import com.project.social_media.application.IService.INotficationService;
+import com.project.social_media.application.IService.INotificationService;
 import com.project.social_media.domain.Model.Notification;
 import com.project.social_media.domain.Model.User;
 import com.project.social_media.domain.Repository.NotificationRepository;
@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class NotificationService implements INotficationService {
+public class NotificationService implements INotificationService {
 
     @Autowired
     private NotificationRepository notificationRepository;
