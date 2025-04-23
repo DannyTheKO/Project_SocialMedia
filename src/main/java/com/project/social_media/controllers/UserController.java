@@ -8,6 +8,7 @@ import com.project.social_media.controllers.Request.User.UserCreateRequest;
 import com.project.social_media.controllers.Request.User.UserUpdateRequest;
 import com.project.social_media.domain.Model.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -131,7 +132,7 @@ public class UserController {
      * @param request {@link UserUpdateRequest}
      * @return {@link ApiResponse#ApiResponse(String, Object)}
      */
-    @PutMapping("/user/update")
+    @PutMapping(value = "/user/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse> updateUser(@ModelAttribute UserUpdateRequest request) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -141,6 +142,7 @@ public class UserController {
             User existingUser = userService.getUserByUsername(authUser).orElse(null);
 
             // Authentication
+            assert existingUser != null;
             if (!authUser.equals(existingUser.getUsername())) {
                 return ResponseEntity.status(FORBIDDEN) // 403
                         .body(new ApiResponse("Invalid Permission", null));
@@ -148,6 +150,7 @@ public class UserController {
 
             // Update
             User updatedUser = userService.updateUser(existingUser.getUserId(), request);
+
             return ResponseEntity.ok(new ApiResponse("Success", userService.convertToDTO(updatedUser)));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR) // 500

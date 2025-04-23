@@ -20,13 +20,15 @@ export const userApi = {
     // POST /api/v1/users/create
     createUser: (userData) => axios.post(`${USER_API_BASE_URL}/create`, userData),
 
-    // PUT /api/v1/users/user/update?userId={userId}
-    updateUser: (userId, userData) => {
-        const formData = new FormData();
-        Object.keys(userData).forEach(key => {
-            formData.append(key, userData[key]);
-        });
-        return axios.put(`${USER_API_BASE_URL}/user/update?userId=${userId}`, formData, {
+    // PUT /api/v1/users/user/update
+    updateUser: (userData) => {
+        // This can cause error
+        // const formData = new FormData();
+        // Object.keys(userData).forEach(key => {
+        //     formData.append(key, userData[key]);
+        // });
+
+        return axios.put(`${USER_API_BASE_URL}/user/update`, userData, {
             headers: { 'Content-Type': 'multipart/form-data' }
         });
     },

@@ -1,15 +1,37 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import './Posts.css'
 import Post from '../Post/Post'
-import {postApi} from '../../Services/PostService/postService'
+import { postApi } from '../../Services/PostService/postService'
+import EditPostModal from '../Modal/EditPostModal/EditPostModal'
 
-const Posts = ({userID}) => {
+const Posts = ({ userID }) => {
 
     const [posts, setPosts] = useState([])
+
+    const [editPost, setEditPost] = useState(null);
 
     useEffect(() => {
         loadAllPosts(userID)
     }, [userID])
+
+    const handleDeletePost = (postId) => {
+        setPosts(posts.filter((post) => post.postId !== postId));
+    };
+
+    const handleHidePost = (postId) => {
+        setPosts(posts.filter((post) => post.postId !== postId));
+    };
+
+    const handleEditPost = (editedPost) => {
+        setEditPost(editedPost);
+    };
+
+    const onPostUpdated = (editedPost) => {
+        setPosts(
+            posts.map((p) => (p.postId === editedPost.postId ? editedPost : p))
+        );
+        setEditPost(null);
+    }
 
     const loadAllPosts = async (userID) => {
         try {
@@ -52,11 +74,24 @@ const Posts = ({userID}) => {
                     media={post.media}
                     createdPost={post.createdPost}
                     modifiedPost={post.modifiedPost}
+                    onDeletePost={handleDeletePost}
+                    onEditPost={handleEditPost}
                 />
             )
 
         ) : (<p>Không có bài viết nào !</p>)
         }
+
+        {editPost && (
+            <EditPostModal
+                isOpen={!!editPost}
+                onClose={() => setEditPost(null)}
+                post={editPost}
+                onPostUpdated={onPostUpdated}
+            />
+        )}
+
+
     </div>
 }
 

@@ -10,16 +10,28 @@
             @apply w-full h-full object-cover;
         }
 
-        .profilePic {
-            @apply h-[200px] w-[200px] rounded-full object-cover absolute left-0 right-0 m-auto top-[200px];
+        label {
+            @apply absolute right-[10px] bottom-[10px] bg-white px-[10px] py-[5px] rounded-lg cursor-pointer hover:bg-neutral-200 text-[20px];
         }
+
+        div {
+            @apply absolute max-w-[25%] left-0 right-0 m-auto top-[200px] flex items-center justify-center;
+        }
+
+        .profilePic {
+            @apply h-[200px] w-[200px] rounded-full object-cover;
+        }
+
+        /* .upload-profile {
+            @apply mt-[200px] text-[20px];
+        } */
     }
 
     .profileContainer {
         @apply py-[20px] px-[30px] max-md:p-[10px] max-xl:px-[100px];
 
         .profileUserInfo {
-            @apply h-[320px] max-lg:h-[45vh] max-md:h-[40vh] rounded-2xl bg-white dark:bg-[#222] text-black dark:text-slate-200 p-[40px] max-md:p-[20px] flex items-center justify-between m-[10px] max-md:flex-col max-md:mt-[90px];
+            @apply h-[260px] max-lg:h-[45vh] max-md:h-[40vh] rounded-2xl bg-white dark:bg-[#222] text-black dark:text-slate-200 p-[40px] max-md:p-[20px] flex items-center justify-between m-[10px] max-md:flex-col max-md:mt-[90px];
             -webkit-box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
             -moz-box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
             box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
