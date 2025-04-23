@@ -1,21 +1,25 @@
-import React, { useState } from 'react'
-import './CreatePostModal.css'
-import CloseIcon from '@mui/icons-material/Close';
-import CollectionsIcon from '@mui/icons-material/Collections';
-import { postApi } from '../../../Services/PostService/postService';
-import { toast } from 'react-toastify';
+import React from 'react'
+import './EditPostModal.css'
+import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
+import CloseIcon from "@mui/icons-material/Close";
+import CollectionsIcon from "@mui/icons-material/Collections";
+import { postApi } from "../../../Services/PostService/postService";
 
-const CreatePostModal = ({ isOpen, onClose }) => {
-
-    const [content, setContent] = useState("");
+const EditPostModal = ({ isOpen, onClose, post, onPostUpdated }) => {
+    const [content, setContent] = useState(post.content || "");
     const [files, setFiles] = useState([]);
-    const [privacy, setPrivacy] = useState("Công khai");
+    const [privacy, setPrivacy] = useState(post.privacy || "Công khai");
     const [error, setError] = useState(null);
+
+    useEffect(() => {
+        setContent(post.content || "");
+        setPrivacy("Công khai");
+    }, [post]);
 
     if (!isOpen) return null;
 
     const handleFileChange = (e) => {
-        console.log(e.target.files)
         setFiles((prevFiles) => [...prevFiles, ...Array.from(e.target.files)]);
     };
 
@@ -26,10 +30,7 @@ const CreatePostModal = ({ isOpen, onClose }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Debug log 
-        console.log("Post content:", content, "Privacy:", privacy);
-
-        if (!content.trim() && files.length === 0) {
+        if (!content.trim() && files.length === 0 && !post.media?.length) {
             setError("Vui lòng nhập nội dung hoặc thêm ảnh/video!");
             toast.error("Vui lòng nhập nội dung hoặc thêm ảnh/video!");
             return;
@@ -45,32 +46,27 @@ const CreatePostModal = ({ isOpen, onClose }) => {
         });
 
         try {
-            const response = await postApi.createPost(postData);
+            const response = await postApi.updatePost(post.postId, postData);
             const result = response.data;
 
-            // Debug data log
-            // console.log(result)
-
             if (response.message === "Success") {
-                // console.log("Post created successfully: ", result.data); 
-                // result data is PostDTO
-
-                toast.success("Đăng bài viết thành công !");
+                toast.success("Bài viết đã được cập nhật thành công!");
+                onPostUpdated(result);
                 setContent("");
                 setPrivacy("Công khai");
+                setFiles([]);
                 setError(null);
                 onClose();
-            }
-            else {
-                setError(result.message || "Đã có lỗi xảy ra khi đăng bài!");
-                toast.error(result.message || "Đã có lỗi xảy ra khi đăng bài!");
+            } else {
+                console.log(response.message, result)
+                toast.error(response.message || "Đã có lỗi xảy ra khi cập nhật bài viết!");
             }
         } catch (error) {
-            console.error("Error creating post: ", error);
-            setError("Đã có lỗi xảy ra khi đăng bài. Vui lòng thử lại!");
-            toast.error("Đã có lỗi xảy ra khi đăng bài. Vui lòng thử lại!");
+            console.error("Error updating post:", error);
+            setError("Đã có lỗi xảy ra khi cập nhật bài viết. Vui lòng thử lại!");
+            toast.error("Đã có lỗi xảy ra khi cập nhật bài viết. Vui lòng thử lại!");
         }
-    }
+    };
 
     return (
         <>
@@ -82,7 +78,7 @@ const CreatePostModal = ({ isOpen, onClose }) => {
                 <div className="bg-[whitesmoke] dark:bg-neutral-800 w-[50%] max-w-[70%] rounded-lg p-4 relative text-[28px]">
                     {/* Header and close button */}
                     <div className="border-b border-gray-600 py-4 mb-4">
-                        <h2 className="text-black dark:text-white font-bold text-center text-[32px]">CREATE POST</h2>
+                        <h2 className="text-black dark:text-white font-bold text-center text-[32px]">EDIT POST</h2>
                         <button onClick={onClose} className="absolute right-4 top-4 text-gray-500 hover:text-black dark:hover:text-gray-200">
                             <CloseIcon style={{ fontSize: "36px", cursor: "pointer" }} />
                         </button>
@@ -163,7 +159,7 @@ const CreatePostModal = ({ isOpen, onClose }) => {
 
                     {/* Post button */}
                     <button onClick={handleSubmit} className="w-full bg-[#1b74e4] text-white font-semibold py-2 rounded-lg hover:bg-blue-700 cursor-pointer">
-                        Post
+                        Edit
                     </button>
                 </div>
             </div>
@@ -172,4 +168,4 @@ const CreatePostModal = ({ isOpen, onClose }) => {
     )
 }
 
-export default CreatePostModal
+export default EditPostModal

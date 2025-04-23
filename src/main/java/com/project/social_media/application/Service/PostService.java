@@ -174,7 +174,7 @@ public class PostService implements IPostService {
 
             // Handle Media Updates
             List<MediaAssociation> oldMediaFiles = mediaAssociationRepository.findByTargetIdAndTargetType(postId, "Post");
-            List<MultipartFile> MediaFiles = request.getMediaFileRequest();
+            List<MultipartFile> MediaFiles = request.getFiles();
 
             // Add new media files
             if (MediaFiles != null) {

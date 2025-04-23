@@ -145,13 +145,25 @@ public class UserService implements IUserService {
             User existingUser = userRepository.findById(userId)
                     .orElseThrow(() -> new ResourceNotFound("updateUser: userId not found"));
 
-            // Update User by overwriting from request
-            existingUser.setFirstName(request.getFirstName());
-            existingUser.setLastName(request.getLastName());
-            existingUser.setEmail(request.getEmail());
-            existingUser.setPassword(request.getPassword());
-            existingUser.setBio(request.getBio());
-            existingUser.setBirthDay(request.getBirthDate());
+            // Update only fields that are provided
+            if (request.getFirstName() != null) {
+                existingUser.setFirstName(request.getFirstName());
+            }
+            if (request.getLastName() != null) {
+                existingUser.setLastName(request.getLastName());
+            }
+            if (request.getEmail() != null) {
+                existingUser.setEmail(request.getEmail());
+            }
+            if (request.getPassword() != null) {
+                existingUser.setPassword(request.getPassword());
+            }
+            if (request.getBio() != null) {
+                existingUser.setBio(request.getBio());
+            }
+            if (request.getBirthDate() != null) {
+                existingUser.setBirthDay(request.getBirthDate());
+            }
 
             if (request.getProfileImage() != null && !request.getProfileImage().isEmpty()) {
                 String fileType = mediaService.identifyMediaType(Objects.requireNonNull(request.getProfileImage().getOriginalFilename()));
@@ -184,9 +196,9 @@ public class UserService implements IUserService {
                 );
                 existingUser.setBannerImageUrl(bannerImage.getFilePath());
             }
-
             // Save it in the database
             userRepository.save(existingUser);
+
             return existingUser;
         } catch (Exception e) {
             throw new RuntimeException(e);

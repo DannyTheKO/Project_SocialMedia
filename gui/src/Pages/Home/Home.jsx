@@ -8,7 +8,7 @@ const Home = () => {
     return (
         <div className='home'>
             <CreatePost />
-            <Stories />
+            {/* <Stories /> */}
             <Posts />
         </div>
     )

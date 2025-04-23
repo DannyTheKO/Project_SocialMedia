@@ -34,17 +34,25 @@ export const postApi = {
     },
 
     // PUT /api/v1/posts/post/{postId}/update
-    updatePost: (userId, postId, postData) => {
+    updatePost: (postId, postData) => {
         const formData = new FormData();
         Object.keys(postData).forEach(key => {
             formData.append(key, postData[key]);
         });
-        return axios.put(`${POST_API_BASE_URL}/post/${postId}/update?userId=${userId}`, formData, {
+        return axios.put(`${POST_API_BASE_URL}/post/${postId}/update`, formData, {
             headers: { 'Content-Type': 'multipart/form-data' }
         });
     },
 
     // DELETE /api/v1/posts/post/delete?postId={postId}
-    deletePost: (postId) =>
-        axios.delete(`${POST_API_BASE_URL}/post/delete?postId=${postId}`)
+    deletePost: (postId) => {
+        return axios.delete(`${POST_API_BASE_URL}/post/delete?postId=${postId}`)
+    },
+
+    // TODO: build hide post controller for user (userId)
+    hidePost: (postId, userId) => {
+        return axios.put(`${POST_API_BASE_URL}/post/${postId}/hide/${userId}`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+    }
 };

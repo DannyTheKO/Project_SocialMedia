@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import './Profile.css'
 import FacebookTwoToneIcon from "@mui/icons-material/FacebookTwoTone";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
@@ -9,16 +9,22 @@ import PlaceIcon from "@mui/icons-material/Place";
 import LanguageIcon from "@mui/icons-material/Language";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
 import Posts from '../../Components/Posts/Posts'
-import {useParams} from 'react-router';
-import {userApi} from '../../Services/UserService/userService'
+import { useParams } from 'react-router';
+import { userApi } from '../../Services/UserService/userService'
 import DefaultProfilePic from '../../Assets/defaultProfilePic.jpg';
-import {ApiResponse} from "../../Model/ApiResponse.jsx";
-import {User} from "../../Model/User.jsx";
+import { ApiResponse } from "../../Model/ApiResponse.jsx";
+import { User } from "../../Model/User.jsx";
+import { AuthContext } from '../../Context/AuthContext.jsx';
+import { toast } from 'react-toastify';
 
 const Profile = () => {
 
-    const {id} = useParams();
+    const { currentUser, setCurrentUser } = useContext(AuthContext);
+
+    const { id } = useParams();
     const [userName, setUserName] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -27,33 +33,14 @@ const Profile = () => {
     const [profileImageUrl, setProfileImageUrl] = useState('');
     const [bannerImageUrl, setBannerImageUrl] = useState('');
 
-    const getImageUrl = (filePath) => {
-        if (!filePath) return DefaultProfilePic;
 
-        const baseUrl = "http://localhost:8080";
-
-        try {
-            // Thử split với "uploads\", nếu không được thì thử với "uploads\\"
-            let relativePath = filePath.split("uploads\\")[1] || filePath.split("uploads\\\\")[1];
-
-            // Nếu không split được, trả về ảnh mặc định
-            if (!relativePath) {
-                console.warn("Không thể parse đường dẫn ảnh:", filePath);
-                return DefaultProfilePic;
-            }
-
-            // Thay tất cả dấu \ thành / để tạo URL hợp lệ
-            const cleanPath = relativePath.replace(/\\/g, "/");
-
-            // Tạo URL public
-            const fullUrl = `${baseUrl}/uploads/${cleanPath}`;
-            // console.log("Generated Image URL:", fullUrl);
-            return fullUrl;
-        } catch (error) {
-            console.error("Lỗi khi tạo URL ảnh:", error, "FilePath:", filePath);
-            return DefaultProfilePic;
-        }
-    };
+    // state for change profilePic and bannerPic
+    const [selectedProfileFile, setSelectedProfileFile] = useState(null);
+    const [selectedBannerFile, setSelectedBannerFile] = useState(null);
+    const [profilePreview, setProfilePreview] = useState(null);
+    const [bannerPreview, setBannerPreview] = useState(null);
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [isProfileImage, setIsProfileImage] = useState(false); // indentify is profilePic or bannerPic
 
     /*
     * Anh clean lại cái này lun nha
@@ -93,7 +80,7 @@ const Profile = () => {
         }
     }
 
-// Helper function to clear user data
+    // Helper function to clear user data
     const clearUserData = () => {
         setUserName('');
         setFirstName('');
@@ -104,6 +91,102 @@ const Profile = () => {
         setBannerImageUrl('');
     }
 
+    const getImageUrl = (filePath) => {
+        if (!filePath) return DefaultProfilePic;
+
+        const baseUrl = "http://localhost:8080";
+
+        try {
+            // Thử split với "uploads\", nếu không được thì thử với "uploads\\"
+            let relativePath = filePath.split("uploads\\")[1] || filePath.split("uploads\\\\")[1];
+
+            // Nếu không split được, trả về ảnh mặc định
+            if (!relativePath) {
+                console.warn("Không thể parse đường dẫn ảnh:", filePath);
+                return DefaultProfilePic;
+            }
+
+            // Thay tất cả dấu \ thành / để tạo URL hợp lệ
+            const cleanPath = relativePath.replace(/\\/g, "/");
+
+            // Tạo URL public
+            const fullUrl = `${baseUrl}/uploads/${cleanPath}`;
+            // console.log("Generated Image URL:", fullUrl);
+            return fullUrl;
+        } catch (error) {
+            console.error("Lỗi khi tạo URL ảnh:", error, "FilePath:", filePath);
+            return DefaultProfilePic;
+        }
+    };
+
+    const handleFileChange = (e, type) => {
+        const file = e.target.files[0];
+
+        if (!file) return;
+
+        if (type === "profile") {
+            setSelectedProfileFile(file)
+            setProfilePreview(URL.createObjectURL(file))
+            setIsProfileImage(true)
+        } else {
+            setSelectedBannerFile(file)
+            setBannerPreview(URL.createObjectURL(file))
+            setIsProfileImage(false)
+        }
+        setShowConfirmModal(true)
+    };
+
+    const handleConfirmUpdate = async () => {
+        const fileToUpdate = isProfileImage ? selectedProfileFile : selectedBannerFile;
+        const fieldToUpdate = isProfileImage ? "profileImage" : "bannerImage";
+
+        if (!fileToUpdate) {
+            toast.error("Không có file nào được chọn!");
+            setShowConfirmModal(false);
+            return;
+        }
+
+        console.log("File to update:", fileToUpdate);
+
+        const userData = new FormData();
+        userData.append(fieldToUpdate, fileToUpdate);
+
+        try {
+            const response = await userApi.updateUser(userData);
+            if (response.message === "Success" && response.data) {
+                // Debug log
+                console.log(response.data)
+
+                const updatedUser = new User(response.data);
+                if (isProfileImage) {
+                    setProfileImageUrl(updatedUser.profileImageUrl);
+                    setSelectedProfileFile(null);
+                    setProfilePreview(null);
+                } else {
+                    setBannerImageUrl(updatedUser.bannerImageUrl);
+                    setSelectedBannerFile(null);
+                    setBannerPreview(null);
+                }
+                toast.success(`Cập nhật ${isProfileImage ? "ảnh đại diện" : "ảnh bìa"} thành công!`);
+            } else {
+                toast.error("Cập nhật thất bại!");
+                console.error(response.message)
+            }
+        } catch (error) {
+            console.error("Error updating user: ", error.response?.data || error.message);
+            toast.error(`Đã có lỗi xảy ra khi cập nhật ${isProfileImage ? "ảnh đại diện" : "ảnh bìa"} !`);
+        }
+        setShowConfirmModal(false);
+    };
+
+    const handleCancelUpdate = () => {
+        setSelectedProfileFile(null);
+        setSelectedBannerFile(null);
+        setProfilePreview(null);
+        setBannerPreview(null);
+        setShowConfirmModal(false);
+    };
+
 
     return (
         <div className='profile'>
@@ -113,52 +196,115 @@ const Profile = () => {
                     alt="Cover"
                     className='cover h-full w-full object-cover'
                 />
-                <img
-                    src={getImageUrl(profileImageUrl) || DefaultProfilePic}
-                    alt="Profile"
-                    className='profilePic'
-                />
+                {currentUser?.userId === id && (
+                    <label className="upload-banner">
+                        <PhotoCameraIcon />
+                        <span className="ml-2">Chỉnh sửa ảnh bìa</span>
+                        <input
+                            type="file"
+                            onChange={(e) => handleFileChange(e, "banner")}
+                            className="hidden"
+                            accept="image/*"
+                        />
+                    </label>
+                )}
+                <div>
+                    <img
+                        src={getImageUrl(profileImageUrl) || DefaultProfilePic}
+                        alt="Profile"
+                        className='profilePic'
+                    />
+                    {/* {currentUser?.userId === id && (
+                        <label className='upload-profile'>
+                            <FileUploadIcon />
+                            <span className="ml-2">Tải lên ảnh đại diện mới</span>
+                            <input
+                                type="file"
+                                onChange={(e) => handleFileChange(e, "profile")}
+                                className="hidden"
+                                accept="image/*"
+                            />
+                        </label>
+                    )} */}
+                </div>
+
             </div>
             <div className="profileContainer">
                 <div className="profileUserInfo">
                     <div className="left">
                         <a href="http://facebook.com" className='text-gray-500'>
-                            <FacebookTwoToneIcon fontSize="large"/>
+                            <FacebookTwoToneIcon fontSize="large" />
                         </a>
                         <a href="http://facebook.com" className='text-gray-500'>
-                            <InstagramIcon fontSize="large"/>
+                            <InstagramIcon fontSize="large" />
                         </a>
                         <a href="http://facebook.com" className='text-gray-500'>
-                            <TwitterIcon fontSize="large"/>
+                            <TwitterIcon fontSize="large" />
                         </a>
                         <a href="http://facebook.com" className='text-gray-500'>
-                            <LinkedInIcon fontSize="large"/>
+                            <LinkedInIcon fontSize="large" />
                         </a>
                         <a href="http://facebook.com" className='text-gray-500'>
-                            <PinterestIcon fontSize="large"/>
+                            <PinterestIcon fontSize="large" />
                         </a>
                     </div>
                     <div className="center">
                         <span>{userName || 'User'}</span>
                         <div className="info">
                             <div className="item">
-                                <PlaceIcon/>
+                                <PlaceIcon />
                                 <span>Viet Nam</span>
                             </div>
                             <div className="item">
-                                <LanguageIcon/>
+                                <LanguageIcon />
                                 <span>Tiếng Việt</span>
                             </div>
                         </div>
-                        <button>Follow</button>
+                        {currentUser?.userId != id && (
+                            <button>Follow</button>
+                        )}
                     </div>
                     <div className="right">
-                        <EmailOutlinedIcon style={{cursor: 'pointer'}}/>
-                        <MoreVertIcon style={{cursor: 'pointer'}}/>
+                        <EmailOutlinedIcon style={{ cursor: 'pointer' }} />
+                        <MoreVertIcon style={{ cursor: 'pointer' }} />
                     </div>
                 </div>
-                <Posts userID={id}/>
+                <Posts userID={id} />
             </div>
+
+            {showConfirmModal && (
+                <>
+                    <div className="fixed inset-0 bg-black opacity-80 z-40" onClick={handleCancelUpdate}></div>
+                    <div className="fixed inset-0 flex items-center justify-center z-50">
+                        <div className="bg-[whitesmoke] dark:bg-neutral-800 w-[50%] max-w-[70%] rounded-lg p-4 relative">
+                            <h2 className="text-black dark:text-white font-bold text-center text-[24px] mb-4">
+                                Xác nhận thay đổi {isProfileImage ? "ảnh đại diện" : "ảnh bìa"}
+                            </h2>
+                            <div className="flex justify-center mb-[20px]">
+                                <img
+                                    src={isProfileImage ? profilePreview : bannerPreview}
+                                    alt="Preview"
+                                    className="max-w-full max-h-[80vh] object-cover"
+                                />
+                            </div>
+                            <div className="flex justify-center gap-[10px]">
+                                <button
+                                    onClick={handleConfirmUpdate}
+                                    className="bg-[#1b74e4] text-white font-semibold px-[15px] py-[10px] rounded-lg hover:bg-blue-700 cursor-pointer"
+                                >
+                                    Xác nhận
+                                </button>
+                                <button
+                                    onClick={handleCancelUpdate}
+                                    className="bg-gray-500 text-white font-semibold px-[15px] py-[10px] rounded-lg hover:bg-gray-600 cursor-pointer"
+                                >
+                                    Hủy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </>
+            )}
         </div>
     )
 }

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import './CreatePost.css'
 import CollectionsIcon from '@mui/icons-material/Collections';
 import HistoryToggleOffIcon from '@mui/icons-material/HistoryToggleOff';
-import CreatePostModal from './CreatePostModal/CreatePostModal';
+import CreatePostModal from '../Modal/CreatePostModal/CreatePostModal';
 
 const CreatePost = () => {
 
@@ -18,9 +18,9 @@ const CreatePost = () => {
             </div>
             <hr className='h-[0.5px] mx-[20px] text-gray-300 dark:text-gray-600 bg-gray-300 dark:bg-gray-600' />
             <div className="row-2 flex justify-evenly items-center my-[10px] font-medium">
-                <div className='p-[20px] px-[40px] text-[24px] dark:text-neutral-300 flex items-center gap-[10px]'>
+                {/* <div className='p-[20px] px-[40px] text-[24px] dark:text-neutral-300 flex items-center gap-[10px]'>
                     <HistoryToggleOffIcon style={{ color: "red", fontSize: "30px" }} /> Story mới
-                </div>
+                </div> */}
                 <div className='p-[20px] px-[40px] text-[24px] dark:text-neutral-300 flex items-center gap-[10px]'
                     onClick={() => setIsModalOpen(true)}>
                     <CollectionsIcon style={{ color: "green", fontSize: "30px" }} /> Ảnh/Video

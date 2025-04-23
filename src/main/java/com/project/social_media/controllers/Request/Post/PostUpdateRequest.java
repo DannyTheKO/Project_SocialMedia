@@ -11,5 +11,5 @@ public class PostUpdateRequest {
     @Nullable
     private String content;
     @Nullable
-    private List<MultipartFile> mediaFileRequest;
+    private List<MultipartFile> files;
 }
