@@ -1,6 +1,6 @@
 @import "../../index.css";
 
-.leftbar {
+.leftBar {
     height: calc(100vh - 70px);
 
     &::-webkit-scrollbar {

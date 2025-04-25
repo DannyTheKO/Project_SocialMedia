@@ -81,6 +81,7 @@ public class MediaService implements IMediaService {
         }
     }
 
+
     /**
      * Save File Function
      *
@@ -89,6 +90,9 @@ public class MediaService implements IMediaService {
      * @param targetId  Long
      * @return String
      */
+    // TODO:
+    //  Add cloud service to store image/video
+    //  https://cloudinary.com/documentation/java_integration#overview
     public Media saveFile(MultipartFile file, String uploadDir, Long targetId, String targetType) {
         try {
             String originalFilename = file.getOriginalFilename();
@@ -133,6 +137,9 @@ public class MediaService implements IMediaService {
         }
     }
 
+    // TODO:
+    //   Use Admin API from api service
+    //   https://cloudinary.com/documentation/java_asset_administration
     public void removeFile(Long targetId, String targetType, String fileType) {
         // Find the associated media based on targetId, targetType, and fileType
         MediaAssociation association = mediaAssociationRepository.findByTargetIdAndTargetType(targetId, targetType)

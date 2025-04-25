@@ -10,5 +10,5 @@
 }
 
 .row-2 > div, .row-3 > div {
-    @apply pb-[15px] p-[10px] cursor-pointer rounded-lg;
+    @apply cursor-pointer rounded-lg;
 }

@@ -47,7 +47,8 @@ public class AuthenticationService implements IAuthenticationService {
             newUser.setFirstName(request.getFirstname());
             newUser.setLastName(request.getLastname());
             newUser.setEmail(request.getEmail());
-            newUser.setUserRole(User.userRole.USER); // Default Role
+            newUser.setUserRole(User.userRole.USER);        // Default Role
+            newUser.setUserState(User.userState.ACTIVE);    // Default State
             newUser.setCreatedAt(LocalDateTime.now());
             newUser.setLastLogin(LocalDateTime.now());
 
@@ -85,6 +86,8 @@ public class AuthenticationService implements IAuthenticationService {
     @Override
     public TokenForm login(LoginRequest request) throws RuntimeException {
         TokenForm tokenForm = new TokenForm();
+
+        // TODO: If userState is "SUSPENDED", we return Unauthorized
 
         try {
             // Get user by username
@@ -143,6 +146,8 @@ public class AuthenticationService implements IAuthenticationService {
 
     // Response to Controller !!!
     public void authenticationCheck(Authentication authentication) {
+        // TODO: If userState is "SUSPENDED", we return Unauthorized
+
         if (authentication == null) {
             throw new AuthenticationException("Unable to Authenticate");
         }

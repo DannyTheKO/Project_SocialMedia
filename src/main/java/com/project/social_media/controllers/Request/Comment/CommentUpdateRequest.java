@@ -8,8 +8,6 @@ import java.util.List;
 
 @Data
 public class CommentUpdateRequest {
-    @Nullable
     private String content;
-    @Nullable
     private List<MultipartFile> mediaFileRequest;
 }

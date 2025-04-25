@@ -1,6 +1,7 @@
 package com.project.social_media.controllers;
 
 import com.project.social_media.application.DTO.CommentDTO;
+import com.project.social_media.application.Exception.ResourceNotFound;
 import com.project.social_media.application.IService.IAuthenticationService;
 import com.project.social_media.application.IService.ICommentService;
 import com.project.social_media.application.IService.IPostService;
@@ -130,7 +131,8 @@ public class CommentController {
             // Get authenticate user
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             authenticationService.authenticationCheck(authentication);
-            User authUser = userService.getUserByUsername(authentication.getName()).orElse(null);
+            User authUser = userService.getUserByUsername(authentication.getName())
+                    .orElseThrow(() -> new ResourceNotFound("getUserByUsername: username not found"));
 
             // Create
             Comment newComment = commentService.createComment(authUser.getUserId(), postId, request);
@@ -157,20 +159,19 @@ public class CommentController {
      * <li>Updates an existing comment owned by the authenticated user</li>
      * <li>Validates that the current user is the owner of the comment</li>
      *
-     * @param postId The ID of the post containing the comment
      * @param commentId The ID of the comment to update
      * @param request {@link CommentUpdateRequest} containing updated comment content
      * @return {@link ApiResponse} containing the updated {@link CommentDTO}
      */
     @PutMapping("/comment/{commentId}/update")
     public ResponseEntity<ApiResponse> updateComment(
-            @RequestParam Long postId,
             @PathVariable Long commentId,
             @ModelAttribute CommentUpdateRequest request) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             authenticationService.authenticationCheck(authentication);
-            User authUser = userService.getUserByUsername(authentication.getName()).orElse(null);
+            User authUser = userService.getUserByUsername(authentication.getName())
+                    .orElseThrow(() -> new ResourceNotFound("getUserByUsername: username not found"));
             Comment existingComment = commentService.getCommentById(commentId);
 
             // Authentication Check
@@ -180,7 +181,7 @@ public class CommentController {
             }
 
             // Update
-            Comment updatedComment = commentService.updateComment(authUser.getUserId(), postId, commentId, request);
+            Comment updatedComment = commentService.updateComment(authUser.getUserId(), existingComment.getPost().getPostId(), commentId, request);
             CommentDTO updatedCommentDTO = commentService.convertToDTO(updatedComment);
             return ResponseEntity.ok(new ApiResponse("Success", updatedCommentDTO));
         } catch (Exception e) {

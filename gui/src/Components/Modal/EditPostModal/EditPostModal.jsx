@@ -1,16 +1,20 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import './EditPostModal.css'
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import CloseIcon from "@mui/icons-material/Close";
 import CollectionsIcon from "@mui/icons-material/Collections";
 import { postApi } from "../../../Services/PostService/postService";
+import {getImageUrl} from "../../../Utils/Media/getImageUrl.js";
+import {AuthContext} from "../../../Context/AuthContext.jsx";
 
 const EditPostModal = ({ isOpen, onClose, post, onPostUpdated }) => {
     const [content, setContent] = useState(post.content || "");
     const [files, setFiles] = useState([]);
     const [privacy, setPrivacy] = useState(post.privacy || "Công khai");
     const [error, setError] = useState(null);
+
+    const {currentUser} = useContext(AuthContext);
 
     useEffect(() => {
         setContent(post.content || "");
@@ -86,10 +90,10 @@ const EditPostModal = ({ isOpen, onClose, post, onPostUpdated }) => {
 
                     {/* User Information */}
                     <div className="flex gap-[10px] items-center mb-4">
-                        <img src="https://scontent.fsgn8-3.fna.fbcdn.net/v/t39.30808-1/489301460_1435137290984103_3889551179614328775_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=104&ccb=1-7&_nc_sid=e99d92&_nc_ohc=SHC004yzOzsQ7kNvwEXhBjj&_nc_oc=AdkmqFKQUWEFvP8glY48dKaUSoWz3CPYRPsxXJYU58qvvO9MF-TxEqtj-3qKf4ahzW7h7gHHtgBtkTukpM4bHx7b&_nc_zt=24&_nc_ht=scontent.fsgn8-3.fna&_nc_gid=deOWCsfgjfQq_htVC6RWJA&oh=00_AfESW3SzDYXEJfum7vrM8AsIKikD3FK70U_G05xA7iWPxA&oe=680A5E9D" // Thay bằng avatar người dùng
+                        <img src={getImageUrl(currentUser.profileImageUrl)}
                             alt="User avatar" className="w-[60px] h-[60px] rounded-full mr-3" />
                         <div>
-                            <p className="text-black dark:text-white font-medium">Tuấn Thái</p>
+                            <p className="text-black dark:text-white font-medium">{currentUser.username}</p>
                             <select value={privacy} onChange={(e) => setPrivacy(e.target.value)} className="bg-neutral-300 hover:bg-neutral-400 dark:bg-neutral-600 dark:text-white text-[18px] rounded p-2 cursor-pointer">
                                 <option value="Công khai">Công khai</option>
                                 <option value="Bạn bè">Bạn bè</option>

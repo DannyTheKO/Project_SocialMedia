@@ -8,41 +8,15 @@ import Messages from "../../Assets/10.png";
 import DefaultProfilePic from '../../assets/defaultProfilePic.jpg';
 import { AuthContext } from '../../Context/AuthContext';
 import { Link } from 'react-router';
+import { getImageUrl } from '../../Utils/Media/getImageUrl.js'
 
 const LeftBar = () => {
 
     const { currentUser, setCurrentUser } = useContext(AuthContext)
 
-    const getImageUrl = (filePath) => {
-        if (!filePath) return DefaultProfilePic;
-
-        const baseUrl = "http://localhost:8080";
-
-        try {
-            // Thử split với "uploads\", nếu không được thì thử với "uploads\\"
-            let relativePath = filePath.split("uploads\\")[1] || filePath.split("uploads\\\\")[1];
-
-            // Nếu không split được, trả về ảnh mặc định
-            if (!relativePath) {
-                console.warn("Không thể parse đường dẫn ảnh:", filePath);
-                return DefaultProfilePic;
-            }
-
-            // Thay tất cả dấu \ thành / để tạo URL hợp lệ
-            const cleanPath = relativePath.replace(/\\/g, "/");
-
-            // Tạo URL public
-            const fullUrl = `${baseUrl}/uploads/${cleanPath}`;
-            return fullUrl;
-        } catch (error) {
-            console.error("Lỗi khi tạo URL ảnh:", error, "FilePath:", filePath);
-            return DefaultProfilePic;
-        }
-    };
-
 
     return (
-        <div className='leftbar'>
+        <div className='leftBar'>
             <div className="container p-[20px]">
                 <div className="menu">
                     <Link to={`/profile/${currentUser.userId}`}>
