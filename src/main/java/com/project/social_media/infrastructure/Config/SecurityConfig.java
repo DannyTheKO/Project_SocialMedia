@@ -34,7 +34,6 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    // TODO: Front-end: If a "guest" do action that require "guest" information? redirect them to register/login
     // TODO: Add admin role? maybe?
 
     @Bean
@@ -171,7 +170,8 @@ public class SecurityConfig {
                 }
             }
 
-            System.out.println("Token from cookie or header: " + token);
+            // Debug Print
+            // System.out.println("Token from cookie or header: " + token);
 
             if (token != null && JwtUtil.validateToken(token)) {
                 try {
@@ -179,8 +179,9 @@ public class SecurityConfig {
                     String username = claims.getSubject();
                     String role = claims.get("role").toString();
 
-                    System.out.println("Username from token: " + username);
-                    System.out.println("Role from token: " + role);
+                    // Debug Print
+                    // System.out.println("Username from token: " + username);
+                    // System.out.println("Role from token: " + role);
 
                     List<SimpleGrantedAuthority> authorities = List.of(
                             new SimpleGrantedAuthority("ROLE_" + role)
@@ -199,7 +200,7 @@ public class SecurityConfig {
 
                     SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                    System.out.println("Set authentication: " + SecurityContextHolder.getContext().getAuthentication());
+                    // System.out.println("Set authentication: " + SecurityContextHolder.getContext().getAuthentication());
                 } catch (Exception e) {
                     System.out.println("Error processing token: " + e.getMessage());
                     SecurityContextHolder.clearContext();

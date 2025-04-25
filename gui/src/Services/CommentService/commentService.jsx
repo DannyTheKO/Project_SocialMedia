@@ -19,12 +19,33 @@ export const commentApi = {
 
     // POST /api/v1/comments/create?userId={userId}&postId={postId}
     createComment: (userId, postId, commentData) => {
-        const formData = new FormData();
-        Object.keys(commentData).forEach(key => {
-            formData.append(key, commentData[key]);
-        });
+        // If commentData is already FormData, use it directly
+        let formData;
+        if (commentData instanceof FormData) {
+            formData = commentData;
+        } else {
+            // Otherwise create a new FormData and populate it
+            formData = new FormData();
+            Object.keys(commentData).forEach(key => {
+                // Handle array values (like multiple files)
+                if (Array.isArray(commentData[key])) {
+                    commentData[key].forEach(item => {
+                        formData.append(key, item);
+                    });
+                } else {
+                    formData.append(key, commentData[key]);
+                }
+            });
+        }
+
+        // Log what's being sent (for debugging)
+        console.log("Sending to API:");
+        for (let pair of formData.entries()) {
+            console.log(pair[0] + ': ' + (pair[0] === 'media' ? '[File]' : pair[1]));
+        }
+
         return axios.post(
-            `${COMMENT_API_BASE_URL}/create?userId=${userId}&postId=${postId}`,
+            `${COMMENT_API_BASE_URL}/create?postId=${postId}`,
             formData,
             {
                 headers: { 'Content-Type': 'multipart/form-data' }

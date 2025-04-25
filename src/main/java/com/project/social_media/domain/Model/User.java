@@ -29,6 +29,10 @@ public class User {
     private String bannerImageUrl;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false, name = "user_state")
+    private userState userState;
+
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, name = "user_role")
     private userRole userRole;
 
@@ -97,9 +101,9 @@ public class User {
      * @param createdAt Date
      * @param lastLogin Date
      */
-
-    public User(userRole userRole, String username, String firstName, String lastName, String email, String password, LocalDateTime createdAt, LocalDateTime lastLogin) {
+    public User(userRole userRole, userState userState, String username, String firstName, String lastName, String email, String password, LocalDateTime createdAt, LocalDateTime lastLogin) {
         this.userRole = userRole;
+        this.userState = userState;
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -123,5 +127,10 @@ public class User {
     public enum userRole {
         USER,
         ADMIN,
+    }
+
+    public enum userState {
+        ACTIVE,
+        SUSPENDED,
     }
 }

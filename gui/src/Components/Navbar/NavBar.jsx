@@ -14,6 +14,7 @@ import { ThemeContext } from '../../Context/ThemeContext';
 import Chat from '../Chat/Chat';
 import Notification from '../Notifications/Notification';
 import { AuthContext } from '../../Context/AuthContext';
+import { getImageUrl } from "../../Utils/Media/getImageUrl.js";
 
 const NavBar = () => {
 
@@ -24,33 +25,6 @@ const NavBar = () => {
     const [openChat, setOpenChat] = useState(false);
 
     const [openNotification, setOpenNotification] = useState(false);
-
-    const getImageUrl = (filePath) => {
-        if (!filePath) return DefaultProfilePic;
-
-        const baseUrl = "http://localhost:8080";
-
-        try {
-            // Thử split với "uploads\", nếu không được thì thử với "uploads\\"
-            let relativePath = filePath.split("uploads\\")[1] || filePath.split("uploads\\\\")[1];
-
-            // Nếu không split được, trả về ảnh mặc định
-            if (!relativePath) {
-                console.warn("Không thể parse đường dẫn ảnh:", filePath);
-                return DefaultProfilePic;
-            }
-
-            // Thay tất cả dấu \ thành / để tạo URL hợp lệ
-            const cleanPath = relativePath.replace(/\\/g, "/");
-
-            // Tạo URL public
-            const fullUrl = `${baseUrl}/uploads/${cleanPath}`;
-            return fullUrl;
-        } catch (error) {
-            console.error("Lỗi khi tạo URL ảnh:", error, "FilePath:", filePath);
-            return DefaultProfilePic;
-        }
-    };
 
     const handleOpenChat = () => {
         setOpenChat(!openChat)

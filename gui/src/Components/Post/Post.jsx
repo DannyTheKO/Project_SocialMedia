@@ -15,6 +15,8 @@ import 'moment/locale/vi';
 import { postApi } from '../../Services/PostService/postService';
 import { AuthContext } from '../../Context/AuthContext';
 import { toast } from 'react-toastify';
+import { getImageUrl } from '../../Utils/Media/getImageUrl.js';
+import { isVideo } from '../../Utils/Media/checkFileType.js';
 
 moment.locale('vi');
 
@@ -34,39 +36,6 @@ const Post = ({ user, postId, content, comments, likes, media, createdPost, modi
 
     // State dropdown
     const [showDropDown, setShowDropDown] = useState(false);
-
-    // Hàm kiểm tra file ảnh hay là video
-    const isVideo = (filePath) => {
-        return filePath && filePath.toLowerCase().endsWith('.mp4');
-    };
-
-    // Hàm get image từ url public
-    const getImageUrl = (filePath) => {
-        if (!filePath) return DefaultProfilePic;
-
-        const baseUrl = "http://localhost:8080";
-
-        try {
-            // Thử split với "uploads\", nếu không được thì thử với "uploads\\"
-            let relativePath = filePath.split("uploads\\")[1] || filePath.split("uploads\\\\")[1];
-
-            // Nếu không split được, trả về ảnh mặc định
-            if (!relativePath) {
-                console.warn("Không thể parse đường dẫn ảnh:", filePath);
-                return DefaultProfilePic;
-            }
-
-            // Thay tất cả dấu \ thành / để tạo URL hợp lệ
-            const cleanPath = relativePath.replace(/\\/g, "/");
-
-            // Tạo URL public
-            const fullUrl = `${baseUrl}/uploads/${cleanPath}`;
-            return fullUrl;
-        } catch (error) {
-            console.error("Lỗi khi tạo URL ảnh:", error, "FilePath:", filePath);
-            return DefaultProfilePic;
-        }
-    };
 
     // Handler của nút prevSlider
     const handlePrev = () => {
@@ -143,7 +112,7 @@ const Post = ({ user, postId, content, comments, likes, media, createdPost, modi
                         {/* Dropdown menu */}
                         {showDropDown && (
                             <div className="absolute right-0 mt-1 w-96 bg-neutral-800 text-white rounded-lg shadow-lg z-50 text-[20px]">
-                                {user.userId == currentUser.userId && (
+                                {user.userId === currentUser.userId && (
                                     <button
                                         onClick={handleEditPost}
                                         className="w-full text-left px-4 py-2 hover:bg-neutral-700 rounded-t-lg flex gap-[10px] items-center cursor-pointer"
@@ -166,20 +135,20 @@ const Post = ({ user, postId, content, comments, likes, media, createdPost, modi
                 <div className="content">
                     <p>{content}</p>
                     {media && media.length > 0 && (
-                        <div className="media-gallery relative">
+                        <div className="media-gallery relative my-[20px]">
                             {media.length === 1 ? (
                                 // Nếu chỉ có 1 media, hiển thị tĩnh
                                 isVideo(media[0].filePath) ? (
                                     <video
                                         src={getImageUrl(media[0].filePath)}
                                         controls
-                                        className="w-full"
+                                        className="w-full object-cover object-center rounded-md"
                                     />
                                 ) : (
                                     <img
                                         src={getImageUrl(media[0].filePath)}
                                         alt="Post media"
-                                        className="w-full"
+                                        className="w-full object-cover object-center rounded-md"
                                     />
                                 )
                             ) : (
@@ -187,7 +156,7 @@ const Post = ({ user, postId, content, comments, likes, media, createdPost, modi
                                 <div className="relative overflow-hidden">
                                     {/* Container chứa tất cả media */}
                                     <div
-                                        className="flex transition-transform duration-500 ease-in-out"
+                                        className="flex transition-transform duration-250 ease-in-out"
                                         style={{
                                             transform: `translateX(-${currentIndex * 100}%)`,
                                         }}
@@ -201,13 +170,13 @@ const Post = ({ user, postId, content, comments, likes, media, createdPost, modi
                                                     <video
                                                         src={getImageUrl(item.filePath)}
                                                         controls
-                                                        className="w-full"
+                                                        className="w-full rounded-md"
                                                     />
                                                 ) : (
                                                     <img
                                                         src={getImageUrl(item.filePath)}
                                                         alt={`Post media ${index + 1}`}
-                                                        className="w-full"
+                                                        className="w-full rounded-md"
                                                     />
                                                 )}
                                             </div>
@@ -229,13 +198,14 @@ const Post = ({ user, postId, content, comments, likes, media, createdPost, modi
                                     </button>
                                     {/* Hiển thị số thứ tự media */}
                                     <div
-                                        className="absolute top-6 right-1 transform -translate-y-[-1/2] bg-gray-800 text-white px-5 py-3 rounded-full">
+                                        className="absolute top-3 right-2 transform -translate-y-[-1/2] bg-gray-800 text-white px-5 py-3 rounded-full">
                                         {currentIndex + 1} / {media.length}
                                     </div>
                                 </div>
                             )}
                         </div>
                     )}
+
                 </div>
                 <div className="info">
                     <div className="item">

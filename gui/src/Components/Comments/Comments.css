@@ -10,12 +10,21 @@
     .write {
         @apply flex items-center justify-between gap-[20px] mt-[25px] mb-[20px] mx-0;
 
-        input {
-            @apply flex-[5] p-[10px] border-1 border-[lightgray] bg-transparent text-[18px] text-black dark:text-gray-200;
+        .comment-input-container {
+            @apply w-full flex items-center justify-between gap-[10px] mx-0;
+
         }
 
-        button {
-            @apply border-none bg-blue-500 text-white p-[14px] cursor-pointer rounded-md font-medium;
+        input {
+            @apply flex-[4] p-[10px] border-1 border-[lightgray] bg-transparent text-[18px] text-black dark:text-gray-200 rounded-md;
+        }
+
+        .file-upload-label {
+            @apply border-none bg-blue-500 text-white p-[8px] rounded-md font-medium cursor-pointer;
+        }
+
+        .submit-comment {
+            @apply border-none bg-blue-500 text-white p-[8px] cursor-pointer rounded-md font-medium;
         }
     }
 
@@ -29,7 +38,6 @@
 
     .content {
         @apply flex flex-col w-full bg-[whitesmoke] dark:bg-[#343434] rounded-lg p-4;
-
     }
 
     .info {

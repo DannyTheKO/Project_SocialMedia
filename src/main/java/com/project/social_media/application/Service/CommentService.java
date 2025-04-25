@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -208,13 +209,16 @@ public class CommentService implements ICommentService {
         mappedDTO.setUserId(comment.getUser().getUserId());
         mappedDTO.setFirstName(comment.getUser().getFirstName());
         mappedDTO.setLastName(comment.getUser().getLastName());
+        mappedDTO.setProfileImageUrl(comment.getUser().getProfileImageUrl());
 
         // Set Media
         List<MediaDTO> mediaDTOList = mediaService.getMediaDTOByTargetIdAndTargetType(comment.getCommentId(), "Comment");
         mappedDTO.setMedia(mediaDTOList);
 
         // Set Like
-        List<LikeDTO> likeDTOList = likeService.convertToDTOList(comment.getLikes());
+        List<LikeDTO> likeDTOList = comment.getLikes() != null ?
+                likeService.convertToDTOList(comment.getLikes()) :
+                new ArrayList<>();
         mappedDTO.setLikes(likeDTOList);
 
         return mappedDTO;

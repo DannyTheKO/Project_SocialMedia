@@ -19,6 +19,7 @@ import { ApiResponse } from "../../Model/ApiResponse.jsx";
 import { User } from "../../Model/User.jsx";
 import { AuthContext } from '../../Context/AuthContext.jsx';
 import { toast } from 'react-toastify';
+import { getImageUrl } from '../../Utils/Media/getImageUrl.js';
 
 const Profile = () => {
 
@@ -91,34 +92,6 @@ const Profile = () => {
         setBannerImageUrl('');
     }
 
-    const getImageUrl = (filePath) => {
-        if (!filePath) return DefaultProfilePic;
-
-        const baseUrl = "http://localhost:8080";
-
-        try {
-            // Thử split với "uploads\", nếu không được thì thử với "uploads\\"
-            let relativePath = filePath.split("uploads\\")[1] || filePath.split("uploads\\\\")[1];
-
-            // Nếu không split được, trả về ảnh mặc định
-            if (!relativePath) {
-                console.warn("Không thể parse đường dẫn ảnh:", filePath);
-                return DefaultProfilePic;
-            }
-
-            // Thay tất cả dấu \ thành / để tạo URL hợp lệ
-            const cleanPath = relativePath.replace(/\\/g, "/");
-
-            // Tạo URL public
-            const fullUrl = `${baseUrl}/uploads/${cleanPath}`;
-            // console.log("Generated Image URL:", fullUrl);
-            return fullUrl;
-        } catch (error) {
-            console.error("Lỗi khi tạo URL ảnh:", error, "FilePath:", filePath);
-            return DefaultProfilePic;
-        }
-    };
-
     const handleFileChange = (e, type) => {
         const file = e.target.files[0];
 
@@ -190,11 +163,11 @@ const Profile = () => {
 
     return (
         <div className='profile'>
-            <div className='images'>
+            <div className="images">
                 <img
                     src={getImageUrl(bannerImageUrl) || DefaultProfilePic}
                     alt="Cover"
-                    className='cover h-full w-full object-cover'
+                    className="cover h-full w-full object-center object-cover rounded-md"
                 />
                 {currentUser?.userId === id && (
                     <label className="upload-banner">
