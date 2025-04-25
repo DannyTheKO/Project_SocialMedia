@@ -119,7 +119,7 @@ const Profile = () => {
             return;
         }
 
-        console.log("File to update:", fileToUpdate);
+        // console.log("File to update:", fileToUpdate);
 
         const userData = new FormData();
         userData.append(fieldToUpdate, fileToUpdate);
@@ -128,7 +128,7 @@ const Profile = () => {
             const response = await userApi.updateUser(userData);
             if (response.message === "Success" && response.data) {
                 // Debug log
-                console.log(response.data)
+                // console.log(response.data)
 
                 const updatedUser = new User(response.data);
                 if (isProfileImage) {

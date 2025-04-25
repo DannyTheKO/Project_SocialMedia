@@ -1,36 +1,37 @@
-import React, {useContext, useState} from 'react'
-import './CommentCpn.css'
-import moment from 'moment'
+import React, {useContext, useState} from 'react';
+import moment from 'moment';
 import 'moment/locale/vi';
-import {isAudio, isVideo} from "../../Utils/Media/checkFileType.js"
-import {getImageUrl} from '../../Utils/Media/getImageUrl.js';
-import {AuthContext} from "../../Context/AuthContext.jsx";
+import './SingleCommentComponent.css';
+
+import {isAudio, isVideo} from "../../../Utils/Media/checkFileType.js"
+import {getImageUrl} from '../../../Utils/Media/getImageUrl.js';
+import {AuthContext} from "../../../Context/AuthContext.jsx";
+
+import CommentEditForm from "./EditForm/CommentEditForm.jsx";
+
 import EditIcon from '@mui/icons-material/Edit';
-import AttachFileIcon from '@mui/icons-material/AttachFile';
 
 
 moment.locale('vi');
 
-const CommentCpn = ({
-                        comment,
-                        isEditing,      // Boolean flag that determines whether the comment is currently being edited
-                        editText,       // Holds the current text content in the edit form.
-                        setEditText,    // Function to update the editText state when the user types in the edit textarea.
-                        editFiles,      // Array that stores file objects selected during comment editing (for attaching new media).
-                        setEditFiles,   // Function to update the editFiles state when the user selects new files to attach to the comment.
-                        onStartEdit,    // Callback function triggered when the user clicks the edit button. It sets up the editing state in the parent component.
-                        onCancelEdit,   // Callback function triggered when the user clicks the Cancel button while editing. Resets the editing state.
-                        onSaveEdit      // Callback function that handles saving the edited comment. It receives the updated text and files and makes the API call to update the comment.
-                    }) => {
+const SingleCommentComponent = ({
+                                    comment,
+
+                                    // This is for Flag switch between Edit and Display
+                                    isEditing,      // Boolean flag that determines whether the comment is currently being edited
+
+                                    // This Variable for Display Section
+                                    onStartEdit,    // Callback function triggered when the user clicks the edit button. It sets up the editing state in the parent component.
+
+                                    // This Variable Edit Form Section
+                                    onCancelEdit,   // Callback function triggered when the user clicks the Cancel button while editing. Resets the editing state.
+                                    onSaveEdit,     // Callback function that handles saving the edited comment. It receives the updated text and files and makes the API call to update the comment.
+                                }) => {
     // State slider if comments has multiple media files
     const [currentIndex, setCurrentIndex] = useState(0);
 
     // Authentication
     const {currentUser} = useContext(AuthContext)
-
-    // console.log(`Comment From UserID: ${typeof comment.userId}`)
-    // console.log(`UserID: ${typeof currentUser.userId}`)
-    // console.log("====")
 
     // Handler của nút prevSlider
     const handlePrev = () => {
@@ -46,51 +47,12 @@ const CommentCpn = ({
     return (
         <div className="comment" key={comment.commentId}>
             {isEditing ? (
-                // Edit Form
-                <div className="p-3 bg-white dark:bg-[#343434] rounded-md shadow">
-                    <textarea
-                        value={editText}
-                        onChange={(e) => setEditText(e.target.value)}
-                        className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y min-h-[80px] bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                        placeholder="Edit your comment..."
-                    />
-                    <div className="mt-2">
-                        <label
-                            className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-md cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600"
-                            htmlFor={`edit-file-input-${comment.commentId}`}>
-                            <AttachFileIcon/> Add media
-                        </label>
-                        <input
-                            id={`edit-file-input-${comment.commentId}`}
-                            type="file"
-                            accept="image/*,video/*"
-                            multiple
-                            style={{display: 'none'}}
-                            onChange={(e) => setEditFiles(Array.from(e.target.files))}
-                        />
-                    </div>
-
-                    {editFiles.length > 0 && (
-                        <div className="edit-file-preview">
-                            {editFiles.length} file(s) selected
-                        </div>
-                    )}
-                    <div className="flex justify-end mt-2 gap-2">
-                        <button
-                            className="px-3 py-1.5 rounded bg-blue-500 hover:bg-blue-600 text-white border-none cursor-pointer text-sm"
-                            onClick={() => onSaveEdit(editText, editFiles)}
-                        >
-                            Save
-                        </button>
-                        <button
-                            className="px-3 py-1.5 rounded bg-gray-200 dark:bg-gray-600 text-gray-900 dark:text-gray-200 border-none cursor-pointer text-sm hover:bg-gray-300 dark:hover:bg-gray-500"
-                            onClick={onCancelEdit}
-                        >
-                            Cancel
-                        </button>
-                    </div>
-                </div>
-
+                // Edit Form Action
+                <CommentEditForm
+                    comment={comment}
+                    onCancel={onCancelEdit}
+                    onSave={onSaveEdit}
+                />
             ) : (
                 // Display Comment
                 <>
@@ -202,4 +164,4 @@ const CommentCpn = ({
     )
 }
 
-export default CommentCpn
+export default SingleCommentComponent

@@ -55,13 +55,9 @@ export const commentApi = {
 
     // PUT /api/v1/comments/comment/{commentId}/update
     updateComment: (commentId, commentData) => {
-        const formData = new FormData();
-        Object.keys(commentData).forEach(key => {
-            formData.append(key, commentData[key]);
-        });
         return axios.put(
             `${COMMENT_API_BASE_URL}/comment/${commentId}/update`,
-            formData,
+            commentData,
             {
                 headers: { 'Content-Type': 'multipart/form-data' }
             }

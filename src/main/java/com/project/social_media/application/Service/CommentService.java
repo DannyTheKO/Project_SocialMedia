@@ -152,11 +152,13 @@ public class CommentService implements ICommentService {
 
         List<MediaAssociation> oldMediaFiles = mediaAssociationRepository.findByTargetIdAndTargetType(commentId, "Comment");
         List<MultipartFile> mediaFiles = request.getMediaFileRequest();
-        if (mediaFiles != null) {
-            oldMediaFiles.forEach(oldMediaFile -> {
-                mediaService.removeFile(commentId, oldMediaFile.getTargetType(), oldMediaFile.getMedia().getFileType());
-            });
 
+        // we force remove old Media files
+        oldMediaFiles.forEach(oldMediaFile -> {
+            mediaService.removeFile(commentId, oldMediaFile.getTargetType(), oldMediaFile.getMedia().getFileType());
+        });
+
+        if (mediaFiles != null) {
             mediaFiles.stream()
                     .filter(mediaFile -> !mediaFile.isEmpty())
                     .forEach(mediaFile -> mediaService.saveFile(

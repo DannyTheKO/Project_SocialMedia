@@ -4,7 +4,7 @@ import {commentApi} from '../../Services/CommentService/commentService'
 import {AuthContext} from '../../Context/AuthContext'
 import SendIcon from '@mui/icons-material/Send';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-import CommentCpn from '../Comment/CommentCpn';
+import SingleCommentComponent from './SingleComment/SingleCommentComponent.jsx';
 import {toast} from 'react-toastify';
 
 const Comments = ({postId, isVideo, getImageUrl}) => {
@@ -137,13 +137,18 @@ const Comments = ({postId, isVideo, getImageUrl}) => {
             const formData = new FormData();
 
             // Add content (with fallback for empty content)
-            formData.append("content", updatedContent.trim() || "Shared media");
+            formData.append("content", updatedContent.trim() || "");
 
             // Add media files if any
             if (updatedFiles && updatedFiles.length > 0) {
                 for (let i = 0; i < updatedFiles.length; i++) {
                     formData.append("mediaFileRequest", updatedFiles[i]);
                 }
+            }
+
+            console.log("FormData contents:");
+            for (let pair of formData.entries()) {
+                console.log(pair[0] + ': ' + pair[1]);
             }
 
             // Call the API to update the comment
@@ -171,6 +176,8 @@ const Comments = ({postId, isVideo, getImageUrl}) => {
         <div className='comments'>
             <div className="write">
                 <img src={getImageUrl(currentUser.profileImageUrl)} alt=""/>
+
+                {/*TODO: Clean up Create Form*/}
                 <div className="comment-input-container">
                     <input
                         type="text"
@@ -250,22 +257,15 @@ const Comments = ({postId, isVideo, getImageUrl}) => {
             {/* Add null check before mapping */}
             {comments && comments.length > 0 ? (
                 comments.map((comment, index) => (
-                    <CommentCpn
+                    <SingleCommentComponent
                         comment={comment}
                         key={index}
+
+                        // Edit Function
                         isEditing={editingCommentId === comment.commentId}
-                        editText={editCommentText}
-                        setEditText={setEditCommentText}
-                        editFiles={editCommentFiles}
-                        setEditFiles={setEditCommentFiles}
-                        onStartEdit={() => {
-                            setEditingCommentId(comment.commentId);
-                            setEditCommentText(comment.content || "");
-                            setEditCommentFiles([]);
-                        }}
+                        onStartEdit={() => setEditingCommentId(comment.commentId)}
                         onCancelEdit={() => setEditingCommentId(null)}
-                        onSaveEdit={(updatedContent, updatedFiles) =>
-                            handleEditComment(comment.commentId, updatedContent, updatedFiles)
+                        onSaveEdit={(updatedContent, updatedFiles) => handleEditComment(comment.commentId, updatedContent, updatedFiles)
                         }
                     />
                 ))
