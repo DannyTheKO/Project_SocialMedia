@@ -40,11 +40,11 @@
         @apply mx-0 text-[19px];
 
         img {
-            @apply max-h-[550px] w-full object-cover
+            @apply w-full object-cover
         }
 
         video {
-            @apply max-h-[550px] w-full object-cover
+            @apply w-full object-cover
         }
     }
 

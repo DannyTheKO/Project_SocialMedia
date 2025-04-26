@@ -1,0 +1,54 @@
+@import "../../../index.css";
+
+.mediaSlider-container {
+    @apply row-2 w-full p-0;
+
+    .mediaSlider-Single {
+        @apply w-full;
+
+        .mediaSlider-audioFile {
+            @apply rounded-md;
+        }
+
+        .mediaSlider-videoFile {
+            @apply object-center object-cover max-h-[500px] rounded-md;
+        }
+
+        .mediaSlider-imageFile {
+            @apply object-center object-cover max-h-[500px] rounded-md;
+        }
+    }
+
+    .mediaSlider-Multiple {
+        @apply relative w-full max-h-[500px] overflow-hidden;
+
+        .mediaSlider-control {
+            @apply flex w-full transition-transform duration-250 ease-in-out;
+
+            .mediaSlider-mediaList {
+                @apply w-full flex flex-shrink-0;
+
+                .mediaSlider-videoFile {
+                    @apply object-center object-cover max-h-[500px] rounded-md;
+                }
+
+                .mediaSlider-imageFile {
+                    @apply object-center object-cover max-h-[500px] rounded-md;
+                }
+            }
+        }
+
+        /*Button*/
+        .mediaSlider-btnPrev {
+            @apply absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-4 rounded-full hover:opacity-50 text-[36px] cursor-pointer;
+        }
+
+        .mediaSlider-btnNext {
+            @apply absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-4 rounded-full hover:opacity-50 text-[36px] cursor-pointer;
+        }
+
+        .mediaSlider-length {
+            @apply absolute top-12 right-3 transform -translate-y-1/2 bg-gray-800 text-white px-5 py-3 rounded-full;
+        }
+    }
+}

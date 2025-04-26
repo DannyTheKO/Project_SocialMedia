@@ -38,12 +38,6 @@ export const commentApi = {
             });
         }
 
-        // Log what's being sent (for debugging)
-        console.log("Sending to API:");
-        for (let pair of formData.entries()) {
-            console.log(pair[0] + ': ' + (pair[0] === 'media' ? '[File]' : pair[1]));
-        }
-
         return axios.post(
             `${COMMENT_API_BASE_URL}/create?postId=${postId}`,
             formData,
@@ -66,5 +60,5 @@ export const commentApi = {
 
     // DELETE /api/v1/comments/user/{commentId}/delete
     deleteComment: (commentId) =>
-        axios.delete(`${COMMENT_API_BASE_URL}/user/${commentId}/delete`)
+        axios.delete(`${COMMENT_API_BASE_URL}/comment/delete?commentId=${commentId}`),
 };

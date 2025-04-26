@@ -4,10 +4,13 @@ import {commentApi} from '../../Services/CommentService/commentService'
 import {AuthContext} from '../../Context/AuthContext'
 import SendIcon from '@mui/icons-material/Send';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-import SingleCommentComponent from './SingleComment/SingleCommentComponent.jsx';
 import {toast} from 'react-toastify';
+import CommentEditForm from "./EditForm/CommentEditForm.jsx";
+import DisplayComment from "./DisplayComment/DisplayComment.jsx";
+import MediaSelectedPreview from "../Media/MediaPreview/MediaSelectedPreview.jsx";
+import CommentCreateForm from "./CreateForm/CommentCreateForm.jsx";
 
-const Comments = ({postId, isVideo, getImageUrl}) => {
+const Comments = ({postId, isVideo, getMediaUrl}) => {
 
     // Authentication
     const {currentUser} = useContext(AuthContext);
@@ -21,19 +24,7 @@ const Comments = ({postId, isVideo, getImageUrl}) => {
     const fileInputRef = useRef(null);
 
     // Edit Comment
-    const [editingCommentId, setEditingCommentId] = useState(null);
-    const [editCommentText, setEditCommentText] = useState('');
-    const [editCommentFiles, setEditCommentFiles] = useState([]);
-
-
-    // Create stable file preview URLs that don't change on every re-render
-    const filePreviewUrls = useMemo(() => {
-        return Array.from(files).map(file => ({
-            url: URL.createObjectURL(file),
-            type: file.type,
-            name: file.name
-        }));
-    }, [files]); // Only recreate URLs when files array changes
+    const [commentEditText, setCommentEditText] = useState(null);
 
     useEffect(() => {
         // Fetch comments
@@ -41,14 +32,7 @@ const Comments = ({postId, isVideo, getImageUrl}) => {
             .catch(error => {
                 console.error("Error loading comment", error)
             });
-
-        // Return cleanup function
-        return () => {
-            filePreviewUrls.forEach(filePreview => {
-                URL.revokeObjectURL(filePreview.url);
-            });
-        };
-    }, [postId, filePreviewUrls]);
+    }, [postId]);
 
 
     const fetchComments = async (postId) => {
@@ -65,7 +49,8 @@ const Comments = ({postId, isVideo, getImageUrl}) => {
             }
         } catch (error) {
             console.error('Error fetching comments:', error.response?.data || error.message);
-            setComments([]);5
+            setComments([]);
+            5
         }
     }
 
@@ -90,10 +75,10 @@ const Comments = ({postId, isVideo, getImageUrl}) => {
             }
 
             // DEBUG: Log the actual contents of FormData
-            console.log("FormData contents:");
-            for (let pair of formData.entries()) {
-                console.log(pair[0] + ': ' + pair[1]);
-            }
+            // console.log("FormData contents:");
+            // for (let pair of formData.entries()) {
+            //     console.log(pair[0] + ': ' + pair[1]);
+            // }
 
             const response = await commentApi.createComment(
                 currentUser.userId,
@@ -146,10 +131,11 @@ const Comments = ({postId, isVideo, getImageUrl}) => {
                 }
             }
 
-            console.log("FormData contents:");
-            for (let pair of formData.entries()) {
-                console.log(pair[0] + ': ' + pair[1]);
-            }
+            // Debug Print
+            // console.log("FormData contents:");
+            // for (let pair of formData.entries()) {
+            //     console.log(pair[0] + ': ' + pair[1]);
+            // }
 
             // Call the API to update the comment
             const response = await commentApi.updateComment(commentId, formData);
@@ -162,7 +148,7 @@ const Comments = ({postId, isVideo, getImageUrl}) => {
                 }
 
                 // Reset edit mode state if you're tracking it
-                setEditingCommentId(null);
+                setCommentEditText(null);
             } else {
                 toast.error("Failed to update comment");
             }
@@ -172,102 +158,68 @@ const Comments = ({postId, isVideo, getImageUrl}) => {
         }
     };
 
+    const handleDeleteComment = async (commentId) => {
+        try {
+            const response = await commentApi.deleteComment(commentId);
+
+            if (response && response.message === "Success") {
+                toast.success("Successfully deleted");
+            } else {
+                toast.warn("Invalid Permission")
+            }
+
+        } catch (error) {
+            console.error("Error deleting comment:", error);
+            toast.error("Error deleting comment");
+        }
+    }
+
     return (
         <div className='comments'>
-            <div className="write">
-                <img src={getImageUrl(currentUser.profileImageUrl)} alt=""/>
+            {/*Create Form*/}
+            <CommentCreateForm
+                currentUser={currentUser}
+                commentInputText={commentInputText}
+                setCommentInputText={setCommentInputText}
+                setFiles={setFiles}
+                handleSubmitComment={handleSubmitComment}
+                postId={postId}
+            />
 
-                {/*TODO: Clean up Create Form*/}
-                <div className="comment-input-container">
-                    <input
-                        type="text"
-                        placeholder='Write a comment'
-                        value={commentInputText}
-                        onChange={(e) => setCommentInputText(e.target.value)}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter' && !e.shiftKey) {
-                                e.preventDefault();
-                                handleSubmitComment(postId)
-                                    .catch(error => {
-                                        console.error(`Error submit comment: ${error}`);
-                                    });
-                            }
-                        }}
-                    />
-
-                    {/* File attachment button */}
-                    <label htmlFor="comment-file-input" className="file-upload-label">
-                        <AttachFileIcon/>
-                    </label>
-                    <input
-                        id="comment-file-input"
-                        type="file"
-                        accept="image/*,video/*"
-                        multiple
-                        ref={fileInputRef}
-                        style={{display: 'none'}}
-                        onChange={(e) => setFiles(Array.from(e.target.files))}
-                    />
-                </div>
-                <button className="submit-comment" onClick={() => handleSubmitComment(postId)}>
-                    <SendIcon/>
-                </button>
-            </div>
-
-            {/* Show file preview if files are selected */}
+            {/* File Preview */}
+            {/* Dev note: This section could be a separate component?*/}
             {files.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-2 mb-4 mx-15">
-                    {filePreviewUrls.map((filePreview, index) => (
-                        <div key={index} className="relative w-20 h-20 overflow-hidden rounded-md">
-                            {filePreview.type.startsWith('image/') ? (
-                                // If image exist
-                                <img className="w-full h-full object-cover rounded-md" src={filePreview.url}
-                                     alt={`Preview ${index}`}/>
-
-                            ) : filePreview.type.startsWith('video/') ? (
-                                // Else if video exist
-                                <video controls>
-                                    <source className="w-full h-full object-cover rounded-md"
-                                            src={URL.createObjectURL(filePreview)} type={filePreview.type}/>
-                                    Your browser does not support the video tag.
-                                </video>
-
-                            ) : (
-                                // Else unknown file ?
-                                <div>{filePreview.name}</div>
-
-                            )}
-                            <button
-                                className="absolute top-1 right-1 w-6 h-6 flex items-center justify-center
-                                bg-red-500 text-white rounded-full text-xs cursor-pointer
-                                hover:bg-red-600 transition-colors"
-                                onClick={() => {
-                                    const newFiles = [...files];
-                                    newFiles.splice(index, 1);
-                                    setFiles(newFiles);
-                                }}
-                            >
-                                ×
-                            </button>
-                        </div>
-                    ))}
-                </div>
+                <MediaSelectedPreview
+                    styleContainer={"flex bg-[whitesmoke] dark:bg-[#343434] rounded-md flex-wrap gap-2 py-4 ml-15 pl-[16px]"}
+                    mediaFileObjects={files}
+                    onRemove={(index) => {
+                        const newFiles = [...files];
+                        newFiles.splice(index, 1);
+                        setFiles(newFiles);
+                    }}
+                />
             )}
 
             {/* Add null check before mapping */}
             {comments && comments.length > 0 ? (
                 comments.map((comment, index) => (
-                    <SingleCommentComponent
-                        comment={comment}
-                        key={index}
-
-                        // Edit Function
-                        isEditing={editingCommentId === comment.commentId}
-                        onStartEdit={() => setEditingCommentId(comment.commentId)}
-                        onCancelEdit={() => setEditingCommentId(null)}
-                        onSaveEdit={(updatedContent, updatedFiles) => handleEditComment(comment.commentId, updatedContent, updatedFiles)
-                        }
-                    />
+                    <div className="singleComment" key={comment.commentId}>
+                        {commentEditText === comment.commentId ? (
+                            // Edit Form Action
+                            <CommentEditForm
+                                comment={comment}
+                                onCancel={() => setCommentEditText(null)}
+                                onSave={(updatedContent, updatedFiles) => handleEditComment(comment.commentId, updatedContent, updatedFiles)}
+                            />
+                        ) : (
+                            // Display Comment
+                            <DisplayComment
+                                comment={comment}
+                                onStartEdit={() => setCommentEditText(comment.commentId)}
+                                onDelete={() => handleDeleteComment(comment.commentId)}
+                            />
+                        )}
+                    </div>
                 ))
             ) : (
                 <div>No comments yet</div>

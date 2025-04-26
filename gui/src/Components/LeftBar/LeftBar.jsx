@@ -8,7 +8,7 @@ import Messages from "../../Assets/10.png";
 import DefaultProfilePic from '../../assets/defaultProfilePic.jpg';
 import { AuthContext } from '../../Context/AuthContext';
 import { Link } from 'react-router';
-import { getImageUrl } from '../../Utils/Media/getImageUrl.js'
+import { getMediaUrl } from '../../Utils/Media/getMediaUrl.js'
 
 const LeftBar = () => {
 
@@ -21,7 +21,7 @@ const LeftBar = () => {
                 <div className="menu">
                     <Link to={`/profile/${currentUser.userId}`}>
                         <div className='item font-medium'>
-                            <img src={getImageUrl(currentUser.profileImageUrl) || DefaultProfilePic} alt="" className='image rounded-full object-cover' />
+                            <img src={getMediaUrl(currentUser.profileImageUrl) || DefaultProfilePic} alt="" className='image rounded-full object-cover' />
                             <span className='text-[20px] text-color font-normal'>{currentUser.username}</span>
                         </div>
                     </Link>

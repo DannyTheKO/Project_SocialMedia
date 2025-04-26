@@ -14,7 +14,7 @@ import { ThemeContext } from '../../Context/ThemeContext';
 import Chat from '../Chat/Chat';
 import Notification from '../Notifications/Notification';
 import { AuthContext } from '../../Context/AuthContext';
-import { getImageUrl } from "../../Utils/Media/getImageUrl.js";
+import { getMediaUrl } from "../../Utils/Media/getMediaUrl.js";
 
 const NavBar = () => {
 
@@ -77,7 +77,7 @@ const NavBar = () => {
 
                 <Link to={`/profile/${currentUser.userId}`}>
                     <div className="user">
-                        <img src={getImageUrl(currentUser.profileImageUrl) || DefaultProfilePic} alt="" className='avatar' />
+                        <img src={getMediaUrl(currentUser.profileImageUrl) || DefaultProfilePic} alt="" className='avatar' />
                         <span className='text-[20px] text-color'>{currentUser.username}</span>
                     </div>
                 </Link>

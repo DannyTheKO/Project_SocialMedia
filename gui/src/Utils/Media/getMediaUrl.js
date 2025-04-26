@@ -1,6 +1,6 @@
 import DefaultProfilePic from '../../assets/defaultProfilePic.jpg';
 
-export const getImageUrl = (filePath) => {
+export const getMediaUrl = (filePath) => {
     // If the file path is empty, switch to default profile picture
     if (!filePath) return DefaultProfilePic;
 

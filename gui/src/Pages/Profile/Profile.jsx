@@ -19,7 +19,7 @@ import { ApiResponse } from "../../Model/ApiResponse.jsx";
 import { User } from "../../Model/User.jsx";
 import { AuthContext } from '../../Context/AuthContext.jsx';
 import { toast } from 'react-toastify';
-import { getImageUrl } from '../../Utils/Media/getImageUrl.js';
+import { getMediaUrl } from '../../Utils/Media/getMediaUrl.js';
 
 const Profile = () => {
 
@@ -165,7 +165,7 @@ const Profile = () => {
         <div className='profile'>
             <div className="images">
                 <img
-                    src={getImageUrl(bannerImageUrl) || DefaultProfilePic}
+                    src={getMediaUrl(bannerImageUrl) || DefaultProfilePic}
                     alt="Cover"
                     className="cover h-full w-full object-center object-cover rounded-md"
                 />
@@ -183,7 +183,7 @@ const Profile = () => {
                 )}
                 <div>
                     <img
-                        src={getImageUrl(profileImageUrl) || DefaultProfilePic}
+                        src={getMediaUrl(profileImageUrl) || DefaultProfilePic}
                         alt="Profile"
                         className='profilePic'
                     />
