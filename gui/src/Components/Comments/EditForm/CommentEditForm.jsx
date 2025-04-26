@@ -2,19 +2,19 @@ import AttachFileIcon from "@mui/icons-material/AttachFile";
 import React, {useState} from "react";
 
 import "./CommentEditForm.css";
-import {getImageUrl} from "../../../../Utils/Media/getImageUrl.js";
+import {getMediaUrl} from "../../../Utils/Media/getMediaUrl.js";
+import MediaSelectedPreview from "../../Media/MediaPreview/MediaSelectedPreview.jsx";
+
 
 const CommentEditForm = ({comment, onSave, onCancel}) => {
-    const [editText, setEditText] = useState("");
+    const [editText, setEditText] = useState( comment.content || "");
     const [editFiles, setEditFiles] = useState([]);
 
-
-    // HTML
     return (
         <div className="comment-edit-container">
             {/*Left Container*/}
             <div className="comment-edit-containerAvatar">
-                <img src={getImageUrl(comment.profileImageUrl)} className="avatar" alt=""/>
+                <img src={getMediaUrl(comment.profileImageUrl)} className="avatar" alt=""/>
             </div>
 
             {/*Right Container*/}
@@ -46,9 +46,15 @@ const CommentEditForm = ({comment, onSave, onCancel}) => {
 
                 {/*TODO: File Preview*/}
                 {editFiles.length > 0 && (
-                    <div className="edit-file-preview">
-                        {editFiles.length} file(s) selected
-                    </div>
+                    <MediaSelectedPreview
+                        styleContainer={"flex bg-[whitesmoke] dark:bg-[#343434] rounded-md flex-wrap gap-2 py-4"}
+                        mediaFileObjects={editFiles}
+                        onRemove={(index) => {
+                            const newFiles = [...editFiles];
+                            newFiles.splice(index, 1);
+                            setEditFiles(newFiles);
+                        }}
+                    />
                 )}
 
                 {/*Button Group*/}

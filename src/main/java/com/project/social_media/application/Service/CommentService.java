@@ -207,7 +207,7 @@ public class CommentService implements ICommentService {
         // Set PostId
         mappedDTO.setPostId(comment.getPost().getPostId());
 
-        mappedDTO.setUsername(comment.getPost().getUser().getUsername());
+        mappedDTO.setUsername(comment.getUser().getUsername());
         mappedDTO.setUserId(comment.getUser().getUserId());
         mappedDTO.setFirstName(comment.getUser().getFirstName());
         mappedDTO.setLastName(comment.getUser().getLastName());

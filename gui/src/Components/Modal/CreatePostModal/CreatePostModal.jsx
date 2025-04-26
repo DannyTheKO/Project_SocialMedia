@@ -4,7 +4,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import CollectionsIcon from '@mui/icons-material/Collections';
 import { postApi } from '../../../Services/PostService/postService';
 import { toast } from 'react-toastify';
-import {getImageUrl} from "../../../Utils/Media/getImageUrl.js";
+import {getMediaUrl} from "../../../Utils/Media/getMediaUrl.js";
 import {AuthContext} from "../../../Context/AuthContext.jsx";
 
 const CreatePostModal = ({ isOpen, onClose }) => {
@@ -92,7 +92,7 @@ const CreatePostModal = ({ isOpen, onClose }) => {
 
                     {/* User Information */}
                     <div className="flex gap-[10px] items-center mb-4">
-                        <img src={getImageUrl(currentUser.profileImageUrl)}
+                        <img src={getMediaUrl(currentUser.profileImageUrl)}
                             alt="User avatar" className="w-[60px] h-[60px] rounded-full mr-3" />
                         <div>
                             <p className="text-black dark:text-white font-medium">{currentUser.username}</p>

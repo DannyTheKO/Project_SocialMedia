@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import "../../../index.css";
 
 .comment-edit-container {
     @apply w-full mt-[10px] mx-0 flex gap-[20px];

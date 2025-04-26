@@ -10,18 +10,18 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Link } from "react-router-dom";
 import Comments from '../Comments/Comments';
 import DefaultProfilePic from '../../Assets/defaultProfilePic.jpg';
-import moment from 'moment/moment';
+import moment from 'moment/moment.js';
 import 'moment/locale/vi';
 import { postApi } from '../../Services/PostService/postService';
 import { AuthContext } from '../../Context/AuthContext';
 import { toast } from 'react-toastify';
-import { getImageUrl } from '../../Utils/Media/getImageUrl.js';
+import { getMediaUrl } from '../../Utils/Media/getMediaUrl.js';
 import { isVideo } from '../../Utils/Media/checkFileType.js';
 
 moment.locale('vi');
 
 const Post = ({ user, postId, content, comments, likes, media, createdPost, modifiedPost, onHidePost, onEditPost }) => {
-
+    // FIXME: Fix the damn CSS on this Post Component
 
     const { currentUser, setCurrentUser } = useContext(AuthContext)
 
@@ -94,7 +94,7 @@ const Post = ({ user, postId, content, comments, likes, media, createdPost, modi
                 <div className="user">
                     <div className="userInfo">
                         <img
-                            src={getImageUrl(user?.profileImageUrl) || DefaultProfilePic}
+                            src={getMediaUrl(user?.profileImageUrl) || DefaultProfilePic}
                             alt="Profile"
                         />
                         <div className="details">
@@ -140,15 +140,15 @@ const Post = ({ user, postId, content, comments, likes, media, createdPost, modi
                                 // Nếu chỉ có 1 media, hiển thị tĩnh
                                 isVideo(media[0].filePath) ? (
                                     <video
-                                        src={getImageUrl(media[0].filePath)}
+                                        src={getMediaUrl(media[0].filePath)}
                                         controls
-                                        className="w-full object-cover object-center rounded-md"
+                                        className="w-full max-h-[500px] object-cover object-center rounded-md"
                                     />
                                 ) : (
                                     <img
-                                        src={getImageUrl(media[0].filePath)}
-                                        alt="Post media"
-                                        className="w-full object-cover object-center rounded-md"
+                                        src={getMediaUrl(media[0].filePath)}
+                                        alt="/"
+                                        className="w-full max-h-[500px] object-cover object-center rounded-md"
                                     />
                                 )
                             ) : (
@@ -168,15 +168,15 @@ const Post = ({ user, postId, content, comments, likes, media, createdPost, modi
                                             >
                                                 {isVideo(item.filePath) ? (
                                                     <video
-                                                        src={getImageUrl(item.filePath)}
+                                                        src={getMediaUrl(item.filePath)}
                                                         controls
-                                                        className="w-full rounded-md"
+                                                        className="w-full max-h-[500px] object-cover object-center rounded-md"
                                                     />
                                                 ) : (
                                                     <img
-                                                        src={getImageUrl(item.filePath)}
-                                                        alt={`Post media ${index + 1}`}
-                                                        className="w-full rounded-md"
+                                                        src={getMediaUrl(item.filePath)}
+                                                        alt={`Image: ${index + 1}`}
+                                                        className="w-full max-h-[500px] object-cover object-center rounded-md"
                                                     />
                                                 )}
                                             </div>
@@ -225,7 +225,7 @@ const Post = ({ user, postId, content, comments, likes, media, createdPost, modi
                         Share
                     </div>
                 </div>
-                {commentOpen && <Comments postId={postId} isVideo={isVideo} getImageUrl={getImageUrl} />}
+                {commentOpen && <Comments postId={postId} isVideo={isVideo} getMediaUrl={getMediaUrl} />}
             </div>
         </div>
     );
