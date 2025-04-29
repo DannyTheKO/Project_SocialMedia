@@ -44,7 +44,7 @@ const CommentEditForm = ({comment, onSave, onCancel}) => {
                     />
                 </div>
 
-                {/*TODO: File Preview*/}
+                {/*File Preview*/}
                 {editFiles.length > 0 && (
                     <MediaSelectedPreview
                         styleContainer={"flex bg-[whitesmoke] dark:bg-[#343434] rounded-md flex-wrap gap-2 py-4"}

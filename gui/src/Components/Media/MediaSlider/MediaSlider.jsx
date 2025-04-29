@@ -4,8 +4,6 @@ import React, {useState} from "react";
 import "./MediaSlider.css"
 
 const MediaSlider = ({mediaFileObjects}) => {
-    // TODO: This maybe can separate to different function
-
     // State slider if comments has multiple media files
     const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -26,7 +24,7 @@ const MediaSlider = ({mediaFileObjects}) => {
                 <div className="row-1">
                     <div className="mediaSlider-container">
                         {mediaFileObjects.media.length === 1 ? (
-                            <div className="mediaSlider-Single">
+                            <div className="mediaSlider-single">
                                 {/* Single media files */}
                                 {isAudio(mediaFileObjects.media[0].filePath) ? (
                                     // If it's audio
@@ -53,7 +51,7 @@ const MediaSlider = ({mediaFileObjects}) => {
                             </div>
                         ) : (
                             // Multiple media files
-                            <div className="mediaSlider-Multiple">
+                            <div className="mediaSlider-multiple">
                                 <div
                                     className="mediaSlider-control"
                                     style={{transform: `translateX(-${currentIndex * 100}%)`}}
@@ -62,13 +60,19 @@ const MediaSlider = ({mediaFileObjects}) => {
                                         // TODO: Audio ?
                                         <div key={index} className="w-full flex flex-shrink-0">
                                             {isVideo(item.filePath) ? (
-                                                <video
+                                                <video // If Video
                                                     src={getMediaUrl(item.filePath)}
                                                     controls
                                                     className="w-full object-cover object-center max-h-[500px] rounded-md"
                                                 />
+                                            ) : isAudio(item.filePath) ? (
+                                                <audio // If Audio
+                                                    src={getMediaUrl(item.filePath)}
+                                                    controls
+                                                    className="w-full"
+                                                />
                                             ) : (
-                                                <img
+                                                <img // Else Image
                                                     src={getMediaUrl(item.filePath)}
                                                     alt={`Post media ${index + 1}`}
                                                     className="w-full object-cover object-center max-h-[500px] rounded-md"

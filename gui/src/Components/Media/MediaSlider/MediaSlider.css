@@ -3,8 +3,8 @@
 .mediaSlider-container {
     @apply row-2 w-full p-0;
 
-    .mediaSlider-Single {
-        @apply w-full;
+    .mediaSlider-single {
+        @apply w-full flex justify-center;
 
         .mediaSlider-audioFile {
             @apply rounded-md;
@@ -19,7 +19,7 @@
         }
     }
 
-    .mediaSlider-Multiple {
+    .mediaSlider-multiple {
         @apply relative w-full max-h-[500px] overflow-hidden;
 
         .mediaSlider-control {

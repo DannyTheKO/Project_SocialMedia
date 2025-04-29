@@ -16,7 +16,6 @@ const Conversation = ({user, onClose}) => {
 
     const messagesEndRef = useRef(null)
 
-    // TODO: Set this to token, and send back to server
     const currentUserId = 2 // user real UserId
 
     // Scroll to latest message function
