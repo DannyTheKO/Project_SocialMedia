@@ -1,0 +1,25 @@
+@import "../../../index.css";
+
+.comment-create-wrapper {
+    @apply flex items-center justify-between gap-[20px] mt-[25px] mb-[20px] mx-0;
+
+    .comment-create-input {
+        @apply w-full flex items-center justify-between gap-[10px] mx-0;
+    }
+
+    input {
+        @apply flex-[4] p-[10px] border-1 border-[lightgray] bg-transparent text-[18px] text-black dark:text-gray-200 rounded-md;
+    }
+
+    img {
+        @apply w-[40px] h-[40px] rounded-full object-cover max-md:w-[30px] max-md:h-[30px];
+    }
+
+    .file-upload-label {
+        @apply border-none bg-blue-500 text-white p-[8px] rounded-md font-medium cursor-pointer;
+    }
+
+    .submit-comment {
+        @apply border-none bg-blue-500 text-white p-[8px] cursor-pointer rounded-md font-medium;
+    }
+}

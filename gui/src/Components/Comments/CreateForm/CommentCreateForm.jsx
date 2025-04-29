@@ -16,10 +16,10 @@ const CommentCreateForm = ({
     const fileInputRef = useRef(null);
 
     return (
-        <div className="write">
+        <div className="comment-create-wrapper">
             <img src={getMediaUrl(currentUser.profileImageUrl)} alt=""/>
             {/*Create Form*/}
-            <div className="comment-input-container">
+            <div className="comment-create-input">
                 <input
                     type="text"
                     placeholder='Write a comment'

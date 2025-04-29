@@ -1,0 +1,32 @@
+@import "../../../index.css";
+
+.comment-display-wrapper {
+    @apply w-full flex gap-[20px];
+
+    .comment-display-content {
+        @apply flex flex-col gap-[8px] w-full bg-[whitesmoke] dark:bg-[#343434] rounded-lg p-4;
+    }
+
+    .comment-display-info {
+        @apply flex justify-between gap-[3px] items-start text-[18px] max-md:text-[16px];
+
+        .comment-display-left {
+            span {
+                @apply font-medium;
+            }
+
+            p {
+                @apply text-gray-700 dark:text-gray-300 mt-1;
+            }
+        }
+
+        .comment-display-right {
+            @apply flex justify-center content-center gap-[10px]
+        }
+    }
+
+    .date {
+        @apply text-gray-500 dark:text-gray-400 text-[16px] max-md:text-[14px];
+
+    }
+}
