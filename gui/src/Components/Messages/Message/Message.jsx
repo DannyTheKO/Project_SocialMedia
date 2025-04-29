@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import DefaultProfilePic from '../../../Assets/defaultProfilePic.jpg';
 import './Message.css'
 import Conversation from '../../Conversations/Conversation';
@@ -21,15 +21,7 @@ const Message = () => {
     // Sample data cho các cuộc hội thoại
     const conversations = [
         {
-            id: 1,
-            name: 'Thái Tuấn',
-            lastMessage: 'Bạn: xin chào',
-            date: '7h',
-            avatar: DefaultProfilePic,
-            isUnread: false,
-        },
-        {
-            id: 3,
+            id: 2,
             name: 'KO',
             lastMessage: 'KO: xin chào',
             date: '7h',
@@ -37,13 +29,14 @@ const Message = () => {
             isUnread: true,
         },
         {
-            id: 4,
-            name: 'Danny',
-            lastMessage: 'Danny: xin chào',
+            id: 1,
+            name: 'Tuan',
+            lastMessage: 'KO: xin chào',
             date: '7h',
             avatar: DefaultProfilePic,
-            isUnread: false,
+            isUnread: true,
         },
+
     ];
 
     return (
@@ -67,7 +60,7 @@ const Message = () => {
                                     className={`lastest-msg font-medium text-[20px] ${conv.isUnread
                                         ? 'text-black dark:text-white'
                                         : 'text-gray-500 dark:text-gray-400'
-                                    }`}
+                                        }`}
                                 >
                                     {conv.lastMessage}
                                 </p>
@@ -75,7 +68,7 @@ const Message = () => {
                                     className={`date font-medium text-[20px] ${conv.isUnread
                                         ? 'text-black dark:text-white'
                                         : 'text-gray-500 dark:text-gray-400'
-                                    }`}
+                                        }`}
                                 >
                                     {conv.date}
                                 </p>
@@ -90,7 +83,7 @@ const Message = () => {
 
             {/* Hiển thị khung chat khi click vào một cuộc hội thoại */}
             {openConversation && selectedUser && (
-                <Conversation user={selectedUser} onClose={handleCloseConversation}/>
+                <Conversation user={selectedUser} onClose={handleCloseConversation} />
             )}
         </div>
     );

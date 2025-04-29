@@ -2,8 +2,8 @@
 
 .comments {
 
-    .write > img,
-    .singleComment > .row-1 > img {
+    .write>img,
+    .singleComment>.row-1>img {
         @apply w-[40px] h-[40px] rounded-full object-cover max-md:w-[30px] max-md:h-[30px];
     }
 
@@ -76,5 +76,29 @@
     .date {
         @apply text-gray-500 dark:text-gray-400 text-[16px] max-md:text-[14px];
 
+    }
+
+    .comment-list {
+        @apply max-h-[300px] overflow-y-auto p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-[white] dark:bg-[#222];
+    }
+
+    .comment-list::-webkit-scrollbar {
+        @apply w-[16px];
+    }
+
+    .comment-list::-webkit-scrollbar-track {
+        @apply bg-neutral-200 rounded-full;
+    }
+
+    .comment-list::-webkit-scrollbar-thumb {
+        @apply bg-neutral-400 rounded-full;
+    }
+
+    .comment-list::-webkit-scrollbar-thumb:hover {
+        @apply bg-gray-500 dark:bg-gray-500;
+    }
+
+    .no-comments {
+        @apply text-gray-500 dark:text-gray-400 text-[20px] p-[20px] text-center;
     }
 }

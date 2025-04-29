@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import './Conversation.css';
 import WebSocketService from '../../Services/WebSocket/webSocket';
 import CloseIcon from '@mui/icons-material/Close';
@@ -6,9 +6,12 @@ import CallIcon from '@mui/icons-material/Call';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import SendIcon from '@mui/icons-material/Send';
-import {getMessagesData} from '../../Services/MessageService/messageService';
+import { getMessagesData } from '../../Services/MessageService/messageService';
+import { AuthContext } from '../../Context/AuthContext';
 
-const Conversation = ({user, onClose}) => {
+const Conversation = ({ user, onClose }) => {
+
+    const { currentUser, setCurrentUser } = useContext(AuthContext)
 
     const [messages, setMessages] = useState([]);
 
@@ -17,11 +20,11 @@ const Conversation = ({user, onClose}) => {
     const messagesEndRef = useRef(null)
 
     // TODO: Set this to token, and send back to server
-    const currentUserId = 2 // user real UserId
+    const currentUserId = currentUser.userId// user real UserId
 
     // Scroll to latest message function
     const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({behavior: 'smooth'})
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
     }
 
     // Scroll to latest message every time messages change
@@ -47,17 +50,25 @@ const Conversation = ({user, onClose}) => {
     // Connect Socker server of currentUser and choosen user
     useEffect(() => {
         WebSocketService.connect(currentUserId, (chatMessage) => {
-            if (
-                (chatMessage.senderId === currentUserId && chatMessage.receiverId === user.id) ||
-                (chatMessage.senderId === user.id && chatMessage.receiverId === currentUserId)
-            ) {
-                setMessages((prevMessages) => {
-                    const updatedMessages = [...prevMessages, chatMessage];
-                    // Debug log
-                    console.log("Updated messages:", updatedMessages);
-                    return updatedMessages;
-                });
+            // Debug log
+            // console.log(chatMessage.senderId, chatMessage.receiverId)
+            // console.log(chatMessage.senderId == currentUserId, user.id)
+            try {
+                if (
+                    (chatMessage.senderId == currentUserId && chatMessage.receiverId === user.id) ||
+                    (chatMessage.senderId == user.id && chatMessage.receiverId === currentUserId)
+                ) {
+                    setMessages((prevMessages) => {
+                        const updatedMessages = [...prevMessages, chatMessage];
+                        // Debug log
+                        // console.log("Updated messages:", updatedMessages);
+                        return updatedMessages;
+                    });
+                }
+            } catch (error) {
+                console.error("Failed updating messages: ", error)
             }
+
         })
 
         return () => {
@@ -76,6 +87,8 @@ const Conversation = ({user, onClose}) => {
                 content: newMessage,
                 type: 'CHAT'
             }
+
+            console.log("Send message: ", message)
             WebSocketService.sendMessage(message);
             // Clear the input field
             setNewMessage('');
@@ -86,25 +99,25 @@ const Conversation = ({user, onClose}) => {
         <div className="conversation">
             <div className="conversation-header">
                 <div className="header-left">
-                    <img src={user.avatar} alt="" className="avatar"/>
+                    <img src={user.avatar} alt="" className="avatar" />
                     <span className="name">{user.name}</span>
                 </div>
                 <div className="header-right">
-                    <CallIcon className="action-icon" style={{fontSize: '28px'}}/>
-                    <VideocamIcon className="action-icon" style={{fontSize: '28px'}}/>
-                    <MoreVertIcon className="action-icon" style={{fontSize: '28px'}}/>
-                    <CloseIcon className="action-icon" onClick={onClose}/>
+                    <CallIcon className="action-icon" style={{ fontSize: '28px' }} />
+                    <VideocamIcon className="action-icon" style={{ fontSize: '28px' }} />
+                    <MoreVertIcon className="action-icon" style={{ fontSize: '28px' }} />
+                    <CloseIcon className="action-icon" onClick={onClose} />
                 </div>
             </div>
             <div className="conversation-messages">
                 {Array.isArray(messages) && messages.map((msg, index) => (
                     <div
                         key={index}
-                        className={`message ${msg.senderId === currentUserId ? 'message-right' : 'message-left'
-                        }`}
+                        className={`message ${msg.senderId == currentUserId ? 'message-right' : 'message-left'
+                            }`}
                     >
                         {msg.sender !== 'User' && (
-                            <img src={user.avatar} alt="" className="message-avatar"/>
+                            <img src={user.avatar} alt="" className="message-avatar" />
                         )}
                         <div className="message-content">
                             <p>{msg.content}</p>
@@ -122,7 +135,7 @@ const Conversation = ({user, onClose}) => {
                     className="input-field"
                 />
                 <button type="submit" className="send-button">
-                    <SendIcon style={{fontSize: '28px'}}/>
+                    <SendIcon style={{ fontSize: '28px' }} />
                 </button>
             </form>
         </div>

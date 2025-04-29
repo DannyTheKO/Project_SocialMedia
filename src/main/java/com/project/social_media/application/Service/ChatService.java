@@ -11,14 +11,16 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class ChatService implements IChatService {
-    private MessageRepository messageRepository;
-    private SimpMessagingTemplate messagingTemplate;
+    private final MessageRepository messageRepository;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Transactional
     @Override
     public Message sendMessage(Message message) {
         message.setTimestamp(new java.util.Date().toString());
         Message savedMessage = messageRepository.save(message);
+        // Debug log
+        System.out.println("Saved message to MongoDB: " + savedMessage);
 
         // Debug log
         System.out.println("Sending message to sender: /topic/messages/" + message.getSenderId());

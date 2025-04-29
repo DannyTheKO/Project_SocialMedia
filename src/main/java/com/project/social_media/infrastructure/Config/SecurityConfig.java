@@ -22,8 +22,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -151,11 +149,9 @@ public class SecurityConfig {
             }
 
             // If access token from cookie not found, check in header Authorization ( for API testing )
-            if (token == null) {
-                String authHeader = request.getHeader("Authorization");
-                if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                    token = authHeader.substring(7);
-                }
+            String authHeader = request.getHeader("Authorization");
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                token = authHeader.substring(7);
             }
 
             // Debug Print
@@ -196,7 +192,7 @@ public class SecurityConfig {
                     return;
                 }
             } else {
-                System.out.println("No valid token found in cookie");
+                System.out.println("No valid token found");
             }
 
             filterChain.doFilter(request, response);
