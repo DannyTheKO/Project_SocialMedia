@@ -45,7 +45,7 @@ public class RelationshipsController {
             User authUser = userService.getUserByUsername(authentication.getName()).orElse(null);
 
             List<Relationships> friends = relationshipsService.getFriends(authUser.getUserId());
-            List<RelationshipsDTO> friendDTOs = relationshipsService.convertToListDTO(friends);
+            List<RelationshipsDTO> friendDTOs = relationshipsService.convertToListDTO(friends, authUser.getUserId());
             return ResponseEntity.ok(new ApiResponse("Success", friendDTOs));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR)

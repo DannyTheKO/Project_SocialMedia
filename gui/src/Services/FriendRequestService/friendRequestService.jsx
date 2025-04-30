@@ -1,4 +1,4 @@
-import axios from './axiosConfig';
+import axios from '../axiosConfig'
 
 const FRIEND_REQUEST_API_BASE_URL = '/friend-requests';
 

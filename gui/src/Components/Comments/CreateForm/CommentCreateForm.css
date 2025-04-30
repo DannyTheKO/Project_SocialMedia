@@ -16,10 +16,10 @@
     }
 
     .file-upload-label {
-        @apply border-none bg-blue-500 text-white p-[8px] rounded-md font-medium cursor-pointer;
+        @apply border-none bg-blue-500 hover:bg-blue-700 text-white p-[8px] rounded-md font-medium cursor-pointer;
     }
 
     .submit-comment {
-        @apply border-none bg-blue-500 text-white p-[8px] cursor-pointer rounded-md font-medium;
+        @apply border-none bg-blue-500 hover:bg-blue-700 text-white p-[8px] cursor-pointer rounded-md font-medium;
     }
 }

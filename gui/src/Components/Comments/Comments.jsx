@@ -1,16 +1,25 @@
-import React, {useContext, useEffect, useRef, useState} from 'react'
+// import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
+// import './Comments.css'
+// import { commentApi } from '../../Services/CommentService/commentService'
+// import { AuthContext } from '../../Context/AuthContext'
+// import SendIcon from '@mui/icons-material/Send';
+// import AttachFileIcon from '@mui/icons-material/AttachFile';
+// import { toast } from 'react-toastify';
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import './Comments.css'
-import {commentApi} from '../../Services/CommentService/commentService'
-import {AuthContext} from '../../Context/AuthContext'
-import {toast} from 'react-toastify';
+import { commentApi } from '../../Services/CommentService/commentService'
+import { AuthContext } from '../../Context/AuthContext'
+import { toast } from 'react-toastify';
 import CommentEditForm from "./EditForm/CommentEditForm.jsx";
 import DisplayComment from "./DisplayComment/DisplayComment.jsx";
 import MediaSelectedPreview from "../Media/MediaPreview/MediaSelectedPreview.jsx";
 import CommentCreateForm from "./CreateForm/CommentCreateForm.jsx";
 
-const Comments = ({postId}) => {
+// const Comments = ({ postId, isVideo, getMediaUrl, onPostComment }) => {
+
+const Comments = ({ postId }) => {
     // Authentication
-    const {currentUser} = useContext(AuthContext);
+    const { currentUser } = useContext(AuthContext);
 
     const [comments, setComments] = useState([]);
     const [commentCreateText, setCommentCreateText] = useState('');
@@ -87,6 +96,9 @@ const Comments = ({postId}) => {
                 if (updatedComments && updatedComments.message === "Success") {
                     setComments(updatedComments.data || []);
                 }
+
+                // callBack to increase comment amount on post
+                onPostComment();
 
                 // Optional: Show success notification
                 // toast.success("Comment posted successfully!");
@@ -192,30 +204,57 @@ const Comments = ({postId}) => {
                 />
             )}
 
+            {/* 
+                {comments && comments.length > 0 ? (
+                    comments.map((comment, index) => (
+                        <div className="singleComment" key={comment.commentId}>
+                            {commentEditText === comment.commentId ? (
+                                <CommentEditForm
+                                    comment={comment}
+                                    onCancel={() => setCommentEditText(null)}
+                                    onSave={(updatedContent, updatedFiles) =>
+                                        handleEditComment(comment.commentId, updatedContent, updatedFiles)
+                                    }
+                                />
+                            ) : (
+                                <DisplayComment
+                                    comment={comment}
+                                    onStartEdit={() => setCommentEditText(comment.commentId)}
+                                    onDelete={() => handleDeleteComment(comment.commentId)}
+                                />
+                            )}
+                        </div>
+                    ))
+                ) : (
+                    <div className="no-comments">No comments yet</div>
+                )}
+            </div> */}
             {/* Add null check before mapping */}
-            {comments && comments.length > 0 ? (
-                comments.map((comment, index) => (
-                    <div key={comment.commentId}>
-                        {commentEditText === comment.commentId ? (
-                            // Edit Form Action
-                            <CommentEditForm
-                                comment={comment}
-                                onCancel={() => setCommentEditText(null)}
-                                onSave={(updatedContent, updatedFiles) => handleEditComment(comment.commentId, updatedContent, updatedFiles)}
-                            />
-                        ) : (
-                            // Display Comment
-                            <DisplayComment
-                                comment={comment}
-                                onStartEdit={() => setCommentEditText(comment.commentId)}
-                                onDelete={() => handleDeleteComment(comment.commentId)}
-                            />
-                        )}
-                    </div>
-                ))
-            ) : (
-                <div>No comments yet</div>
-            )}
+            <div className="comment-list">
+                {comments && comments.length > 0 ? (
+                    comments.map((comment, index) => (
+                        <div className='singleComment' key={comment.commentId}>
+                            {commentEditText === comment.commentId ? (
+                                // Edit Form Action
+                                <CommentEditForm
+                                    comment={comment}
+                                    onCancel={() => setCommentEditText(null)}
+                                    onSave={(updatedContent, updatedFiles) => handleEditComment(comment.commentId, updatedContent, updatedFiles)}
+                                />
+                            ) : (
+                                // Display Comment
+                                <DisplayComment
+                                    comment={comment}
+                                    onStartEdit={() => setCommentEditText(comment.commentId)}
+                                    onDelete={() => handleDeleteComment(comment.commentId)}
+                                />
+                            )}
+                        </div>
+                    ))
+                ) : (
+                    <div>No comments yet</div>
+                )}
+            </div>
         </div>
     )
 }

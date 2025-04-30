@@ -1,5 +1,108 @@
 @import "../../index.css";
 
 .commentWrapper {
-    @apply w-full flex flex-col gap-[20px];
+
+    .write>img,
+    .singleComment>.row-1>img {
+        @apply w-[40px] h-[40px] rounded-full object-cover max-md:w-[30px] max-md:h-[30px];
+    }
+
+    .write {
+        @apply flex items-center justify-between gap-[20px] mt-[25px] mb-[20px] mx-0;
+
+        .comment-input-container {
+            @apply w-full flex items-center justify-between gap-[10px] mx-0;
+
+        }
+
+        input {
+            @apply flex-[4] p-[10px] border-1 border-[lightgray] bg-transparent text-[18px] text-black dark:text-gray-200 rounded-md;
+        }
+
+        .file-upload-label {
+            @apply border-none bg-blue-500 text-white p-[8px] rounded-md font-medium cursor-pointer;
+        }
+
+        .submit-comment {
+            @apply border-none bg-blue-500 text-white p-[8px] cursor-pointer rounded-md font-medium;
+        }
+    }
+
+    .singleComment {
+        @apply w-full flex flex-col mb-[20px];
+
+        .row-1 {
+            @apply w-full mt-[10px] mx-0 flex gap-[20px];
+        }
+
+        .content {
+            @apply flex flex-col w-full bg-[whitesmoke] dark:bg-[#343434] rounded-lg px-4 py-2;
+        }
+
+        .info {
+            @apply flex justify-between p-2 gap-[3px] items-start text-[18px] max-md:text-[16px];
+
+            span {
+                @apply font-medium;
+            }
+
+            p {
+                @apply text-gray-700 dark:text-gray-300 mt-2;
+            }
+        }
+
+        .date {
+            @apply text-gray-500 dark:text-gray-400 text-[16px] max-md:text-[14px];
+
+        }
+    }
+
+    .content {
+        @apply flex flex-col w-full bg-[whitesmoke] dark:bg-[#343434] rounded-lg p-4;
+    }
+
+    .info {
+        @apply flex justify-between p-2 gap-[3px] items-start text-[18px] max-md:text-[16px];
+
+        span {
+            @apply font-medium;
+        }
+
+        p {
+            @apply text-gray-700 dark:text-gray-300;
+        }
+    }
+
+    .date {
+        @apply text-gray-500 dark:text-gray-400 text-[16px] max-md:text-[14px];
+
+    }
+
+    .comment-list {
+        @apply max-h-[700px] overflow-y-auto p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-[white] dark:bg-[#222];
+    }
+
+    .comment-list::-webkit-scrollbar {
+        @apply w-[16px];
+    }
+
+    .comment-list::-webkit-scrollbar-track {
+        @apply bg-neutral-200 rounded-full;
+    }
+
+    .comment-list::-webkit-scrollbar-thumb {
+        @apply bg-neutral-400 rounded-full;
+    }
+
+    .comment-list::-webkit-scrollbar-thumb:hover {
+        @apply bg-gray-500 dark:bg-gray-500;
+    }
+
+    .no-comments {
+        @apply text-gray-500 dark:text-gray-400 text-[20px] p-[20px] text-center;
+    }
 }
+
+/* .commentWrapper {
+    @apply w-full flex flex-col gap-[20px];
+} */

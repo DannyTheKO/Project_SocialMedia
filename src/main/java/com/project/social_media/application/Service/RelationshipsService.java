@@ -61,6 +61,12 @@ public class RelationshipsService implements IRelationshipsService {
     }
 
     @Override
+    public List<RelationshipsDTO> convertToListDTO(List<Relationships> relationships, Long currentUserId) {
+        return relationships.stream().map(
+                r -> convertToDTO(r, currentUserId)).toList();
+    }
+
+    @Override
     public RelationshipsDTO convertToDTO(Relationships relationship) {
         RelationshipsDTO mappedDTO = modelMapper.map(relationship, RelationshipsDTO.class);
 
@@ -70,8 +76,39 @@ public class RelationshipsService implements IRelationshipsService {
     }
 
     @Override
-    public List<RelationshipsDTO> convertToListDTO(List<Relationships> relationships) {
-        return relationships.stream().map(this::convertToDTO).toList();
+    public RelationshipsDTO convertToDTO(Relationships relationship, Long currentUserId) {
+        // Get currentUser info
+        RelationshipsDTO dto = new RelationshipsDTO();
+        dto.setRelationshipId(relationship.getRelationshipId());
+        dto.setStatus(relationship.getStatus());
+        dto.setCreatedAt(relationship.getCreatedAt());
+        dto.setUpdatedAt(relationship.getUpdatedAt());
+
+        // Ensure user1 is currentUser, user2 is other one
+        if (currentUserId.equals(relationship.getUser1().getUserId())) {
+            dto.setUser1(convertUserToDTO(relationship.getUser1()));
+            dto.setUser2(convertUserToDTO(relationship.getUser2()));
+        } else {
+            dto.setUser1(convertUserToDTO(relationship.getUser2()));
+            dto.setUser2(convertUserToDTO(relationship.getUser1()));
+        }
+
+        return dto;
     }
 
+    private UserDTO convertUserToDTO(User user) {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUserId(user.getUserId().toString());
+        userDTO.setUsername(user.getUsername());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setFirstName(user.getFirstName());
+        userDTO.setLastName(user.getLastName());
+        userDTO.setBio(user.getBio());
+        userDTO.setBirthDate(user.getBirthDay());
+        userDTO.setProfileImageUrl(user.getProfileImageUrl());
+        userDTO.setBannerImageUrl(user.getBannerImageUrl());
+        userDTO.setCreatedAt(user.getCreatedAt());
+        userDTO.setLastLogin(user.getLastLogin());
+        return userDTO;
+    }
 }

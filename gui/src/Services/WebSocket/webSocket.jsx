@@ -1,4 +1,4 @@
-import {Client} from "@stomp/stompjs";
+import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 
 class WebSocketService {
@@ -13,13 +13,14 @@ class WebSocketService {
             webSocketFactory: () => socket,
             reconnectDelay: 5000,
             onConnect: () => {
-                console.log("Connected to WebSocket");
+                // Debug log
+                console.log("Connected to WebSocket with userId: " + userId);
                 this.connected = true;
                 this.client.subscribe(`/topic/messages/${userId}`, (message) => {
                     if (message.body) {
                         const chatMessage = JSON.parse(message.body);
                         // Debug log
-                        console.log("Received message:", chatMessage);
+                        // console.log("Received message:", chatMessage);
                         onMessageReceived(chatMessage)
                     }
                 })
@@ -31,7 +32,7 @@ class WebSocketService {
                         // TODO:
                         //  Get token from user when login,
                         //  send packet to server with token header
-                        sender: 2, // user real UserId
+                        sender: userId, // user real UserId
                         type: 'JOIN'
                     })
                 });

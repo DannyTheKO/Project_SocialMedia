@@ -13,6 +13,8 @@ public class ChatController {
 
     @MessageMapping("/chat.sendMessage")
     public void sendMessage(Message message) {
+        // Debug log
+        System.out.println("Received message in ChatController: " + message);
         chatService.sendMessage(message);
     }
 

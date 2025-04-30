@@ -1,4 +1,4 @@
-import axios from './axiosConfig';
+import axios from '../axiosConfig';
 
 const RELATIONSHIPS_API_BASE_URL = '/relationships';
 

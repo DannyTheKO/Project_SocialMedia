@@ -54,7 +54,7 @@ public interface IRelationshipsService {
      * @param relationship Relationship
      * @return RelationshipDTO
      */
-    RelationshipsDTO convertToDTO(Relationships relationship);
+    RelationshipsDTO convertToDTO(Relationships relationship, Long currentUserId);
 
     /**
      * Convert list of Relationship to DTO
@@ -62,5 +62,8 @@ public interface IRelationshipsService {
      * @param relationships List<Relationship>
      * @return List<RelationshipDTO>
      */
-    List<RelationshipsDTO> convertToListDTO(List<Relationships> relationships);
+
+    RelationshipsDTO convertToDTO(Relationships relationship);
+
+    List<RelationshipsDTO> convertToListDTO(List<Relationships> relationships , Long currentUserId);
 }

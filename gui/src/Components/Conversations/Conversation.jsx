@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import './Conversation.css';
 import WebSocketService from '../../Services/WebSocket/webSocket';
 import CloseIcon from '@mui/icons-material/Close';
@@ -6,9 +6,16 @@ import CallIcon from '@mui/icons-material/Call';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import SendIcon from '@mui/icons-material/Send';
-import {getMessagesData} from '../../Services/MessageService/messageService';
+import DefaultProfilePic from '../../assets/defaultProfilePic.jpg';
+import { getMessagesData } from '../../Services/MessageService/messageService';
+import { AuthContext } from '../../Context/AuthContext';
+import { toast } from 'react-toastify';
+import moment from 'moment';
+import 'moment/locale/vi';
 
-const Conversation = ({user, onClose}) => {
+const Conversation = ({ user, onClose }) => {
+
+    const { currentUser, setCurrentUser } = useContext(AuthContext)
 
     const [messages, setMessages] = useState([]);
 
@@ -16,11 +23,12 @@ const Conversation = ({user, onClose}) => {
 
     const messagesEndRef = useRef(null)
 
-    const currentUserId = 2 // user real UserId
+    // TODO: Set this to token, and send back to server
+    const currentUserId = currentUser.userId// user real UserId
 
     // Scroll to latest message function
     const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({behavior: 'smooth'})
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
     }
 
     // Scroll to latest message every time messages change
@@ -33,36 +41,47 @@ const Conversation = ({user, onClose}) => {
         const fetchMessages = async () => {
             try {
                 // fetch messages of currentUser and choosen User
-                const respone = await getMessagesData(currentUserId, user.id)
-                setMessages(respone.data)
+                const response = await getMessagesData(currentUserId, user.userId)
+                // console.log('Fetched messages:', response.data);
+                setMessages(response.data || []);
             } catch (error) {
                 console.error('Error fetching messages data from MongoDB: ', error);
+                toast.error('Không thể tải tin nhắn.');
             }
         }
 
         fetchMessages();
-    }, [user.id])
+    }, [user.userId])
 
     // Connect Socker server of currentUser and choosen user
     useEffect(() => {
         WebSocketService.connect(currentUserId, (chatMessage) => {
-            if (
-                (chatMessage.senderId === currentUserId && chatMessage.receiverId === user.id) ||
-                (chatMessage.senderId === user.id && chatMessage.receiverId === currentUserId)
-            ) {
-                setMessages((prevMessages) => {
-                    const updatedMessages = [...prevMessages, chatMessage];
-                    // Debug log
-                    console.log("Updated messages:", updatedMessages);
-                    return updatedMessages;
-                });
+            // Debug log
+            // console.log(chatMessage.senderId, chatMessage.receiverId)
+            // console.log(chatMessage.senderId == currentUserId, chatMessage.receiverId === user.userId)
+            // console.log(chatMessage.senderId == user.userId, chatMessage.receiverId === currentUserId)
+            try {
+                if (
+                    (chatMessage.senderId == currentUserId && chatMessage.receiverId == user.userId) ||
+                    (chatMessage.senderId == user.userId && chatMessage.receiverId == currentUserId)
+                ) {
+                    setMessages((prevMessages) => {
+                        const updatedMessages = [...prevMessages, chatMessage];
+                        // Debug log
+                        // console.log("Updated messages:", updatedMessages);
+                        return updatedMessages;
+                    });
+                }
+            } catch (error) {
+                console.error("Failed updating messages: ", error)
             }
+
         })
 
         return () => {
             WebSocketService.disconnect();
         }
-    }, [currentUserId, user.id]) // change everytime 1 of 2 userId changed
+    }, [currentUserId, user.UserId]) // change everytime 1 of 2 userId changed
 
 
     // Handle message structure and sendMessage function
@@ -71,42 +90,65 @@ const Conversation = ({user, onClose}) => {
         if (newMessage.trim()) {
             const message = {
                 senderId: currentUserId,
-                receiverId: user.id,
+                receiverId: user.userId,
                 content: newMessage,
-                type: 'CHAT'
+                type: 'CHAT',
+                timestamp: new Date().toISOString(),
             }
+
+            // console.log("Send message: ", message)
             WebSocketService.sendMessage(message);
             // Clear the input field
             setNewMessage('');
         }
     }
 
+    // format message timestamp
+    const formatTimestamp = (timestamp) => {
+        moment.locale('vi');
+        if (!timestamp) {
+            console.warn('Timestamp is missing');
+            return 'Vừa xong';
+        }
+
+        const momentDate = moment(timestamp);
+        if (momentDate.isValid()) {
+            return momentDate.fromNow();
+        }
+
+        console.warn('Invalid timestamp format:', timestamp);
+        return 'Vừa xong';
+    };
+
     return (
         <div className="conversation">
             <div className="conversation-header">
                 <div className="header-left">
-                    <img src={user.avatar} alt="" className="avatar"/>
-                    <span className="name">{user.name}</span>
+                    <img src={user.profileImageUrl || DefaultProfilePic} alt="" className="avatar" />
+                    <span className="name">{user.username}</span>
                 </div>
                 <div className="header-right">
-                    <CallIcon className="action-icon" style={{fontSize: '28px'}}/>
-                    <VideocamIcon className="action-icon" style={{fontSize: '28px'}}/>
-                    <MoreVertIcon className="action-icon" style={{fontSize: '28px'}}/>
-                    <CloseIcon className="action-icon" onClick={onClose}/>
+                    <CallIcon className="action-icon" style={{ fontSize: '28px' }} />
+                    <VideocamIcon className="action-icon" style={{ fontSize: '28px' }} />
+                    <MoreVertIcon className="action-icon" style={{ fontSize: '28px' }} />
+                    <CloseIcon className="action-icon" onClick={onClose} />
                 </div>
             </div>
             <div className="conversation-messages">
                 {Array.isArray(messages) && messages.map((msg, index) => (
                     <div
                         key={index}
-                        className={`message ${msg.senderId === currentUserId ? 'message-right' : 'message-left'
-                        }`}
+                        className={`message ${msg.senderId == currentUserId ? 'message-right' : 'message-left'
+                            }`}
                     >
                         {msg.sender !== 'User' && (
-                            <img src={user.avatar} alt="" className="message-avatar"/>
+                            <img src={user.profileImageUrl || DefaultProfilePic} alt="" className="message-avatar" />
                         )}
                         <div className="message-content">
                             <p>{msg.content}</p>
+                            <span className="message-timestamp">
+                                {formatTimestamp(msg.timestamp)}
+                            </span>
                         </div>
                     </div>
                 ))}
@@ -121,7 +163,7 @@ const Conversation = ({user, onClose}) => {
                     className="input-field"
                 />
                 <button type="submit" className="send-button">
-                    <SendIcon style={{fontSize: '28px'}}/>
+                    <SendIcon style={{ fontSize: '28px' }} />
                 </button>
             </form>
         </div>

@@ -28,6 +28,8 @@ const Post = ({ user, postId, content, comments, likes, media, createdPost, modi
     // Đóng mở khung bình luận
     const [commentOpen, setCommentOpen] = useState(false);
 
+    const [commentAmount, setCommentAmount] = useState(comments?.length || 0);
+
     // Handle slider nếu post có nhiều ảnh
     const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -86,6 +88,10 @@ const Post = ({ user, postId, content, comments, likes, media, createdPost, modi
             toast.error("Đã có lỗi xảy ra khi ẩn bài viết!");
         }
         setShowDropDown(false); // Ẩn dropdown sau khi ẩn
+    };
+
+    const onPostComment = () => {
+        setCommentAmount((prev) => prev + 1);
     };
 
     return (
@@ -218,14 +224,15 @@ const Post = ({ user, postId, content, comments, likes, media, createdPost, modi
                     </div>
                     <div className="item" onClick={() => setCommentOpen(!commentOpen)}>
                         <TextsmsOutlinedIcon />
-                        {comments?.length || 0} Comments
+                        {commentAmount} Comments
                     </div>
                     <div className="item">
                         <ShareOutlinedIcon />
                         Share
                     </div>
                 </div>
-                {commentOpen && <Comments postId={postId}/>}
+                {/* {commentOpen && <Comments postId={postId} isVideo={isVideo} getMediaUrl={getMediaUrl} onPostComment={onPostComment} />} */}
+                {commentOpen && <Comments postId={postId} />}
             </div>
         </div>
     );
