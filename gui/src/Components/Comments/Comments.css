@@ -79,7 +79,7 @@
     }
 
     .comment-list {
-        @apply max-h-[300px] overflow-y-auto p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-[white] dark:bg-[#222];
+        @apply max-h-[700px] overflow-y-auto p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-[white] dark:bg-[#222];
     }
 
     .comment-list::-webkit-scrollbar {
