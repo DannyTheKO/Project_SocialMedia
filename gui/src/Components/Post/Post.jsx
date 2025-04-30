@@ -231,7 +231,8 @@ const Post = ({ user, postId, content, comments, likes, media, createdPost, modi
                         Share
                     </div>
                 </div>
-                {commentOpen && <Comments postId={postId} isVideo={isVideo} getMediaUrl={getMediaUrl} onPostComment={onPostComment} />}
+                {/* {commentOpen && <Comments postId={postId} isVideo={isVideo} getMediaUrl={getMediaUrl} onPostComment={onPostComment} />} */}
+                {commentOpen && <Comments postId={postId} />}
             </div>
         </div>
     );

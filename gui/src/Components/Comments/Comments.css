@@ -1,6 +1,6 @@
 @import "../../index.css";
 
-.comments {
+/* .comments {
 
     .write>img,
     .singleComment>.row-1>img {
@@ -100,5 +100,8 @@
 
     .no-comments {
         @apply text-gray-500 dark:text-gray-400 text-[20px] p-[20px] text-center;
-    }
+    } 
+}*/
+.commentWrapper {
+    @apply w-full flex flex-col gap-[20px];
 }

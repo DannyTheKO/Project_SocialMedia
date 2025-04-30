@@ -1,30 +1,30 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
+// import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
+// import './Comments.css'
+// import { commentApi } from '../../Services/CommentService/commentService'
+// import { AuthContext } from '../../Context/AuthContext'
+// import SendIcon from '@mui/icons-material/Send';
+// import AttachFileIcon from '@mui/icons-material/AttachFile';
+// import { toast } from 'react-toastify';
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import './Comments.css'
 import { commentApi } from '../../Services/CommentService/commentService'
 import { AuthContext } from '../../Context/AuthContext'
-import SendIcon from '@mui/icons-material/Send';
-import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { toast } from 'react-toastify';
 import CommentEditForm from "./EditForm/CommentEditForm.jsx";
 import DisplayComment from "./DisplayComment/DisplayComment.jsx";
 import MediaSelectedPreview from "../Media/MediaPreview/MediaSelectedPreview.jsx";
 import CommentCreateForm from "./CreateForm/CommentCreateForm.jsx";
 
-const Comments = ({ postId, isVideo, getMediaUrl, onPostComment }) => {
+// const Comments = ({ postId, isVideo, getMediaUrl, onPostComment }) => {
 
+const Comments = ({ postId }) => {
     // Authentication
     const { currentUser } = useContext(AuthContext);
 
-    // Fetch Comment
     const [comments, setComments] = useState([]);
-
-    // Create Comment
-    const [commentInputText, setCommentInputText] = useState('');
-    const [files, setFiles] = useState([]);
-    const fileInputRef = useRef(null);
-
-    // Edit Comment
+    const [commentCreateText, setCommentCreateText] = useState('');
     const [commentEditText, setCommentEditText] = useState(null);
+    const [files, setFiles] = useState([]);
 
     useEffect(() => {
         // Fetch comments
@@ -56,7 +56,7 @@ const Comments = ({ postId, isVideo, getMediaUrl, onPostComment }) => {
 
     const handleSubmitComment = async (postId) => {
         try {
-            if (!commentInputText.trim() && files.length === 0) {
+            if (!commentCreateText.trim() && files.length === 0) {
                 // Don't submit if there's no content and no files
                 return;
             }
@@ -65,7 +65,7 @@ const Comments = ({ postId, isVideo, getMediaUrl, onPostComment }) => {
             const formData = new FormData();
 
             // Add text content
-            formData.append("content", commentInputText);
+            formData.append("content", commentCreateText);
 
             // Add media files if any
             if (files && files.length > 0) {
@@ -88,13 +88,8 @@ const Comments = ({ postId, isVideo, getMediaUrl, onPostComment }) => {
 
             if (response && response.message === "Success") {
                 // Clear the input field and reset files
-                setCommentInputText('');
+                setCommentCreateText('');
                 setFiles([]);
-
-                // Reset file input
-                if (fileInputRef.current) {
-                    fileInputRef.current.value = '';
-                }
 
                 // Refresh comments list
                 const updatedComments = await commentApi.getPostComments(postId);
@@ -166,6 +161,12 @@ const Comments = ({ postId, isVideo, getMediaUrl, onPostComment }) => {
             const response = await commentApi.deleteComment(commentId);
 
             if (response && response.message === "Success") {
+                // Refresh comments list to show the update
+                const updatedComments = await commentApi.getPostComments(postId);
+                if (updatedComments && updatedComments.message === "Success") {
+                    setComments(updatedComments.data || []);
+                }
+
                 toast.success("Successfully deleted");
             } else {
                 toast.warn("Invalid Permission")
@@ -178,12 +179,12 @@ const Comments = ({ postId, isVideo, getMediaUrl, onPostComment }) => {
     }
 
     return (
-        <div className='comments'>
+        <div className="commentWrapper">
             {/*Create Form*/}
             <CommentCreateForm
                 currentUser={currentUser}
-                commentInputText={commentInputText}
-                setCommentInputText={setCommentInputText}
+                commentInputText={commentCreateText}
+                setCommentInputText={setCommentCreateText}
                 setFiles={setFiles}
                 handleSubmitComment={handleSubmitComment}
                 postId={postId}
@@ -203,7 +204,7 @@ const Comments = ({ postId, isVideo, getMediaUrl, onPostComment }) => {
                 />
             )}
 
-            <div className="comment-list">
+            {/* <div className="comment-list">
                 {comments && comments.length > 0 ? (
                     comments.map((comment, index) => (
                         <div className="singleComment" key={comment.commentId}>
@@ -227,7 +228,31 @@ const Comments = ({ postId, isVideo, getMediaUrl, onPostComment }) => {
                 ) : (
                     <div className="no-comments">No comments yet</div>
                 )}
-            </div>
+            </div> */}
+            {/* Add null check before mapping */}
+            {comments && comments.length > 0 ? (
+                comments.map((comment, index) => (
+                    <div key={comment.commentId}>
+                        {commentEditText === comment.commentId ? (
+                            // Edit Form Action
+                            <CommentEditForm
+                                comment={comment}
+                                onCancel={() => setCommentEditText(null)}
+                                onSave={(updatedContent, updatedFiles) => handleEditComment(comment.commentId, updatedContent, updatedFiles)}
+                            />
+                        ) : (
+                            // Display Comment
+                            <DisplayComment
+                                comment={comment}
+                                onStartEdit={() => setCommentEditText(comment.commentId)}
+                                onDelete={() => handleDeleteComment(comment.commentId)}
+                            />
+                        )}
+                    </div>
+                ))
+            ) : (
+                <div>No comments yet</div>
+            )}
         </div>
     )
 }
