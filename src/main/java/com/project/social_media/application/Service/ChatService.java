@@ -8,16 +8,25 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
 @Service
 @RequiredArgsConstructor
 public class ChatService implements IChatService {
     private final MessageRepository messageRepository;
     private final SimpMessagingTemplate messagingTemplate;
 
+    private static final DateTimeFormatter ISO_8601_FORMATTER =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").withZone(ZoneId.of("UTC"));
+
     @Transactional
     @Override
     public Message sendMessage(Message message) {
-        message.setTimestamp(new java.util.Date().toString());
+        String formattedTimestamp = ZonedDateTime.now(ZoneId.of("UTC"))
+                .format(ISO_8601_FORMATTER);
+        message.setTimestamp(formattedTimestamp);
         Message savedMessage = messageRepository.save(message);
         // Debug log
         System.out.println("Saved message to MongoDB: " + savedMessage);

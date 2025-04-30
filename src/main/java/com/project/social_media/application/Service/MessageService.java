@@ -9,6 +9,11 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Service
 public class MessageService implements IMessageService {
@@ -18,12 +23,14 @@ public class MessageService implements IMessageService {
 
     @Override
     public List<Message> getMessagesBetweenUsers(Long userId1, Long userId2) {
-        // debug log
+        // Debug log
         System.out.println("Fetching messages between " + userId1 + " and " + userId2);
 
         List<Message> messages = new ArrayList<>();
         messages.addAll(messageRepository.findBySenderIdAndReceiverIdOrderByTimestampAsc(userId1, userId2));
         messages.addAll(messageRepository.findBySenderIdAndReceiverIdOrderByTimestampAsc(userId2, userId1));
+
+        // Sort by timestamp
         messages.sort(Comparator.comparing(Message::getTimestamp));
         return messages;
     }

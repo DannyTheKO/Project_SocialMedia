@@ -52,6 +52,10 @@
     @apply max-w-[70%] p-[12px] rounded-lg text-[20px];
 }
 
+.message-timestamp {
+    @apply text-[16px] font-light;
+}
+
 .message-left .message-content {
     @apply bg-gray-200 dark:bg-gray-700 text-black dark:text-white;
 }

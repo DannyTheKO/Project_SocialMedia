@@ -204,7 +204,7 @@ const Comments = ({ postId }) => {
                 />
             )}
 
-            {/* <div className="comment-list">
+            {/* 
                 {comments && comments.length > 0 ? (
                     comments.map((comment, index) => (
                         <div className="singleComment" key={comment.commentId}>
@@ -230,29 +230,31 @@ const Comments = ({ postId }) => {
                 )}
             </div> */}
             {/* Add null check before mapping */}
-            {comments && comments.length > 0 ? (
-                comments.map((comment, index) => (
-                    <div key={comment.commentId}>
-                        {commentEditText === comment.commentId ? (
-                            // Edit Form Action
-                            <CommentEditForm
-                                comment={comment}
-                                onCancel={() => setCommentEditText(null)}
-                                onSave={(updatedContent, updatedFiles) => handleEditComment(comment.commentId, updatedContent, updatedFiles)}
-                            />
-                        ) : (
-                            // Display Comment
-                            <DisplayComment
-                                comment={comment}
-                                onStartEdit={() => setCommentEditText(comment.commentId)}
-                                onDelete={() => handleDeleteComment(comment.commentId)}
-                            />
-                        )}
-                    </div>
-                ))
-            ) : (
-                <div>No comments yet</div>
-            )}
+            <div className="comment-list">
+                {comments && comments.length > 0 ? (
+                    comments.map((comment, index) => (
+                        <div className='singleComment' key={comment.commentId}>
+                            {commentEditText === comment.commentId ? (
+                                // Edit Form Action
+                                <CommentEditForm
+                                    comment={comment}
+                                    onCancel={() => setCommentEditText(null)}
+                                    onSave={(updatedContent, updatedFiles) => handleEditComment(comment.commentId, updatedContent, updatedFiles)}
+                                />
+                            ) : (
+                                // Display Comment
+                                <DisplayComment
+                                    comment={comment}
+                                    onStartEdit={() => setCommentEditText(comment.commentId)}
+                                    onDelete={() => handleDeleteComment(comment.commentId)}
+                                />
+                            )}
+                        </div>
+                    ))
+                ) : (
+                    <div>No comments yet</div>
+                )}
+            </div>
         </div>
     )
 }

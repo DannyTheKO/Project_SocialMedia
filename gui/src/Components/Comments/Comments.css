@@ -1,6 +1,6 @@
 @import "../../index.css";
 
-/* .comments {
+.commentWrapper {
 
     .write>img,
     .singleComment>.row-1>img {
@@ -29,7 +29,7 @@
     }
 
     .singleComment {
-        @apply w-full flex flex-col;
+        @apply w-full flex flex-col mb-[20px];
 
         .row-1 {
             @apply w-full mt-[10px] mx-0 flex gap-[20px];
@@ -100,8 +100,9 @@
 
     .no-comments {
         @apply text-gray-500 dark:text-gray-400 text-[20px] p-[20px] text-center;
-    } 
-}*/
-.commentWrapper {
-    @apply w-full flex flex-col gap-[20px];
+    }
 }
+
+/* .commentWrapper {
+    @apply w-full flex flex-col gap-[20px];
+} */

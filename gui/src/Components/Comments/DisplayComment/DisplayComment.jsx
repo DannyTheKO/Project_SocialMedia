@@ -1,6 +1,6 @@
-import React, {useContext} from "react";
-import {AuthContext} from "../../../Context/AuthContext.jsx";
-import {getMediaUrl} from "../../../Utils/Media/getMediaUrl.js";
+import React, { useContext } from "react";
+import { AuthContext } from "../../../Context/AuthContext.jsx";
+import { getMediaUrl } from "../../../Utils/Media/getMediaUrl.js";
 import EditIcon from "@mui/icons-material/Edit";
 import MediaSlider from "../../Media/MediaSlider/MediaSlider.jsx"
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -12,14 +12,14 @@ import "./DisplayComment.css"
 import moment from "moment/moment.js";
 moment.locale('vi');
 
-const DisplayComment = ({comment, onStartEdit, onDelete}) => {
+const DisplayComment = ({ comment, onStartEdit, onDelete }) => {
     // Authentication
-    const {currentUser} = useContext(AuthContext);
+    const { currentUser } = useContext(AuthContext);
 
     return (
         // Display Comment
         <div className="comment-display-wrapper">
-            <img src={getMediaUrl(comment.profileImageUrl)} className="avatar" alt=""/>
+            <img src={getMediaUrl(comment.profileImageUrl)} className="avatar" alt="" />
             <div className="comment-display-content">
                 <div className="comment-display-info">
                     {/*Left*/}
@@ -38,7 +38,7 @@ const DisplayComment = ({comment, onStartEdit, onDelete}) => {
                                     className="bg-blue-500 hover:bg-blue-800 px-[6px] py-[4px] flex justify-center rounded-md border-none cursor-pointer"
                                     onClick={onStartEdit}
                                 >
-                                    <EditIcon fontSize="small"/>
+                                    <EditIcon fontSize="small" />
                                 </button>
 
                                 {/*Delete Button*/}
@@ -46,7 +46,7 @@ const DisplayComment = ({comment, onStartEdit, onDelete}) => {
                                     className="bg-red-500 hover:bg-red-800 px-[6px] py-[4px] flex justify-center rounded-md border-none cursor-pointer"
                                     onClick={() => onDelete(comment.commentId)}
                                 >
-                                    <DeleteIcon fontSize="small"/>
+                                    <DeleteIcon fontSize="small" />
                                 </button>
                             </>
                         )}
@@ -57,12 +57,12 @@ const DisplayComment = ({comment, onStartEdit, onDelete}) => {
                 <div className="interaction">
                     {/*Likes*/}
                     <button>
-                        <ThumbUpOffAltIcon fontSize="small"/> Like
+                        <ThumbUpOffAltIcon style={{ cursor: "pointer", fontSize: "24px" }} /> Like
                     </button>
                 </div>
 
                 {/*If Single comment has multiple media files*/}
-                <MediaSlider mediaFileObjects={comment}/>
+                <MediaSlider mediaFileObjects={comment} />
             </div>
         </div>
     )
