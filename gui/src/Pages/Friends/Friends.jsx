@@ -134,14 +134,14 @@ const Friends = () => {
                 <div className="flex gap-[10px]">
                     <button
                         onClick={() => handleViewModeChange('requests')}
-                        className={`bg-gray-300 text-black dark:bg-[#4a4a4a] hover:bg-gray-500 dark:text-white px-4 py-2 rounded-3xl font-medium text-[18px] cursor-pointer ${viewMode === 'requests' ? 'bg-blue-600 text-white' : ''
+                        className={`hover:bg-gray-500 px-4 py-2 rounded-3xl font-medium text-[18px] cursor-pointer ${viewMode === 'requests' ? 'bg-blue-600 text-white' : 'bg-gray-300 dark:bg-[#4a4a4a]  text-black dark:text-white '
                             }`}
                     >
                         Yêu cầu
                     </button>
                     <button
                         onClick={() => handleViewModeChange('friends')}
-                        className={`bg-gray-300 text-black dark:bg-[#4a4a4a] hover:bg-gray-500 dark:text-white px-4 py-2 rounded-3xl font-medium text-[18px] cursor-pointer ${viewMode === 'friends' ? 'bg-blue-600 text-white' : ''
+                        className={`hover:bg-gray-500 px-4 py-2 rounded-3xl font-medium text-[18px] cursor-pointer ${viewMode === 'friends' ? 'bg-blue-600 text-white' : 'bg-gray-300 dark:bg-[#4a4a4a]  text-black dark:text-white '
                             }`}
                     >
                         Bạn bè

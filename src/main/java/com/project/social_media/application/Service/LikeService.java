@@ -12,6 +12,7 @@ import com.project.social_media.domain.Repository.CommentRepository;
 import com.project.social_media.domain.Repository.LikeRepository;
 import com.project.social_media.domain.Repository.PostRepository;
 import com.project.social_media.domain.Repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
