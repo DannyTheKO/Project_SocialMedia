@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import './Friends.css'
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import VisibilityIcon from '@mui/icons-material/Visibility';

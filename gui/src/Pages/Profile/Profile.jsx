@@ -11,6 +11,8 @@ import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import Posts from '../../Components/Posts/Posts'
 import { useParams } from 'react-router';
 import { userApi } from '../../Services/UserService/userService'
@@ -20,12 +22,17 @@ import { User } from "../../Model/User.jsx";
 import { AuthContext } from '../../Context/AuthContext.jsx';
 import { toast } from 'react-toastify';
 import { getMediaUrl } from '../../Utils/Media/getMediaUrl.js';
+import Chat from '../../Components/Chat/Chat.jsx';
+import { relationshipsApi } from '../../Services/RelationshipsService/relationshipsService.jsx';
+import Conversation from '../../Components/Conversations/Conversation.jsx';
+import { friendRequestApi } from '../../Services/FriendRequestService/friendRequestService.jsx';
 
 const Profile = () => {
 
     const { currentUser, setCurrentUser } = useContext(AuthContext);
 
     const { id } = useParams();
+    const [selectedUser, setSelectedUser] = useState(null)
     const [userName, setUserName] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -33,6 +40,9 @@ const Profile = () => {
     const [bio, setBio] = useState('');
     const [profileImageUrl, setProfileImageUrl] = useState('');
     const [bannerImageUrl, setBannerImageUrl] = useState('');
+    const [openConversation, setOpenConversation] = useState(false);
+    const [isFriend, setIsFriend] = useState(false)
+    const [relationshipId, setRelationshipId] = useState(null)
 
 
     // state for change profilePic and bannerPic
@@ -48,11 +58,23 @@ const Profile = () => {
     *
      */
 
+    const checkFriendShip = async () => {
+        try {
+            const response = await relationshipsApi.checkFriendShip(id);
+            console.log(response.data)
+            setIsFriend(response.data.friend);
+            setRelationshipId(response.data.relationshipId);
+        } catch (error) {
+            console.error('Error when checking is friend:', error);
+        }
+    }
+
     useEffect(() => {
         // In case of ignored Promise
         loadUserInfo().then(user => {
             return user
         })
+        checkFriendShip();
     }, [id])
 
     const loadUserInfo = async () => {
@@ -71,6 +93,7 @@ const Profile = () => {
                 setBio(userData.bio);
                 setProfileImageUrl(userData.profileImageUrl);
                 setBannerImageUrl(userData.bannerImageUrl);
+                setSelectedUser(userData)
             } else {
                 console.warn('Invalid response:', response);
                 clearUserData();
@@ -160,6 +183,48 @@ const Profile = () => {
         setShowConfirmModal(false);
     };
 
+    const handleOpenChat = () => {
+        setOpenConversation(!openConversation)
+    }
+    const handleCloseConversation = () => {
+        setOpenConversation(false);
+        setSelectedUser(null);
+    }
+
+    const handleAddFriend = async () => {
+        try {
+            const response = await friendRequestApi.createFriendRequest(id);
+            if (response.message === 'Success') {
+                toast.success('Gửi yêu cầu kết bạn thành công!');
+                // Không thay đổi isFriend/relationshipId vì yêu cầu kết bạn chưa tạo mối quan hệ FRIENDS
+            } else {
+                toast.error('Gửi yêu cầu kết bạn thất bại!');
+            }
+        } catch (error) {
+            console.error('Error sending friend request:', error.response?.data || error.message);
+            toast.error('Đã có lỗi xảy ra khi gửi yêu cầu kết bạn!');
+        }
+    };
+
+    const handleRemoveFriend = async () => {
+        if (!relationshipId) {
+            toast.error('Không tìm thấy mối quan hệ để hủy!');
+            return;
+        }
+        try {
+            const response = await relationshipsApi.deleteRelationship(relationshipId);
+            if (response.message === 'Success') {
+                setIsFriend(false);
+                setRelationshipId(null);
+                toast.success('Hủy kết bạn thành công!');
+            } else {
+                toast.error('Hủy kết bạn thất bại!');
+            }
+        } catch (error) {
+            console.error('Error removing friend:', error.response?.data || error.message);
+            toast.error('Đã có lỗi xảy ra khi hủy kết bạn!');
+        }
+    };
 
     return (
         <div className='profile'>
@@ -234,14 +299,30 @@ const Profile = () => {
                             </div>
                         </div>
                         {currentUser?.userId != id && (
-                            <button>Follow</button>
+                            isFriend ? (
+                                <div className="remove-friend-btn">
+                                    <PersonRemoveIcon style={{ cursor: "pointer" }} />
+                                    <button onClick={handleRemoveFriend}>Hủy kết bạn</button>
+                                </div>
+                            ) : (
+                                <div className="add-friend-btn">
+                                    <PersonAddIcon style={{ cursor: "pointer" }} />
+                                    <button onClick={handleAddFriend}>Kết bạn</button>
+                                </div>
+                            )
                         )}
+
                     </div>
                     <div className="right">
-                        <EmailOutlinedIcon style={{ cursor: 'pointer' }} />
+                        {currentUser?.userId != id && (
+                            <EmailOutlinedIcon style={{ cursor: 'pointer' }} onClick={handleOpenChat} />
+                        )}
                         <MoreVertIcon style={{ cursor: 'pointer' }} />
                     </div>
                 </div>
+                {openConversation && selectedUser && (
+                    <Conversation user={selectedUser} onClose={handleCloseConversation} />
+                )}
                 <Posts userID={id} />
             </div>
 

@@ -81,7 +81,7 @@ const Conversation = ({ user, onClose }) => {
         return () => {
             WebSocketService.disconnect();
         }
-    }, [currentUserId, user.UserId]) // change everytime 1 of 2 userId changed
+    }, [currentUserId, user.userId]) // change everytime 1 of 2 userId changed
 
 
     // Handle message structure and sendMessage function

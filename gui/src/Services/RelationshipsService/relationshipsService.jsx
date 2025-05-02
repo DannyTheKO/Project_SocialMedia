@@ -27,5 +27,7 @@ export const relationshipsApi = {
 
     // DELETE /api/v1/relationships/{relationshipId}/delete
     deleteRelationship: (relationshipId) =>
-        axios.delete(`${RELATIONSHIPS_API_BASE_URL}/${relationshipId}/delete`)
+        axios.delete(`${RELATIONSHIPS_API_BASE_URL}/${relationshipId}/delete`),
+
+    checkFriendShip: (userId2) => axios.get(`${RELATIONSHIPS_API_BASE_URL}/check-friendship?userId=${userId2}`)
 };

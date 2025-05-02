@@ -1,6 +1,7 @@
 package com.project.social_media.application.IService;
 
 import com.project.social_media.application.DTO.RelationshipsDTO;
+import com.project.social_media.controllers.ApiResponse.FriendshipCheck;
 import com.project.social_media.domain.Model.Relationships;
 
 import java.util.List;
@@ -66,4 +67,6 @@ public interface IRelationshipsService {
     RelationshipsDTO convertToDTO(Relationships relationship);
 
     List<RelationshipsDTO> convertToListDTO(List<Relationships> relationships , Long currentUserId);
+
+    FriendshipCheck areFriends(Long userId1, Long userId2);
 }

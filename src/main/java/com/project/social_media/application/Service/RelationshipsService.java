@@ -3,6 +3,7 @@ package com.project.social_media.application.Service;
 import com.project.social_media.application.DTO.RelationshipsDTO;
 import com.project.social_media.application.DTO.UserDTO;
 import com.project.social_media.application.IService.IRelationshipsService;
+import com.project.social_media.controllers.ApiResponse.FriendshipCheck;
 import com.project.social_media.domain.Model.Relationships;
 import com.project.social_media.domain.Model.User;
 import com.project.social_media.domain.Repository.RelationshipsRepository;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -94,6 +96,19 @@ public class RelationshipsService implements IRelationshipsService {
         }
 
         return dto;
+    }
+
+    @Override
+    public FriendshipCheck areFriends(Long userId1, Long userId2) {
+        if (userId1.equals(userId2)) {
+            return new FriendshipCheck(false, null); // Không thể là bạn bè với chính mình
+        }
+
+        Optional<Relationships> relationship = relationshipsRepository.findByUserIdsAndStatus(
+                userId1, userId2, Relationships.RelationshipStatus.FRIENDS);
+
+        return relationship.map(r -> new FriendshipCheck(true, r.getRelationshipId()))
+                .orElse(new FriendshipCheck(false, null));
     }
 
     private UserDTO convertUserToDTO(User user) {

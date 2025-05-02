@@ -5,6 +5,7 @@ import com.project.social_media.application.IService.IAuthenticationService;
 import com.project.social_media.application.IService.IRelationshipsService;
 import com.project.social_media.application.IService.IUserService;
 import com.project.social_media.controllers.ApiResponse.ApiResponse;
+import com.project.social_media.controllers.ApiResponse.FriendshipCheck;
 import com.project.social_media.controllers.Request.Relationships.RelationshipsCreateRequest;
 import com.project.social_media.controllers.Request.Relationships.RelationshipsUpdateRequest;
 import com.project.social_media.domain.Model.Relationships;
@@ -38,7 +39,7 @@ public class RelationshipsController {
 
     // GET danh sách bạn bè
     @GetMapping("/friends")
-    public ResponseEntity<ApiResponse> getFriends(){
+    public ResponseEntity<ApiResponse> getFriends() {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             authenticationService.authenticationCheck(authentication);
@@ -52,8 +53,6 @@ public class RelationshipsController {
                     .body(new ApiResponse("Error!", e.getMessage()));
         }
     }
-
-
 
     // CREATE quan hệ (thêm bạn bè/chặn)
     @PostMapping("/create")
@@ -128,4 +127,19 @@ public class RelationshipsController {
         }
     }
 
+    @GetMapping("/check-friendship")
+    public ResponseEntity<ApiResponse> checkFriendship(@RequestParam Long userId) {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            authenticationService.authenticationCheck(authentication);
+            User authUser = userService.getUserByUsername(authentication.getName())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            FriendshipCheck result = relationshipsService.areFriends(authUser.getUserId(), userId);
+            return ResponseEntity.ok(new ApiResponse("Success", result));
+        } catch (Exception e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error!", e.getMessage()));
+        }
+    }
 }
