@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './Post.css';
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
@@ -17,6 +17,7 @@ import { AuthContext } from '../../Context/AuthContext';
 import { toast } from 'react-toastify';
 import { getMediaUrl } from '../../Utils/Media/getMediaUrl.js';
 import { isVideo } from '../../Utils/Media/checkFileType.js';
+import { likeApi } from '../../Services/LikeService/likeService.jsx';
 
 moment.locale('vi');
 
@@ -33,11 +34,56 @@ const Post = ({ user, postId, content, comments, likes, media, createdPost, modi
     // Handle slider nếu post có nhiều ảnh
     const [currentIndex, setCurrentIndex] = useState(0);
 
-    // Hàm xác định người dùng đã like post này hay chưa
-    const liked = false;
+    // State like
+    const [liked, setLiked] = useState(false);
+    const [likeCount, setLikeCount] = useState(likes?.length || 0);;
 
     // State dropdown
     const [showDropDown, setShowDropDown] = useState(false);
+
+    // Get like counts and check for user has liked post ?
+    useEffect(() => {
+        const fetchLikeData = async () => {
+            try {
+                const countResponse = await likeApi.getLikesCountByPostId(postId);
+                if (countResponse.data.message === 'Success') {
+                    setLikeCount(countResponse.data.data);
+                }
+
+                const likesResponse = await likeApi.getAllLikesByPostId(postId);
+                if (likesResponse.message === 'Success') {
+                    const likesData = likesResponse.data;
+                    const userHasLiked = likesData.some(like => like.userId == currentUser.userId);
+                    console.log(userHasLiked)
+                    setLiked(userHasLiked);
+                }
+            } catch (error) {
+                console.error('Error fetching like data:', error);
+                toast.error('Không thể tải dữ liệu lượt thích!');
+            }
+        }
+
+        fetchLikeData();
+    }, [postId, currentUser.userId])
+
+    // Handle toggle like post
+    const handleToggleLike = async () => {
+        try {
+            const response = await likeApi.toggleLike(postId, null)
+            if (response.message == 'Success') {
+                // Update like state and like counts
+                setLiked(!liked);
+                setLikeCount(prev => liked ? prev - 1 : prev + 1);
+                toast.success(liked ? 'Đã bỏ thích bài viết!' : 'Đã thích bài viết!');
+            } else {
+                toast.error('Thao tác thất bại!');
+            }
+        } catch (error) {
+            console.error('Error toggling like:', error);
+            toast.error('Đã có lỗi xảy ra khi thích bài viết!');
+        }
+    }
+
 
     // Handler của nút prevSlider
     const handlePrev = () => {
@@ -214,13 +260,13 @@ const Post = ({ user, postId, content, comments, likes, media, createdPost, modi
 
                 </div>
                 <div className="info">
-                    <div className="item">
+                    <div className="item" onClick={handleToggleLike}>
                         {liked ? (
-                            <FavoriteOutlinedIcon style={{ color: "red" }} />
+                            <FavoriteOutlinedIcon style={{ color: "red" }} className='likeIcon' />
                         ) : (
                             <FavoriteBorderOutlinedIcon />
                         )}
-                        <p>{likes?.length || 0} Likes</p>
+                        <p>{likeCount} Likes</p>
                     </div>
                     <div className="item" onClick={() => setCommentOpen(!commentOpen)}>
                         <TextsmsOutlinedIcon />
