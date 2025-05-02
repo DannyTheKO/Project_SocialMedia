@@ -3,7 +3,7 @@ package com.project.social_media.application.IService;
 import com.project.social_media.application.DTO.UserDTO;
 import com.project.social_media.controllers.Request.User.UserCreateRequest;
 import com.project.social_media.controllers.Request.User.UserUpdateRequest;
-import com.project.social_media.domain.Model.User;
+import com.project.social_media.domain.Model.JPA.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -61,6 +61,15 @@ public interface IUserService {
      * @param request UserUpdateRequest Object
      */
     User updateUser(Long userId, UserUpdateRequest request);
+
+    /**
+     * Admin: Update Role and State User
+     *
+     * @param userId UserID
+     * @param role {@link User.userRole}
+     * @param state {@link User.userState}
+     */
+    User updateUserRoleAndState(Long userId, User.userRole role, User.userState state);
 
     /**
      * Convert User Object into UserDTO

@@ -9,8 +9,8 @@ import com.project.social_media.controllers.ApiResponse.ApiResponse;
 import com.project.social_media.controllers.ApiResponse.PageResponse;
 import com.project.social_media.controllers.Request.FriendRequest.FriendRequestCreateRequest;
 import com.project.social_media.controllers.Request.FriendRequest.FriendRequestUpdateRequest;
-import com.project.social_media.domain.Model.FriendRequest;
-import com.project.social_media.domain.Model.User;
+import com.project.social_media.domain.Model.JPA.FriendRequest;
+import com.project.social_media.domain.Model.JPA.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -45,7 +45,7 @@ public class FriendRequestController {
             @RequestParam(defaultValue = "10") int size){
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
             User authUser = userService.getUserByUsername(authentication.getName()).orElse(null);
 
             Page<FriendRequest> requestPage = friendRequestService.getReceivedFriendRequests(authUser.getUserId(),  PageRequest.of(page, size));
@@ -65,7 +65,7 @@ public class FriendRequestController {
             @RequestBody FriendRequestCreateRequest request) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
             User authUser = userService.getUserByUsername(authentication.getName()).orElse(null);
 
             // Check: from_user and to_user cannot be same person ( critical )
@@ -90,7 +90,7 @@ public class FriendRequestController {
             @RequestBody FriendRequestUpdateRequest request) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
             User authUser = userService.getUserByUsername(authentication.getName()).orElse(null);
 
             FriendRequest existingRequest = friendRequestService.getFriendRequestById(friendRequestId);
@@ -123,7 +123,7 @@ public class FriendRequestController {
             @PathVariable Long friendRequestId) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
             User authUser = userService.getUserByUsername(authentication.getName()).orElse(null);
 
             FriendRequest existingRequest = friendRequestService.getFriendRequestById(friendRequestId);

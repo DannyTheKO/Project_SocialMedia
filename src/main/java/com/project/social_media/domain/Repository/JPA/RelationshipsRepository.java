@@ -1,6 +1,6 @@
-package com.project.social_media.domain.Repository;
+package com.project.social_media.domain.Repository.JPA;
 
-import com.project.social_media.domain.Model.Relationships;
+import com.project.social_media.domain.Model.JPA.Relationships;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

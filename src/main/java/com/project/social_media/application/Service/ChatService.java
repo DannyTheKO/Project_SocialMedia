@@ -1,8 +1,8 @@
 package com.project.social_media.application.Service;
 
 import com.project.social_media.application.IService.IChatService;
-import com.project.social_media.domain.Model.Message;
-import com.project.social_media.domain.Repository.MessageRepository;
+import com.project.social_media.domain.Model.MongoDB.Message;
+import com.project.social_media.domain.Repository.MongoDB.MessageRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;

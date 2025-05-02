@@ -1,7 +1,7 @@
 package com.project.social_media.controllers;
 
 import com.project.social_media.application.Service.ChatService;
-import com.project.social_media.domain.Model.Message;
+import com.project.social_media.domain.Model.MongoDB.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;

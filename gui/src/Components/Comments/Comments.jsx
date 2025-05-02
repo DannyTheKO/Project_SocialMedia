@@ -1,10 +1,3 @@
-// import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
-// import './Comments.css'
-// import { commentApi } from '../../Services/CommentService/commentService'
-// import { AuthContext } from '../../Context/AuthContext'
-// import SendIcon from '@mui/icons-material/Send';
-// import AttachFileIcon from '@mui/icons-material/AttachFile';
-// import { toast } from 'react-toastify';
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import './Comments.css'
 import { commentApi } from '../../Services/CommentService/commentService'
@@ -194,7 +187,7 @@ const Comments = ({ postId }) => {
             {/* Dev note: This section could be a separate component?*/}
             {files.length > 0 && (
                 <MediaSelectedPreview
-                    styleContainer={"flex bg-[whitesmoke] dark:bg-[#343434] rounded-md flex-wrap gap-2 py-4 ml-15 pl-[16px]"}
+                    styleContainer={"flex bg-[whitesmoke] dark:bg-[#343434] rounded-md flex-wrap gap-2 py-4 pl-[16px] ml-15 mr-[10px] mb-10"}
                     mediaFileObjects={files}
                     onRemove={(index) => {
                         const newFiles = [...files];
@@ -204,31 +197,6 @@ const Comments = ({ postId }) => {
                 />
             )}
 
-            {/* 
-                {comments && comments.length > 0 ? (
-                    comments.map((comment, index) => (
-                        <div className="singleComment" key={comment.commentId}>
-                            {commentEditText === comment.commentId ? (
-                                <CommentEditForm
-                                    comment={comment}
-                                    onCancel={() => setCommentEditText(null)}
-                                    onSave={(updatedContent, updatedFiles) =>
-                                        handleEditComment(comment.commentId, updatedContent, updatedFiles)
-                                    }
-                                />
-                            ) : (
-                                <DisplayComment
-                                    comment={comment}
-                                    onStartEdit={() => setCommentEditText(comment.commentId)}
-                                    onDelete={() => handleDeleteComment(comment.commentId)}
-                                />
-                            )}
-                        </div>
-                    ))
-                ) : (
-                    <div className="no-comments">No comments yet</div>
-                )}
-            </div> */}
             {/* Add null check before mapping */}
             <div className="comment-list">
                 {comments && comments.length > 0 ? (

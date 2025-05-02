@@ -6,7 +6,7 @@ import com.project.social_media.application.IService.IPostService;
 import com.project.social_media.application.IService.IUserService;
 import com.project.social_media.controllers.ApiResponse.ApiResponse;
 import com.project.social_media.controllers.Request.Post.PostUpdateRequest;
-import com.project.social_media.domain.Model.Post;
+import com.project.social_media.domain.Model.JPA.Post;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +48,7 @@ public class PostAdminController {
             @ModelAttribute PostUpdateRequest request) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
 
             // Update
             Post updatedPost = postService.updatePost(userId, postId, request);
@@ -75,7 +75,7 @@ public class PostAdminController {
     public ResponseEntity<ApiResponse> deletePost(@RequestParam Long postId) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
 
             // Delete
             postService.deletePost(postId);

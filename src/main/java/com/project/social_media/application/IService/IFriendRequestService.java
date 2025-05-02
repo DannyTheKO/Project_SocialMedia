@@ -1,7 +1,7 @@
 package com.project.social_media.application.IService;
 
 import com.project.social_media.application.DTO.FriendRequestDTO;
-import com.project.social_media.domain.Model.FriendRequest;
+import com.project.social_media.domain.Model.JPA.FriendRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 

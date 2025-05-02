@@ -1,6 +1,6 @@
-package com.project.social_media.domain.Repository;
+package com.project.social_media.domain.Repository.MongoDB;
 
-import com.project.social_media.domain.Model.Message;
+import com.project.social_media.domain.Model.MongoDB.Message;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;

@@ -1,21 +1,44 @@
 package com.project.social_media.application.Service;
 
+import com.project.social_media.application.DTO.NotificationDTO;
+import com.project.social_media.application.Exception.ResourceNotFound;
 import com.project.social_media.application.IService.INotificationService;
-import com.project.social_media.domain.Model.Notification;
-import com.project.social_media.domain.Model.User;
-import com.project.social_media.domain.Repository.NotificationRepository;
-import com.project.social_media.domain.Repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.project.social_media.domain.Model.MongoDB.Notification;
+import com.project.social_media.domain.Model.JPA.User;
+import com.project.social_media.domain.Repository.MongoDB.NotificationRepository;
+import com.project.social_media.domain.Repository.JPA.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
+@RequiredArgsConstructor
 public class NotificationService implements INotificationService {
+    private final NotificationRepository notificationRepository;
+    private final UserRepository userRepository;
+    private final SimpMessagingTemplate messagingTemplate;
+    private final ModelMapper modelMapper;
 
-    @Autowired
-    private NotificationRepository notificationRepository;
+    @Override
+    public Notification getNotificationById(String notificationId) {
+        return notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new ResourceNotFound("Notification not found"));
+    }
 
-    @Autowired
-    private UserRepository userRepository;
+    @Override
+    public List<NotificationDTO> getUserNotifications(Long receiverId) {
+        List<Notification> notificationList = notificationRepository.findByReceiverId_OrderByCreatedAtDesc(receiverId);
+        return convertToDTOList(notificationList);
+    }
+
+    public Long countUnreadNotifications(Long receiverId) {
+        List<Notification> notificationList = notificationRepository.findByReceiverId_OrderByCreatedAtDesc(receiverId);
+        return notificationList.stream().filter(notification -> !notification.isRead()).count();
+    }
 
     @Override
     public void createFriendRequestNotification(Long senderId, Long receiverId, Long friendRequestId) {
@@ -23,14 +46,16 @@ public class NotificationService implements INotificationService {
         User receiver = userRepository.findById(receiverId).orElseThrow(() -> new RuntimeException("Receiver not found"));
 
         Notification notification = new Notification();
-        notification.setSender(sender);
-        notification.setReceiver(receiver);
-        notification.setType(Notification.NotificationType.FRIEND_REQUEST);
+        notification.setSenderId(sender.getUserId());
+        notification.setReceiverId(receiver.getUserId());
+        notification.setNotificationEnumType(Notification.NotificationType.FRIEND_REQUEST);
         notification.setContent(sender.getUsername() + " đã gửi yêu cầu kết bạn");
         notification.setRelatedId(friendRequestId);
         notification.setRead(false);
+        notification.setCreatedAt(LocalDateTime.now());
 
-        notificationRepository.save(notification);
+        notification = notificationRepository.save(notification);
+        sendNotification(notification);
     }
 
     @Override
@@ -39,14 +64,15 @@ public class NotificationService implements INotificationService {
         User receiver = userRepository.findById(receiverId).orElseThrow(() -> new RuntimeException("Receiver not found"));
 
         Notification notification = new Notification();
-        notification.setSender(sender);
-        notification.setReceiver(receiver);
-        notification.setType(Notification.NotificationType.LIKE_POST);
+        notification.setSenderId(sender.getUserId());
+        notification.setReceiverId(receiver.getUserId());
+        notification.setNotificationEnumType(Notification.NotificationType.LIKE_POST);
         notification.setContent(sender.getUsername() + " đã thích bài viết của bạn");
         notification.setRelatedId(postId);
         notification.setRead(false);
 
-        notificationRepository.save(notification);
+        notification = notificationRepository.save(notification);
+        sendNotification(notification);
     }
 
     @Override
@@ -55,13 +81,69 @@ public class NotificationService implements INotificationService {
         User receiver = userRepository.findById(receiverId).orElseThrow(() -> new RuntimeException("Receiver not found"));
 
         Notification notification = new Notification();
-        notification.setSender(sender);
-        notification.setReceiver(receiver);
-        notification.setType(Notification.NotificationType.COMMENT_POST);
+        notification.setSenderId(sender.getUserId());
+        notification.setReceiverId(receiver.getUserId());
+        notification.setNotificationEnumType(Notification.NotificationType.COMMENT_POST);
         notification.setContent(sender.getUsername() + " đã bình luận bài viết của bạn");
         notification.setRelatedId(commentId);
         notification.setRead(false);
 
+        notification = notificationRepository.save(notification);
+        sendNotification(notification);
+    }
+
+    @Override
+    public void markAsRead(String notificationId) {
+        Notification notification = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new ResourceNotFound("Notification not found"));
+
+        notification.setRead(true);
         notificationRepository.save(notification);
+    }
+
+    @Override
+    public void markAsReadAll(Long receiverId) {
+        List<Notification> notificationList = notificationRepository.findByReceiverId_OrderByCreatedAtDesc(receiverId);
+        notificationList.forEach(notification -> notification.setRead(true));
+    }
+
+    @Override
+    public void deleteNotification(String notificationId) {
+        Notification notification = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new ResourceNotFound("Notification not found"));
+
+        notificationRepository.delete(notification);
+    }
+
+    @Override
+    public void deleteAllNotifications(Long receiverId) {
+        List<Notification> notificationList = notificationRepository.findByReceiverId_OrderByCreatedAtDesc(receiverId);
+        notificationRepository.deleteAll(notificationList);
+    }
+
+    private void sendNotification(Notification notification) {
+        NotificationDTO notificationDTO = convertToDTO(notification);
+        messagingTemplate.convertAndSend("/topic/notification", notificationDTO);
+    }
+
+    // Don't use ModelMapper, it's causing problems
+    private NotificationDTO convertToDTO(Notification notification) {
+        NotificationDTO dto = new NotificationDTO();
+
+        // Set all fields manually to ensure proper type conversion
+        dto.setNotificationId(notification.getId());            // This should be String if using MongoDB
+        dto.setSenderId(notification.getSenderId());
+        dto.setReceiverId(notification.getReceiverId());
+        dto.setContent(notification.getContent());
+        dto.setNotificationEnumType(notification.getNotificationEnumType());
+        dto.setRelatedId(notification.getRelatedId());
+        dto.setIsRead(notification.isRead());
+        dto.setCreatedAt(notification.getCreatedAt());
+
+        return dto;
+    }
+
+    private List<NotificationDTO> convertToDTOList(List<Notification> notificationList) {
+        return notificationList.stream().map(this::convertToDTO).toList();
     }
 }

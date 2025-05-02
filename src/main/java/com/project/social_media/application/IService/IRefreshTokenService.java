@@ -1,6 +1,6 @@
 package com.project.social_media.application.IService;
 
-import com.project.social_media.domain.Model.RefreshToken;
+import com.project.social_media.domain.Model.JPA.RefreshToken;
 
 public interface IRefreshTokenService {
 

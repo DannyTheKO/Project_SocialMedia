@@ -1,19 +1,14 @@
 package com.project.social_media.application.Service;
 
 import com.project.social_media.application.IService.IMessageService;
-import com.project.social_media.domain.Model.Message;
-import com.project.social_media.domain.Repository.MessageRepository;
+import com.project.social_media.domain.Model.MongoDB.Message;
+import com.project.social_media.domain.Repository.MongoDB.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 @Service
 public class MessageService implements IMessageService {

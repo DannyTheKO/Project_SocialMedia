@@ -6,10 +6,9 @@ import com.project.social_media.application.IService.IAuthenticationService;
 import com.project.social_media.application.IService.IUserService;
 import com.project.social_media.controllers.ApiResponse.ApiResponse;
 import com.project.social_media.controllers.Request.Like.LikeRequest;
-import com.project.social_media.domain.Model.Like;
-import com.project.social_media.domain.Model.User;
+import com.project.social_media.domain.Model.JPA.Like;
+import com.project.social_media.domain.Model.JPA.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -91,7 +90,7 @@ public class LikeController {
             @RequestParam(required = false) Long commentId) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
             User authUser = userService.getUserByUsername(authentication.getName()).orElse(null);
 
             LikeRequest request = new LikeRequest();

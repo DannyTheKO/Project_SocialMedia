@@ -1,11 +1,10 @@
-package com.project.social_media.domain.Repository;
+package com.project.social_media.domain.Repository.JPA;
 
-import com.project.social_media.domain.Model.User;
+import com.project.social_media.domain.Model.JPA.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-import java.util.OptionalInt;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {

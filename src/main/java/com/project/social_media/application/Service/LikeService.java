@@ -4,15 +4,14 @@ import com.project.social_media.application.DTO.LikeDTO;
 import com.project.social_media.application.Exception.ResourceNotFound;
 import com.project.social_media.application.IService.ILikeService;
 import com.project.social_media.controllers.Request.Like.LikeRequest;
-import com.project.social_media.domain.Model.Comment;
-import com.project.social_media.domain.Model.Like;
-import com.project.social_media.domain.Model.Post;
-import com.project.social_media.domain.Model.User;
-import com.project.social_media.domain.Repository.CommentRepository;
-import com.project.social_media.domain.Repository.LikeRepository;
-import com.project.social_media.domain.Repository.PostRepository;
-import com.project.social_media.domain.Repository.UserRepository;
-import jakarta.transaction.Transactional;
+import com.project.social_media.domain.Model.JPA.Comment;
+import com.project.social_media.domain.Model.JPA.Like;
+import com.project.social_media.domain.Model.JPA.Post;
+import com.project.social_media.domain.Model.JPA.User;
+import com.project.social_media.domain.Repository.JPA.CommentRepository;
+import com.project.social_media.domain.Repository.JPA.LikeRepository;
+import com.project.social_media.domain.Repository.JPA.PostRepository;
+import com.project.social_media.domain.Repository.JPA.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -122,8 +120,9 @@ public class LikeService implements ILikeService {
                 newLike.setPost(existingPost);
                 newLike.setCreatedAt(LocalDateTime.now());
 
-                likeRepository.save(newLike);
+                // FIXME: need maintained and testing
                 notificationService.createLikePostNotification(userId, existingPost.getUser().getUserId(), existingPost.getPostId());
+                likeRepository.save(newLike);
 
             }
         } else if (request.getCommentId() != null) { // request.getCommentId != null
@@ -142,6 +141,8 @@ public class LikeService implements ILikeService {
                 newLike.setUser(existingUser);
                 newLike.setComment(existingComment);
                 newLike.setCreatedAt(LocalDateTime.now());
+
+                // FIXME: Add notification for like comment type
                 likeRepository.save(newLike);
             }
         }

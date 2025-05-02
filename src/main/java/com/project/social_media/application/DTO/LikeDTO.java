@@ -14,9 +14,7 @@ public class LikeDTO {
     private String firstname;
     private String lastname;
 
-    @Nullable
     private Long postId;
-    @Nullable
     private Long commentId;
 
     private LocalDateTime createdAt;

@@ -7,8 +7,8 @@ import com.project.social_media.application.IService.IUserService;
 import com.project.social_media.controllers.ApiResponse.ApiResponse;
 import com.project.social_media.controllers.Request.Relationships.RelationshipsCreateRequest;
 import com.project.social_media.controllers.Request.Relationships.RelationshipsUpdateRequest;
-import com.project.social_media.domain.Model.Relationships;
-import com.project.social_media.domain.Model.User;
+import com.project.social_media.domain.Model.JPA.Relationships;
+import com.project.social_media.domain.Model.JPA.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -41,7 +41,7 @@ public class RelationshipsController {
     public ResponseEntity<ApiResponse> getFriends(){
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
             User authUser = userService.getUserByUsername(authentication.getName()).orElse(null);
 
             List<Relationships> friends = relationshipsService.getFriends(authUser.getUserId());
@@ -61,7 +61,7 @@ public class RelationshipsController {
             @RequestBody RelationshipsCreateRequest request) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
             User authUser = userService.getUserByUsername(authentication.getName()).orElse(null);
 
             Relationships newRelationship = relationshipsService.createRelationship(authUser.getUserId(),
@@ -82,7 +82,7 @@ public class RelationshipsController {
             @RequestBody RelationshipsUpdateRequest request) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
             User authUser = userService.getUserByUsername(authentication.getName()).orElse(null);
 
             Relationships existingRelationship = relationshipsService.getRelationshipById(relationshipId);
@@ -108,7 +108,7 @@ public class RelationshipsController {
             @PathVariable Long relationshipId) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
             User authUser = userService.getUserByUsername(authentication.getName()).orElse(null);
 
             Relationships existingRelationship = relationshipsService.getRelationshipById(relationshipId);

@@ -1,8 +1,8 @@
 package com.project.social_media.application.IService;
 
 import com.project.social_media.application.DTO.MediaDTO;
-import com.project.social_media.domain.Model.Media;
-import com.project.social_media.domain.Model.MediaAssociation;
+import com.project.social_media.domain.Model.JPA.Media;
+import com.project.social_media.domain.Model.JPA.MediaAssociation;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

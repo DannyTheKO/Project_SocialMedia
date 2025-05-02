@@ -4,7 +4,7 @@
     @apply w-full flex gap-[20px];
 
     .comment-display-content {
-        @apply flex flex-col gap-[8px] w-full bg-[whitesmoke] dark:bg-[#343434] rounded-lg p-4;
+        @apply flex flex-col gap-[8px] w-full bg-[whitesmoke] dark:bg-[#343434] rounded-lg px-4 py-3;
     }
 
     .comment-display-info {
@@ -22,6 +22,10 @@
 
         .comment-display-right {
             @apply flex justify-center content-center gap-[10px]
+        }
+
+        .comment-display-interaction {
+            @apply flex justify-start;
         }
     }
 

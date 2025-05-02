@@ -3,7 +3,7 @@ package com.project.social_media.application.IService;
 import com.project.social_media.application.DTO.PostDTO;
 import com.project.social_media.controllers.Request.Post.PostCreateRequest;
 import com.project.social_media.controllers.Request.Post.PostUpdateRequest;
-import com.project.social_media.domain.Model.Post;
+import com.project.social_media.domain.Model.JPA.Post;
 
 import java.util.List;
 

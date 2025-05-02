@@ -9,8 +9,8 @@ import com.project.social_media.controllers.Request.Authentication.LoginRequest;
 import com.project.social_media.controllers.Request.Authentication.RefreshTokenRequest;
 import com.project.social_media.controllers.Request.Authentication.TokenForm;
 import com.project.social_media.controllers.Request.User.UserCreateRequest;
-import com.project.social_media.domain.Model.RefreshToken;
-import com.project.social_media.domain.Model.User;
+import com.project.social_media.domain.Model.JPA.RefreshToken;
+import com.project.social_media.domain.Model.JPA.User;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -50,7 +50,7 @@ public class AuthenticationController {
     public ResponseEntity<ApiResponse> whoAmI() {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
 
             if (authentication == null || authentication.getName() == null) {
                 return ResponseEntity.status(UNAUTHORIZED)

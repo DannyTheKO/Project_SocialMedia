@@ -1,6 +1,6 @@
 package com.project.social_media.controllers.Request.FriendRequest;
 
-import com.project.social_media.domain.Model.FriendRequest.FriendRequestStatus;
+import com.project.social_media.domain.Model.JPA.FriendRequest.FriendRequestStatus;
 import lombok.Data;
 
 @Data

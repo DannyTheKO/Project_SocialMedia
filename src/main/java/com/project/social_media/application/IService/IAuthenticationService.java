@@ -3,8 +3,8 @@ package com.project.social_media.application.IService;
 import com.project.social_media.controllers.Request.Authentication.LoginRequest;
 import com.project.social_media.controllers.Request.Authentication.TokenForm;
 import com.project.social_media.controllers.Request.User.UserCreateRequest;
-import com.project.social_media.domain.Model.RefreshToken;
-import com.project.social_media.domain.Model.User;
+import com.project.social_media.domain.Model.JPA.RefreshToken;
+import com.project.social_media.domain.Model.JPA.User;
 import org.springframework.security.core.Authentication;
 
 public interface IAuthenticationService {
@@ -15,5 +15,5 @@ public interface IAuthenticationService {
 
     TokenForm generateAccessToken(User user, RefreshToken refreshToken);
 
-    void authenticationCheck(Authentication authentication);
+    void checkValidationAuth(Authentication authentication);
 }

@@ -7,8 +7,8 @@ import com.project.social_media.application.IService.IUserService;
 import com.project.social_media.controllers.ApiResponse.ApiResponse;
 import com.project.social_media.controllers.Request.Post.PostCreateRequest;
 import com.project.social_media.controllers.Request.Post.PostUpdateRequest;
-import com.project.social_media.domain.Model.Post;
-import com.project.social_media.domain.Model.User;
+import com.project.social_media.domain.Model.JPA.Post;
+import com.project.social_media.domain.Model.JPA.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -132,7 +132,7 @@ public class PostController {
         try {
             // Get Authentication User
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
             User authUser = userService.getUserByUsername(authentication.getName()).orElse(null);
 
             // Create
@@ -171,7 +171,7 @@ public class PostController {
             @ModelAttribute PostUpdateRequest request) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
             User authUser = userService.getUserByUsername(authentication.getName()).orElse(null);
             Post existingPost = postService.getPostById(postId);
 
@@ -213,7 +213,7 @@ public class PostController {
     public ResponseEntity<ApiResponse> deletePost(@RequestParam Long postId) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
             User authUser = userService.getUserByUsername(authentication.getName()).orElse(null);
             Post existingPost = postService.getPostById(postId);
 

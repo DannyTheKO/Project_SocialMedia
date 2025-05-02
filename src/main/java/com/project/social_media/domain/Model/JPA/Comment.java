@@ -1,4 +1,4 @@
-package com.project.social_media.domain.Model;
+package com.project.social_media.domain.Model.JPA;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,47 +7,54 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "likes")
-public class Like {
+@Table(name = "comments")
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long likeId;
+    private Long commentId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "comment_id")
-    private Comment comment;
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Like> likes;
+
+    @Column(nullable = false)
+    private String content;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
+
     /**
-     * Like Constructor
+     * Comment Constructor
      *
      * @param user      Object: {User}
      * @param post      Object: {Post}
-     * @param comment   Object: {Comment}
+     * @param content   String
      * @param createdAt Date
      */
-    public Like(User user, Post post, Comment comment, LocalDateTime createdAt) {
+    public Comment(User user, Post post, String content, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.user = user;
         this.post = post;
-        this.comment = comment;
+        this.content = content;
         this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
-    // ==> Custom Function
+    // Custom Function
 }

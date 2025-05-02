@@ -2,7 +2,7 @@ package com.project.social_media.application.IService;
 
 import com.project.social_media.application.DTO.LikeDTO;
 import com.project.social_media.controllers.Request.Like.LikeRequest;
-import com.project.social_media.domain.Model.Like;
+import com.project.social_media.domain.Model.JPA.Like;
 
 import java.util.List;
 
