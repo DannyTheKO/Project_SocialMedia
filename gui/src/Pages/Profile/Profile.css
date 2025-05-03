@@ -1,7 +1,12 @@
 @import '../../index.css';
 
+
+.blocked-message {
+    @apply text-center p-[20px] bg-[#f8d7da] text-[#721c24] rounded-md m-[20px];
+}
+
 .profile {
-    @apply bg-[whitesmoke] dark:bg-[#343434];
+    @apply bg-[whitesmoke] dark:bg-[#343434] h-full;
 
     .images {
         @apply w-full h-[300px] relative;
@@ -60,11 +65,19 @@
                 }
 
                 .add-friend-btn {
-                    @apply flex gap-[5px] items-center border-none bg-[#5271ff] text-white mt-[18px] py-[10px] px-[20px] rounded-md cursor-pointer font-medium hover:bg-blue-800;
+                    @apply flex gap-[10px];
+                }
+
+                .add-friend-btn div {
+                    @apply flex gap-[5px] items-center border-none bg-[#5271ff] text-white mt-[18px] py-[10px] px-[20px] rounded-md font-medium hover:bg-blue-800;
                 }
 
                 .remove-friend-btn {
-                    @apply flex gap-[5px] items-center border-none bg-red-500 text-white mt-[18px] py-[10px] px-[20px] rounded-md cursor-pointer font-medium hover:bg-red-700;
+                    @apply flex gap-[5px] items-center border-none bg-red-500 text-white mt-[18px] py-[10px] px-[20px] rounded-md font-medium hover:bg-red-700;
+                }
+
+                .pending-btn {
+                    @apply flex gap-[5px] items-center border-none bg-neutral-500 text-white mt-[18px] py-[10px] px-[20px] rounded-md font-medium hover:bg-neutral-700;
                 }
             }
 

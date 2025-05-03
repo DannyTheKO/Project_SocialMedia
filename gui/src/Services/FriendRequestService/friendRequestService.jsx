@@ -26,5 +26,8 @@ export const friendRequestApi = {
 
     // DELETE /api/v1/friend-requests/{friendRequestId}/delete
     deleteFriendRequest: (friendRequestId) =>
-        axios.delete(`${FRIEND_REQUEST_API_BASE_URL}/${friendRequestId}/delete`)
+        axios.delete(`${FRIEND_REQUEST_API_BASE_URL}/${friendRequestId}/delete`),
+
+    findFriendRequestId: (fromUserId) =>
+        axios.get(`${FRIEND_REQUEST_API_BASE_URL}/find-friend-request-id?toUserId=${fromUserId}`)
 };

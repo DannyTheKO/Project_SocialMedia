@@ -13,6 +13,7 @@ import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
+import BlockIcon from '@mui/icons-material/Block';
 import Posts from '../../Components/Posts/Posts'
 import { useParams } from 'react-router';
 import { userApi } from '../../Services/UserService/userService'
@@ -25,12 +26,10 @@ import { getMediaUrl } from '../../Utils/Media/getMediaUrl.js';
 import Chat from '../../Components/Chat/Chat.jsx';
 import { relationshipsApi } from '../../Services/RelationshipsService/relationshipsService.jsx';
 import Conversation from '../../Components/Conversations/Conversation.jsx';
-import { friendRequestApi } from '../../Services/FriendRequestService/friendRequestService.jsx';
 
 const Profile = () => {
 
     const { currentUser, setCurrentUser } = useContext(AuthContext);
-
     const { id } = useParams();
     const [selectedUser, setSelectedUser] = useState(null)
     const [userName, setUserName] = useState('');
@@ -40,9 +39,11 @@ const Profile = () => {
     const [bio, setBio] = useState('');
     const [profileImageUrl, setProfileImageUrl] = useState('');
     const [bannerImageUrl, setBannerImageUrl] = useState('');
-    const [openConversation, setOpenConversation] = useState(false);
-    const [isFriend, setIsFriend] = useState(false)
-    const [relationshipId, setRelationshipId] = useState(null)
+    const [openChat, setOpenChat] = useState(false);
+    const [isFriend, setIsFriend] = useState(false);
+    const [isPending, setIsPending] = useState(false);
+    const [isBlocked, setIsBlocked] = useState(false);
+    const [relationshipId, setRelationshipId] = useState(null);
 
 
     // state for change profilePic and bannerPic
@@ -61,19 +62,32 @@ const Profile = () => {
     const checkFriendShip = async () => {
         try {
             const response = await relationshipsApi.checkFriendShip(id);
-            console.log(response.data)
+            // Debug log
+            // console.log(response.data)
             setIsFriend(response.data.friend);
-            setRelationshipId(response.data.relationshipId);
+            setIsPending(response.data.pending);
+            setIsBlocked(response.data.blocked);
+            setRelationshipId(isFriend || isPending ? relationshipId : response.data.relationshipId);
+
+            // check BLOCKED status 
+            const relResponse = await relationshipsApi.findRelationshipId(id);
+            if (relResponse.message === 'Success') {
+                const relId = relResponse.data;
+                const relDetails = await relationshipsApi.checkFriendShip(relId);
+                // Debug log
+                // console.log(relId)
+                // console.log(relDetails.data)
+                if (relDetails.data.blocked) {
+                    setIsBlocked(true);
+                }
+            }
         } catch (error) {
             console.error('Error when checking is friend:', error);
         }
     }
 
     useEffect(() => {
-        // In case of ignored Promise
-        loadUserInfo().then(user => {
-            return user
-        })
+        loadUserInfo();
         checkFriendShip();
     }, [id])
 
@@ -184,19 +198,17 @@ const Profile = () => {
     };
 
     const handleOpenChat = () => {
-        setOpenConversation(!openConversation)
-    }
-    const handleCloseConversation = () => {
-        setOpenConversation(false);
-        setSelectedUser(null);
+        setOpenChat(!openChat);
     }
 
     const handleAddFriend = async () => {
         try {
-            const response = await friendRequestApi.createFriendRequest(id);
+            const response = await relationshipsApi.createRelationship(id, 'PENDING')
             if (response.message === 'Success') {
                 toast.success('Gửi yêu cầu kết bạn thành công!');
-                // Không thay đổi isFriend/relationshipId vì yêu cầu kết bạn chưa tạo mối quan hệ FRIENDS
+                setIsPending(true)
+                setRelationshipId(response.data.relationshipId)
+                await checkFriendShip();
             } else {
                 toast.error('Gửi yêu cầu kết bạn thất bại!');
             }
@@ -215,6 +227,7 @@ const Profile = () => {
             const response = await relationshipsApi.deleteRelationship(relationshipId);
             if (response.message === 'Success') {
                 setIsFriend(false);
+                setIsPending(false);
                 setRelationshipId(null);
                 toast.success('Hủy kết bạn thành công!');
             } else {
@@ -226,33 +239,77 @@ const Profile = () => {
         }
     };
 
+    const handleCancelRequest = async () => {
+        if (!relationshipId) {
+            toast.error('Không tìm thấy yêu cầu để hủy!');
+            return;
+        }
+        try {
+            const response = await relationshipsApi.deleteRelationship(relationshipId);
+            if (response.message === 'Success') {
+                setRelationshipId(null)
+                setIsPending(false)
+                toast.success('Hủy yêu cầu kết bạn thành công!');
+            } else {
+                toast.error('Hủy yêu cầu kết bạn thất bại!');
+            }
+        } catch (error) {
+            console.error('Error canceling request:', error.response?.data || error.message);
+            toast.error(error.response?.data?.message || 'Đã có lỗi xảy ra khi hủy yêu cầu kết bạn!');
+        }
+    }
+
+    const handleBlockUser = async () => {
+        try {
+            const response = await relationshipsApi.blockUser(id);
+            if (response.message === "Success") {
+                setIsBlocked(true);
+                setIsPending(false);
+                setIsFriend(false);
+                setRelationshipId(null);
+                toast.success("Chặn người dùng thành công !");
+            } else {
+                toast.error("Chặn người dùng thất bại !");
+            }
+        } catch (error) {
+            console.error('Error blocking user:', error.response?.data || error.message);
+            toast.error(error.response?.data?.message || 'Đã có lỗi xảy ra khi chặn người dùng!');
+        }
+    }
+
     return (
         <div className='profile'>
-            <div className="images">
-                <img
-                    src={getMediaUrl(bannerImageUrl) || DefaultProfilePic}
-                    alt="Cover"
-                    className="cover h-full w-full object-center object-cover rounded-md"
-                />
-                {currentUser?.userId === id && (
-                    <label className="upload-banner">
-                        <PhotoCameraIcon />
-                        <span className="ml-2">Chỉnh sửa ảnh bìa</span>
-                        <input
-                            type="file"
-                            onChange={(e) => handleFileChange(e, "banner")}
-                            className="hidden"
-                            accept="image/*"
+            {isBlocked ? (
+                <div className="blocked-message">
+                    <h2>Người dùng đã bị chặn hoặc đã chặn bạn!</h2>
+                </div>
+            ) : (
+                <>
+                    <div className="images">
+                        <img
+                            src={getMediaUrl(bannerImageUrl) || DefaultProfilePic}
+                            alt="Cover"
+                            className="cover h-full w-full object-center object-cover rounded-md"
                         />
-                    </label>
-                )}
-                <div>
-                    <img
-                        src={getMediaUrl(profileImageUrl) || DefaultProfilePic}
-                        alt="Profile"
-                        className='profilePic'
-                    />
-                    {/* {currentUser?.userId === id && (
+                        {currentUser?.userId === id && (
+                            <label className="upload-banner">
+                                <PhotoCameraIcon />
+                                <span className="ml-2">Chỉnh sửa ảnh bìa</span>
+                                <input
+                                    type="file"
+                                    onChange={(e) => handleFileChange(e, "banner")}
+                                    className="hidden"
+                                    accept="image/*"
+                                />
+                            </label>
+                        )}
+                        <div>
+                            <img
+                                src={getMediaUrl(profileImageUrl) || DefaultProfilePic}
+                                alt="Profile"
+                                className='profilePic'
+                            />
+                            {/* {currentUser?.userId === id && (
                         <label className='upload-profile'>
                             <FileUploadIcon />
                             <span className="ml-2">Tải lên ảnh đại diện mới</span>
@@ -264,99 +321,121 @@ const Profile = () => {
                             />
                         </label>
                     )} */}
-                </div>
+                        </div>
 
-            </div>
-            <div className="profileContainer">
-                <div className="profileUserInfo">
-                    <div className="left">
-                        <a href="http://facebook.com" className='text-gray-500'>
-                            <FacebookTwoToneIcon fontSize="large" />
-                        </a>
-                        <a href="http://facebook.com" className='text-gray-500'>
-                            <InstagramIcon fontSize="large" />
-                        </a>
-                        <a href="http://facebook.com" className='text-gray-500'>
-                            <TwitterIcon fontSize="large" />
-                        </a>
-                        <a href="http://facebook.com" className='text-gray-500'>
-                            <LinkedInIcon fontSize="large" />
-                        </a>
-                        <a href="http://facebook.com" className='text-gray-500'>
-                            <PinterestIcon fontSize="large" />
-                        </a>
                     </div>
-                    <div className="center">
-                        <span>{userName || 'User'}</span>
-                        <div className="info">
-                            <div className="item">
-                                <PlaceIcon />
-                                <span>Viet Nam</span>
+                    <div className="profileContainer">
+                        <div className="profileUserInfo">
+                            <div className="left">
+                                <a href="http://facebook.com" className='text-gray-500'>
+                                    <FacebookTwoToneIcon fontSize="large" />
+                                </a>
+                                <a href="http://facebook.com" className='text-gray-500'>
+                                    <InstagramIcon fontSize="large" />
+                                </a>
+                                <a href="http://facebook.com" className='text-gray-500'>
+                                    <TwitterIcon fontSize="large" />
+                                </a>
+                                <a href="http://facebook.com" className='text-gray-500'>
+                                    <LinkedInIcon fontSize="large" />
+                                </a>
+                                <a href="http://facebook.com" className='text-gray-500'>
+                                    <PinterestIcon fontSize="large" />
+                                </a>
                             </div>
-                            <div className="item">
-                                <LanguageIcon />
-                                <span>Tiếng Việt</span>
+                            <div className="center">
+                                <span>{userName || 'User'}</span>
+                                <div className="info">
+                                    <div className="item">
+                                        <PlaceIcon />
+                                        <span>Viet Nam</span>
+                                    </div>
+                                    <div className="item">
+                                        <LanguageIcon />
+                                        <span>Tiếng Việt</span>
+                                    </div>
+                                </div>
+                                {currentUser?.userId !== id && (
+                                    <div className={`${isFriend ? 'remove-friend-btn' : isPending ? 'pending-btn' : 'add-friend-btn'} cursor-pointer`}>
+                                        {isFriend ? (
+                                            <>
+                                                <PersonRemoveIcon />
+                                                <button onClick={handleRemoveFriend}>
+                                                    Hủy kết bạn
+                                                </button>
+                                            </>
+                                        ) : isPending ? (
+                                            <>
+                                                <PersonRemoveIcon />
+                                                <button onClick={handleCancelRequest}>
+                                                    Hủy yêu cầu
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <div>
+                                                    <PersonAddIcon />
+                                                    <button onClick={handleAddFriend}>
+                                                        Kết bạn
+                                                    </button>
+                                                </div>
+                                                <div>
+                                                    <BlockIcon />
+                                                    <button onClick={handleBlockUser}>
+                                                        Chặn
+                                                    </button>
+                                                </div>
+                                            </>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                            <div className="right">
+                                {currentUser?.userId != id && (
+                                    <EmailOutlinedIcon style={{ cursor: 'pointer' }} onClick={handleOpenChat} />
+                                )}
+                                <MoreVertIcon style={{ cursor: 'pointer' }} />
                             </div>
                         </div>
-                        {currentUser?.userId != id && (
-                            isFriend ? (
-                                <div className="remove-friend-btn">
-                                    <PersonRemoveIcon style={{ cursor: "pointer" }} />
-                                    <button onClick={handleRemoveFriend}>Hủy kết bạn</button>
-                                </div>
-                            ) : (
-                                <div className="add-friend-btn">
-                                    <PersonAddIcon style={{ cursor: "pointer" }} />
-                                    <button onClick={handleAddFriend}>Kết bạn</button>
-                                </div>
-                            )
+                        {openChat && selectedUser && (
+                            <Conversation user={selectedUser} onClose={handleOpenChat} />
                         )}
+                        <Posts userID={id} />
+                    </div>
 
-                    </div>
-                    <div className="right">
-                        {currentUser?.userId != id && (
-                            <EmailOutlinedIcon style={{ cursor: 'pointer' }} onClick={handleOpenChat} />
-                        )}
-                        <MoreVertIcon style={{ cursor: 'pointer' }} />
-                    </div>
-                </div>
-                {openConversation && selectedUser && (
-                    <Conversation user={selectedUser} onClose={handleCloseConversation} />
-                )}
-                <Posts userID={id} />
-            </div>
-
-            {showConfirmModal && (
-                <>
-                    <div className="fixed inset-0 bg-black opacity-80 z-40" onClick={handleCancelUpdate}></div>
-                    <div className="fixed inset-0 flex items-center justify-center z-50">
-                        <div className="bg-[whitesmoke] dark:bg-neutral-800 w-[50%] max-w-[70%] rounded-lg p-4 relative">
-                            <h2 className="text-black dark:text-white font-bold text-center text-[24px] mb-4">
-                                Xác nhận thay đổi {isProfileImage ? "ảnh đại diện" : "ảnh bìa"}
-                            </h2>
-                            <div className="flex justify-center mb-[20px]">
-                                <img
-                                    src={isProfileImage ? profilePreview : bannerPreview}
-                                    alt="Preview"
-                                    className="max-w-full max-h-[80vh] object-cover"
-                                />
+                    {showConfirmModal && (
+                        <>
+                            <div className="fixed inset-0 bg-black opacity-80 z-40" onClick={handleCancelUpdate}></div>
+                            <div className="fixed inset-0 flex items-center justify-center z-50">
+                                <div className="bg-[whitesmoke] dark:bg-neutral-800 w-[50%] max-w-[70%] rounded-lg p-4 relative">
+                                    <h2 className="text-black dark:text-white font-bold text-center text-[24px] mb-4">
+                                        Xác nhận thay đổi {isProfileImage ? "ảnh đại diện" : "ảnh bìa"}
+                                    </h2>
+                                    <div className="flex justify-center mb-[20px]">
+                                        <img
+                                            src={isProfileImage ? profilePreview : bannerPreview}
+                                            alt="Preview"
+                                            className="max-w-full max-h-[80vh] object-cover"
+                                        />
+                                    </div>
+                                    <div className="flex justify-center gap-[10px]">
+                                        <button
+                                            onClick={handleConfirmUpdate}
+                                            className="bg-[#1b74e4] text-white font-semibold px-[15px] py-[10px] rounded-lg hover:bg-blue-700 cursor-pointer"
+                                        >
+                                            Xác nhận
+                                        </button>
+                                        <button
+                                            onClick={handleCancelUpdate}
+                                            className="bg-gray-500 text-white font-semibold px-[15px] py-[10px] rounded-lg hover:bg-gray-600 cursor-pointer"
+                                        >
+                                            Hủy
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="flex justify-center gap-[10px]">
-                                <button
-                                    onClick={handleConfirmUpdate}
-                                    className="bg-[#1b74e4] text-white font-semibold px-[15px] py-[10px] rounded-lg hover:bg-blue-700 cursor-pointer"
-                                >
-                                    Xác nhận
-                                </button>
-                                <button
-                                    onClick={handleCancelUpdate}
-                                    className="bg-gray-500 text-white font-semibold px-[15px] py-[10px] rounded-lg hover:bg-gray-600 cursor-pointer"
-                                >
-                                    Hủy
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                        </>
+                    )}
                 </>
             )}
         </div>

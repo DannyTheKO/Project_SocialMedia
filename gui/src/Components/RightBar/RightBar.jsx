@@ -17,7 +17,7 @@ const RightBar = () => {
             const response = await relationshipsApi.getFriends();
             const data = response.data; // ApiResponse { data: List<RelationshipsDTO> }
             // Debug log
-            console.log(data);
+            // console.log(data);
             setFriends(data);
             setError(null);
         } catch (err) {
@@ -29,7 +29,7 @@ const RightBar = () => {
     useEffect(() => {
         fetchFriends();
 
-        console.log("Friends đã cập nhật:", friends);
+        // console.log("Friends đã cập nhật:", friends);
     }, [])
 
     return (

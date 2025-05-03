@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
        indexes = {
             @Index(name = "idx_users", columnList = "user_id_1, user_id_2"),
 
-            // index tăng tốc lấy danh sách bạn bè của một người dùng
+            // index tăng tốc lấy danh sách bạn bè của một người dùng ( đặt indexer )
             @Index(name = "idx_user1_status", columnList = "user_id_1, status")
        })
 
@@ -73,7 +73,7 @@ public class Relationships {
 
     public enum RelationshipStatus {
         FRIENDS,
-        BLOCKED
+        BLOCKED,
+        PENDING,
     }
-
 }
