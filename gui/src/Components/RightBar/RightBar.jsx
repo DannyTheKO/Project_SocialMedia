@@ -4,6 +4,7 @@ import PlaceHolderImage from '../../Assets/login-image.jpg'
 import DefaultProfilePic from '../../Assets/defaultProfilePic.jpg';
 import { relationshipsApi } from '../../Services/RelationshipsService/relationshipsService';
 import { Link } from 'react-router';
+import RecentActivities from "./RecentActivities/RecentActivities.jsx"
 
 const RightBar = () => {
 
@@ -33,41 +34,9 @@ const RightBar = () => {
     }, [])
 
     return (
-        <div className='rightbar'>
+        <div className='rightBar'>
             <div className="container p-[20px]">
-                <div className="item">
-                    <span className='time-color'>Hoạt động gần đây</span>
-                    <div className='user'>
-                        <div className="userInfo max-xl:text-[16px]">
-                            <img src={PlaceHolderImage} alt="" className='avatar' />
-                            <p>
-                                <span className='text-[20px] text-color font-medium'>Tuan Thai </span>
-                                changed their cover picture
-                            </p>
-                        </div>
-                        <span className='time-color'> 1 min ago </span>
-                    </div>
-                    <div className='user'>
-                        <div className="userInfo">
-                            <img src={PlaceHolderImage} alt="" className='avatar' />
-                            <p>
-                                <span className='text-[20px] text-color font-medium'>Tuan Thai </span>
-                                liked a post
-                            </p>
-                        </div>
-                        <span className='time-color'> 1 min ago </span>
-                    </div>
-                    <div className='user'>
-                        <div className="userInfo">
-                            <img src={PlaceHolderImage} alt="" className='avatar' />
-                            <p>
-                                <span className='text-[20px] text-color font-medium'>Tuan Thai </span>
-                                posted
-                            </p>
-                        </div>
-                        <span className='time-color'> 1 min ago </span>
-                    </div>
-                </div>
+                <RecentActivities/>
 
                 <div className="item">
                     <span className='time-color'>Bạn bè online</span>

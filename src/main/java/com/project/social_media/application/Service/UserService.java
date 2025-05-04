@@ -59,7 +59,7 @@ public class UserService implements IUserService {
      * @return {User}
      */
     public Optional<User> getUserByUsername(String username) {
-        return userRepository.findByUsername(username);
+        return userRepository.findUserByUsername(username);
     }
 
     /**
@@ -86,7 +86,7 @@ public class UserService implements IUserService {
                     throw new ResourceConflict("Email '" + request.getEmail() + "' already exists");
                 });
 
-        userRepository.findByUsername(request.getUsername())
+        userRepository.findUserByUsername(request.getUsername())
                 .ifPresent(user -> {
                     throw new ResourceConflict("Username '" + request.getUsername() + "' already exists");
                 });

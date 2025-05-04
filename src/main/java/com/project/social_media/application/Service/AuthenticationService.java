@@ -150,7 +150,7 @@ public class AuthenticationService implements IAuthenticationService {
         }
 
         // If token is sent but invalid case
-        User checkUserState = userRepository.findByUsername(authentication.getName())
+        User checkUserState = userRepository.findUserByUsername(authentication.getName())
                 .orElseThrow(() -> new AuthenticationException("Username not found"));
 
         // If userState is "SUSPENDED", we return Unauthorized

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -40,55 +41,62 @@ public class NotificationService implements INotificationService {
     }
 
     @Override
-    public void createFriendRequestNotification(Long senderId, Long receiverId, Long friendRequestId) {
-        User sender = userRepository.findById(senderId).orElseThrow(() -> new RuntimeException("Sender not found"));
-        User receiver = userRepository.findById(receiverId).orElseThrow(() -> new RuntimeException("Receiver not found"));
+    public void createFriendRequestNotification(Long senderId, Long receiverId, Long friendRequestId) throws RuntimeException {
+        User sender = userRepository.findById(senderId).orElseThrow(() -> new ResourceNotFound("Sender not found"));
+        User receiver = userRepository.findById(receiverId).orElseThrow(() -> new ResourceNotFound("Receiver not found"));
 
-        Notification notification = new Notification();
-        notification.setSenderId(sender.getUserId());
-        notification.setReceiverId(receiver.getUserId());
-        notification.setNotificationEnumType(Notification.NotificationType.FRIEND_REQUEST);
-        notification.setContent(sender.getUsername() + " đã gửi yêu cầu kết bạn");
-        notification.setRelatedId(friendRequestId);
-        notification.setRead(false);
-        notification.setCreatedAt(LocalDateTime.now());
 
-        notification = notificationRepository.save(notification);
-        sendNotification(notification);
+        if (!Objects.equals(sender.getUserId(), receiver.getUserId())) {
+            Notification notification = new Notification();
+            notification.setSenderId(sender.getUserId());
+            notification.setReceiverId(receiver.getUserId());
+            notification.setNotificationEnumType(Notification.NotificationType.FRIEND_REQUEST);
+            notification.setContent(sender.getUsername() + " đã gửi yêu cầu kết bạn");
+            notification.setRelatedId(friendRequestId);
+            notification.setRead(false);
+            notification.setCreatedAt(LocalDateTime.now());
+
+            notification = notificationRepository.save(notification);
+            sendNotification(notification);
+        }
     }
 
     @Override
-    public void createLikePostNotification(Long senderId, Long receiverId, Long postId) {
-        User sender = userRepository.findById(senderId).orElseThrow(() -> new RuntimeException("Sender not found"));
-        User receiver = userRepository.findById(receiverId).orElseThrow(() -> new RuntimeException("Receiver not found"));
+    public void createLikePostNotification(Long senderId, Long receiverId, Long postId) throws RuntimeException {
+        User sender = userRepository.findById(senderId).orElseThrow(() -> new ResourceNotFound("Sender not found"));
+        User receiver = userRepository.findById(receiverId).orElseThrow(() -> new ResourceNotFound("Receiver not found"));
 
-        Notification notification = new Notification();
-        notification.setSenderId(sender.getUserId());
-        notification.setReceiverId(receiver.getUserId());
-        notification.setNotificationEnumType(Notification.NotificationType.LIKE_POST);
-        notification.setContent(sender.getUsername() + " đã thích bài viết của bạn");
-        notification.setRelatedId(postId);
-        notification.setRead(false);
+        if (!Objects.equals(sender.getUserId(), receiver.getUserId())) {
+            Notification notification = new Notification();
+            notification.setSenderId(sender.getUserId());
+            notification.setReceiverId(receiver.getUserId());
+            notification.setNotificationEnumType(Notification.NotificationType.LIKE_POST);
+            notification.setContent(sender.getUsername() + " đã thích bài viết của bạn");
+            notification.setRelatedId(postId);
+            notification.setRead(false);
 
-        notification = notificationRepository.save(notification);
-        sendNotification(notification);
+            notification = notificationRepository.save(notification);
+            sendNotification(notification);
+        }
     }
 
     @Override
-    public void createCommentPostNotification(Long senderId, Long receiverId, Long commentId) {
-        User sender = userRepository.findById(senderId).orElseThrow(() -> new RuntimeException("Sender not found"));
-        User receiver = userRepository.findById(receiverId).orElseThrow(() -> new RuntimeException("Receiver not found"));
+    public void createCommentPostNotification(Long senderId, Long receiverId, Long commentId) throws RuntimeException {
+        User sender = userRepository.findById(senderId).orElseThrow(() -> new ResourceNotFound("Sender not found"));
+        User receiver = userRepository.findById(receiverId).orElseThrow(() -> new ResourceNotFound("Receiver not found"));
 
-        Notification notification = new Notification();
-        notification.setSenderId(sender.getUserId());
-        notification.setReceiverId(receiver.getUserId());
-        notification.setNotificationEnumType(Notification.NotificationType.COMMENT_POST);
-        notification.setContent(sender.getUsername() + " đã bình luận bài viết của bạn");
-        notification.setRelatedId(commentId);
-        notification.setRead(false);
+        if (!Objects.equals(sender.getUserId(), receiver.getUserId())) {
+            Notification notification = new Notification();
+            notification.setSenderId(sender.getUserId());
+            notification.setReceiverId(receiver.getUserId());
+            notification.setNotificationEnumType(Notification.NotificationType.COMMENT_POST);
+            notification.setContent(sender.getUsername() + " đã bình luận bài viết của bạn");
+            notification.setRelatedId(commentId);
+            notification.setRead(false);
 
-        notification = notificationRepository.save(notification);
-        sendNotification(notification);
+            notification = notificationRepository.save(notification);
+            sendNotification(notification);
+        }
     }
 
     @Override

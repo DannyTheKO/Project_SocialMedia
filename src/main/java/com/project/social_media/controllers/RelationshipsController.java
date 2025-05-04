@@ -112,7 +112,7 @@ public class RelationshipsController {
     public ResponseEntity<ApiResponse> blockUser(@RequestBody BlockUserRequest request){
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
             User authUser = userService.getUserByUsername(authentication.getName())
                     .orElseThrow(() -> new RuntimeException("User not found !"));
             relationshipsService.blockUser(authUser.getUserId(), request.getUserId2());

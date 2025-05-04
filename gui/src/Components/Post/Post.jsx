@@ -36,7 +36,7 @@ const Post = ({ user, postId, content, comments, likes, media, createdPost, modi
 
     // State like
     const [liked, setLiked] = useState(false);
-    const [likeCount, setLikeCount] = useState(likes?.length || 0);;
+    const [likeCount, setLikeCount] = useState(likes?.length || 0);
 
     // State dropdown
     const [showDropDown, setShowDropDown] = useState(false);
