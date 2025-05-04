@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import './Conversation.css';
-import WebSocketService from '../../Services/WebSocket/webSocket';
+import MessageWebSocketService from '../../Services/MessageService/messageWebSocketService.jsx';
 import CloseIcon from '@mui/icons-material/Close';
 import CallIcon from '@mui/icons-material/Call';
 import VideocamIcon from '@mui/icons-material/Videocam';
@@ -55,7 +55,7 @@ const Conversation = ({ user, onClose }) => {
 
     // Connect Socker server of currentUser and choosen user
     useEffect(() => {
-        WebSocketService.connect(currentUserId, (chatMessage) => {
+        MessageWebSocketService.connect(currentUserId, (chatMessage) => {
             // Debug log
             // console.log(chatMessage.senderId, chatMessage.receiverId)
             // console.log(chatMessage.senderId == currentUserId, chatMessage.receiverId === user.userId)
@@ -79,9 +79,9 @@ const Conversation = ({ user, onClose }) => {
         })
 
         return () => {
-            WebSocketService.disconnect();
+            MessageWebSocketService.disconnect();
         }
-    }, [currentUserId, user.UserId]) // change everytime 1 of 2 userId changed
+    }, [currentUserId, user.userId]) // change everytime 1 of 2 userId changed
 
 
     // Handle message structure and sendMessage function
@@ -97,7 +97,7 @@ const Conversation = ({ user, onClose }) => {
             }
 
             // console.log("Send message: ", message)
-            WebSocketService.sendMessage(message);
+            MessageWebSocketService.sendMessage(message);
             // Clear the input field
             setNewMessage('');
         }

@@ -1,7 +1,7 @@
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 
-class WebSocketService {
+class MessageWebSocketService {
     constructor() {
         this.client = null;
         this.connected = false;
@@ -29,10 +29,7 @@ class WebSocketService {
                 this.client.publish({
                     destination: '/app/chat.addUser',
                     body: JSON.stringify({
-                        // TODO:
-                        //  Get token from user when login,
-                        //  send packet to server with token header
-                        sender: userId, // user real UserId
+                        sender: userId,
                         type: 'JOIN'
                     })
                 });
@@ -66,4 +63,4 @@ class WebSocketService {
     }
 }
 
-export default new WebSocketService();
+export default new MessageWebSocketService();

@@ -3,16 +3,23 @@ package com.project.social_media.application.Service;
 import com.project.social_media.application.DTO.RelationshipsDTO;
 import com.project.social_media.application.DTO.UserDTO;
 import com.project.social_media.application.IService.IRelationshipsService;
+import com.project.social_media.controllers.ApiResponse.FriendshipCheck;
 import com.project.social_media.domain.Model.JPA.Relationships;
 import com.project.social_media.domain.Model.JPA.User;
 import com.project.social_media.domain.Repository.JPA.RelationshipsRepository;
 import com.project.social_media.domain.Repository.JPA.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +32,34 @@ public class RelationshipsService implements IRelationshipsService {
 
     @Override
     public List<Relationships> getFriends(Long userId) {
-        return relationshipsRepository.findByUserIdAndStatus(userId, Relationships.RelationshipStatus.FRIENDS);
+
+        List<Relationships> friends = relationshipsRepository
+                .findByUserIdAndStatus(userId, Relationships.RelationshipStatus.FRIENDS);
+        // filter BLOCKED user
+        return friends.stream()
+                .filter(r -> {
+                    Optional<Relationships> blocked = relationshipsRepository.findByUserIds(
+                            r.getUser1().getUserId(), r.getUser2().getUserId());
+                    return blocked.map(rel -> rel.getStatus() != Relationships.RelationshipStatus.BLOCKED)
+                            .orElse(true);
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Relationships> getPendingRequests(Long userId) {
+
+        List<Relationships> friends = relationshipsRepository
+                .findByUserIdAndStatus(userId, Relationships.RelationshipStatus.PENDING);
+        // filter BLOCKED user
+        return friends.stream()
+                .filter(r -> {
+                    Optional<Relationships> blocked = relationshipsRepository.findByUserIds(
+                            r.getUser1().getUserId(), r.getUser2().getUserId());
+                    return blocked.map(rel -> rel.getStatus() != Relationships.RelationshipStatus.BLOCKED)
+                            .orElse(true);
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -48,10 +82,47 @@ public class RelationshipsService implements IRelationshipsService {
     }
 
     @Override
-    public Relationships updateRelationship(Long relationshipId, Relationships.RelationshipStatus status) {
-        Relationships relationship = getRelationshipById(relationshipId);
-        relationship.updateRelationshipStatus(status, LocalDateTime.now());
-        return relationshipsRepository.save(relationship);
+    public void acceptFriendRequest(Long relationshipId){
+        Relationships relationship = relationshipsRepository.findById(relationshipId)
+                .orElseThrow(() -> new RuntimeException("Relationship not found !"));
+        if (relationship.getStatus() != Relationships.RelationshipStatus.PENDING){
+            throw new RuntimeException("Not a pending friend request");
+        }
+
+        relationship.updateRelationshipStatus(Relationships.RelationshipStatus.FRIENDS, LocalDateTime.now());
+        relationshipsRepository.save(relationship);
+    }
+
+    @Override
+    public void rejectFriendRequest(Long relationshipId){
+        Relationships relationship = relationshipsRepository.findById(relationshipId)
+                .orElseThrow(() -> new RuntimeException("Relationships not found !"));
+        if (relationship.getStatus() != Relationships.RelationshipStatus.PENDING) {
+            throw new RuntimeException("Not a pending friend request");
+        }
+        relationshipsRepository.delete(relationship);
+    }
+
+    @Override
+    public void blockUser(Long userId1, Long userId2){
+        User user1 = userRepository.findById(userId1)
+                .orElseThrow(()-> new RuntimeException("User not found !"));
+        User user2 = userRepository.findById(userId2)
+                .orElseThrow(()-> new RuntimeException("User not found !"));
+
+        Optional<Relationships> existing = relationshipsRepository.findByUserIds(userId1, userId2);
+        Relationships relationship;
+        if (existing.isPresent()){
+            relationship = existing.get();
+            relationship.updateRelationshipStatus(Relationships.RelationshipStatus.BLOCKED, LocalDateTime.now());
+        }
+        else {
+            relationship = new Relationships(user1, user2,
+                    Relationships.RelationshipStatus.BLOCKED,
+                    LocalDateTime.now(),
+                    LocalDateTime.now());
+        }
+        relationshipsRepository.save(relationship);
     }
 
     @Override
@@ -59,6 +130,46 @@ public class RelationshipsService implements IRelationshipsService {
         Relationships relationship = getRelationshipById(relationshipId);
         relationshipsRepository.delete(relationship);
     }
+
+    @Override
+    public FriendshipCheck checkFriendship(Long userId1, Long userId2) {
+        if (userId1.equals(userId2)) {
+            return new FriendshipCheck(false, false, false, null); // can't be friend to self
+        }
+
+        // Check FRIENDS status
+        Optional<Relationships> relationship = relationshipsRepository.findByUserIds(userId1, userId2);
+        if (relationship.isPresent()){
+            Relationships r = relationship.get();
+            boolean isFriend = r.getStatus() == Relationships.RelationshipStatus.FRIENDS;
+            boolean isPending = r.getStatus() == Relationships.RelationshipStatus.PENDING;
+            boolean isBlocked = r.getStatus() == Relationships.RelationshipStatus.BLOCKED;
+
+            return new FriendshipCheck(isFriend, isPending, isBlocked, r.getRelationshipId());
+        }
+        return new FriendshipCheck(false, false, false, null);
+    }
+
+    @Override
+    public Long findRelationshipId(Long userId1, Long userId2) {
+        Optional<Relationships> relationship = relationshipsRepository.findByUserIds(userId1, userId2);
+        return relationship.map(Relationships::getRelationshipId)
+                .orElseThrow(() -> new RuntimeException("Relationship not found"));
+    }
+
+    @Override
+    public Long findPendingRelationshipId(Long userId1, Long userId2){
+        Optional<Relationships> relationship = relationshipsRepository.
+                findPendingRequest(userId1, userId2, Relationships.RelationshipStatus.PENDING);
+        return relationship.map(Relationships::getRelationshipId)
+                .orElseThrow(() -> new RuntimeException("Relationship not found"));
+    }
+
+//    @Override
+//    public Page<Relationships> getPendingRequests(Long userId, int page, int size) {
+//        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+//        return relationshipsRepository.findPendingRequestsByUserId(userId, pageable);
+//    }
 
     @Override
     public List<RelationshipsDTO> convertToListDTO(List<Relationships> relationships, Long currentUserId) {

@@ -2,6 +2,8 @@ package com.project.social_media.application.IService;
 
 import com.project.social_media.application.DTO.RelationshipsDTO;
 import com.project.social_media.domain.Model.JPA.Relationships;
+import com.project.social_media.controllers.ApiResponse.FriendshipCheck;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -33,15 +35,6 @@ public interface IRelationshipsService {
     Relationships createRelationship(Long userId1, Long userId2, Relationships.RelationshipStatus status);
 
     /**
-     * Update relationship status
-     *
-     * @param relationshipId Long
-     * @param status Relationship.RelationshipStatus
-     * @return Relationship
-     */
-    Relationships updateRelationship(Long relationshipId, Relationships.RelationshipStatus status);
-
-    /**
      * Delete relationship
      *
      * @param relationshipId Long
@@ -59,11 +52,25 @@ public interface IRelationshipsService {
     /**
      * Convert list of Relationship to DTO
      *
-     * @param relationships List<Relationship>
+     * @param relationship List<Relationship>
      * @return List<RelationshipDTO>
      */
+
+    void acceptFriendRequest(Long relationshipId);
+
+    void rejectFriendRequest(Long relationshipId);
+
+    void blockUser(Long userId1, Long userId2);
+
+    FriendshipCheck checkFriendship(Long userId1, Long userId2);
 
     RelationshipsDTO convertToDTO(Relationships relationship);
 
     List<RelationshipsDTO> convertToListDTO(List<Relationships> relationships , Long currentUserId);
+
+    Long findRelationshipId(Long userId1, Long userId2);
+
+    Long findPendingRelationshipId(Long userId1, Long userId2);
+
+    List<Relationships> getPendingRequests(Long userId);
 }

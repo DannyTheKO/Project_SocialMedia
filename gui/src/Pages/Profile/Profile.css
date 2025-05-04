@@ -1,7 +1,12 @@
 @import '../../index.css';
 
+
+.blocked-message {
+    @apply text-center p-[20px] bg-[#f8d7da] text-[#721c24] rounded-md m-[20px];
+}
+
 .profile {
-    @apply bg-[whitesmoke] dark:bg-[#343434];
+    @apply bg-[whitesmoke] dark:bg-[#343434] h-full;
 
     .images {
         @apply w-full h-[300px] relative;
@@ -31,7 +36,7 @@
         @apply py-[20px] px-[30px] max-md:p-[10px] max-xl:px-[100px];
 
         .profileUserInfo {
-            @apply h-[260px] max-lg:h-[45vh] max-md:h-[40vh] rounded-2xl bg-white dark:bg-[#222] text-black dark:text-slate-200 p-[40px] max-md:p-[20px] flex items-center justify-between my-[10px] mb-[20px] max-md:flex-col max-md:mt-[90px];
+            @apply h-[300px] max-lg:h-[45vh] max-md:h-[40vh] rounded-2xl bg-white dark:bg-[#222] text-black dark:text-slate-200 p-[40px] max-md:p-[20px] flex items-center justify-between my-[10px] mb-[20px] max-md:flex-col max-md:mt-[90px];
             -webkit-box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
             -moz-box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
             box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
@@ -59,8 +64,20 @@
                     }
                 }
 
-                button {
-                    @apply border-none bg-[#5271ff] text-white mt-[18px] py-[10px] px-[20px] rounded-md cursor-pointer font-medium hover:bg-blue-800;
+                .add-friend-btn {
+                    @apply flex gap-[10px];
+                }
+
+                .add-friend-btn div {
+                    @apply flex gap-[5px] items-center border-none bg-[#5271ff] text-white mt-[18px] py-[10px] px-[20px] rounded-md font-medium hover:bg-blue-800;
+                }
+
+                .remove-friend-btn {
+                    @apply flex gap-[5px] items-center border-none bg-red-500 text-white mt-[18px] py-[10px] px-[20px] rounded-md font-medium hover:bg-red-700;
+                }
+
+                .pending-btn {
+                    @apply flex gap-[5px] items-center border-none bg-neutral-500 text-white mt-[18px] py-[10px] px-[20px] rounded-md font-medium hover:bg-neutral-700;
                 }
             }
 
