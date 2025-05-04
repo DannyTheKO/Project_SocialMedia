@@ -143,6 +143,7 @@ public class LikeService implements ILikeService {
                 newLike.setCreatedAt(LocalDateTime.now());
 
                 // FIXME: Add notification for like comment type
+                notificationService.createCommentPostNotification(userId, existingComment.getUser().getUserId(), existingComment.getCommentId());
                 likeRepository.save(newLike);
             }
         }

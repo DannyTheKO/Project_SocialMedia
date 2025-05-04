@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface MessageRepository extends MongoRepository<Message, String> {
     // Find all messages between 2 users ( two ways: user1 -> user2 & user2 -> user1)
-    List<Message> findBySenderIdAndReceiverIdOrderByTimestampAsc(Long senderId, Long receiverId);
+    List<Message> findBySenderIdAndReceiverId_OrderByTimestampAsc(Long senderId, Long receiverId);
 }

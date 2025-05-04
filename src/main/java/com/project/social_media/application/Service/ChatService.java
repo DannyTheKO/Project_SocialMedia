@@ -29,7 +29,7 @@ public class ChatService implements IChatService {
         message.setTimestamp(formattedTimestamp);
         Message savedMessage = messageRepository.save(message);
         // Debug log
-        System.out.println("Saved message to MongoDB: " + savedMessage);
+        System.out.println("Saved message to MongoDB: " + savedMessage.getContent());
 
         // Debug log
         System.out.println("Sending message to sender: /topic/messages/" + message.getSenderId());

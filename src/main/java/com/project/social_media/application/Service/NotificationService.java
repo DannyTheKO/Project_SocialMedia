@@ -21,7 +21,6 @@ public class NotificationService implements INotificationService {
     private final NotificationRepository notificationRepository;
     private final UserRepository userRepository;
     private final SimpMessagingTemplate messagingTemplate;
-    private final ModelMapper modelMapper;
 
     @Override
     public Notification getNotificationById(String notificationId) {
@@ -128,19 +127,19 @@ public class NotificationService implements INotificationService {
 
     // Don't use ModelMapper, it's causing problems
     private NotificationDTO convertToDTO(Notification notification) {
-        NotificationDTO dto = new NotificationDTO();
+        NotificationDTO notificationDTO = new NotificationDTO();
 
         // Set all fields manually to ensure proper type conversion
-        dto.setNotificationId(notification.getId());            // This should be String if using MongoDB
-        dto.setSenderId(notification.getSenderId());
-        dto.setReceiverId(notification.getReceiverId());
-        dto.setContent(notification.getContent());
-        dto.setNotificationEnumType(notification.getNotificationEnumType());
-        dto.setRelatedId(notification.getRelatedId());
-        dto.setIsRead(notification.isRead());
-        dto.setCreatedAt(notification.getCreatedAt());
+        notificationDTO.setNotificationId(notification.getId());            // This should be String if using MongoDB
+        notificationDTO.setSenderId(notification.getSenderId());
+        notificationDTO.setReceiverId(notification.getReceiverId());
+        notificationDTO.setContent(notification.getContent());
+        notificationDTO.setNotificationEnumType(notification.getNotificationEnumType());
+        notificationDTO.setRelatedId(notification.getRelatedId());
+        notificationDTO.setIsRead(notification.isRead());
+        notificationDTO.setCreatedAt(notification.getCreatedAt());
 
-        return dto;
+        return notificationDTO;
     }
 
     private List<NotificationDTO> convertToDTOList(List<Notification> notificationList) {
