@@ -54,7 +54,7 @@ const Post = ({ user, postId, content, comments, likes, media, createdPost, modi
                 if (likesResponse.message === 'Success') {
                     const likesData = likesResponse.data;
                     const userHasLiked = likesData.some(like => like.userId == currentUser.userId);
-                    console.log(userHasLiked)
+                    // console.log(userHasLiked)
                     setLiked(userHasLiked);
                 }
             } catch (error) {
@@ -97,7 +97,7 @@ const Post = ({ user, postId, content, comments, likes, media, createdPost, modi
 
     const handleEditPost = () => {
         // Debug log
-        console.log("Edit post: ", { postId, content, media })
+        // console.log("Edit post: ", { postId, content, media })
         onEditPost({ postId, content, media }) // callback to parent
         setShowDropDown(false); // hide dropdown after select "Edit Post"
     }
@@ -110,7 +110,7 @@ const Post = ({ user, postId, content, comments, likes, media, createdPost, modi
                 toast.success("Bài viết đã được xóa thành công!");
             } else {
                 toast.error("Xóa bài viết thất bại");
-                console.log(response.message)
+                // console.log(response.message)
             }
         } catch (error) {
             console.error("Error deleting post:", error);
@@ -127,7 +127,7 @@ const Post = ({ user, postId, content, comments, likes, media, createdPost, modi
                 toast.success("Bài viết đã được ẩn thành công!");
             } else {
                 toast.error("Ẩn bài viết thất bại");
-                console.log(response.message)
+                // console.log(response.message)
             }
         } catch (error) {
             console.error("Error deleting post:", error);
@@ -135,6 +135,14 @@ const Post = ({ user, postId, content, comments, likes, media, createdPost, modi
         }
         setShowDropDown(false); // Ẩn dropdown sau khi ẩn
     };
+
+    const handleSharePost = async () => {
+        try {
+
+        } catch (error) {
+
+        }
+    }
 
     const onPostComment = () => {
         setCommentAmount((prev) => prev + 1);
@@ -172,14 +180,15 @@ const Post = ({ user, postId, content, comments, likes, media, createdPost, modi
                                         <EditSquareIcon style={{ fontSize: "24px" }} />
                                         Chỉnh sửa bài viết
                                     </button>
-                                )}
-                                <button
-                                    onClick={handleDeletePost}
-                                    className="w-full text-left px-4 py-2 hover:bg-neutral-700 rounded-b-lg flex gap-[10px] items-center text-red-500 cursor-pointer"
-                                >
-                                    <DeleteIcon style={{ fontSize: "24px" }} />
-                                    Xóa bài viết
-                                </button>
+                                ) && (
+                                        <button
+                                            onClick={handleDeletePost}
+                                            className="w-full text-left px-4 py-2 hover:bg-neutral-700 rounded-b-lg flex gap-[10px] items-center text-red-500 cursor-pointer"
+                                        >
+                                            <DeleteIcon style={{ fontSize: "24px" }} />
+                                            Xóa bài viết
+                                        </button>
+                                    )}
                             </div>
                         )}
                     </div>
@@ -273,7 +282,7 @@ const Post = ({ user, postId, content, comments, likes, media, createdPost, modi
                         {commentAmount} Comments
                     </div>
                     <div className="item">
-                        <ShareOutlinedIcon />
+                        <ShareOutlinedIcon onClick={handleSharePost} />
                         Share
                     </div>
                 </div>

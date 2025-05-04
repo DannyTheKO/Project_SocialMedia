@@ -25,14 +25,16 @@ const LeftBar = () => {
                             <span className='text-[20px] text-color font-normal'>{currentUser.username}</span>
                         </div>
                     </Link>
-                    <div className='item'>
-                        <img src={Friends} alt="" className='image' />
-                        <span className='text-[20px] text-color font-normal'>Bạn bè</span>
-                    </div>
-                    <div className='item'>
+                    <Link to={`/friends`}>
+                        <div className='item'>
+                            <img src={Friends} alt="" className='image' />
+                            <span className='text-[20px] text-color font-normal'>Bạn bè</span>
+                        </div>
+                    </Link>
+                    {/* <div className='item'>
                         <img src={Groups} alt="" className='image' />
                         <span className='text-[20px] text-color font-normal'>Nhóm</span>
-                    </div>
+                    </div> */}
                 </div>
                 <hr />
                 <div className="menu flex flex-col gap-[20px]">
@@ -45,10 +47,10 @@ const LeftBar = () => {
                         <img src={Videos} alt="" className='image' />
                         <span className='text-[20px] text-color font-normal'>Videos</span>
                     </div>
-                    <div className='item'>
+                    {/* <div className='item'>
                         <img src={Messages} alt="" className='image' />
                         <span className='text-[20px] text-color font-normal'>Tin nhắn</span>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>
