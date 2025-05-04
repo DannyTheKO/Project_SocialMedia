@@ -13,7 +13,7 @@
     }
 
     .user {
-        @apply flex items-center justify-between;
+        @apply flex flex-row items-center justify-between;
     }
 
     .userInfo {

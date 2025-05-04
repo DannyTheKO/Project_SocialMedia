@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -18,10 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Configuration
-@EnableJpaRepositories(basePackages = "com.project.social_media.domain.Repository")
-@EnableTransactionManagement
-@EntityScan(basePackages = "com.project.social_media.domain.Model")
-public class    SocialMediaConfig implements WebMvcConfigurer {
+public class SocialMediaConfig implements WebMvcConfigurer {
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();

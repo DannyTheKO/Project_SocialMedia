@@ -1,4 +1,4 @@
-package com.project.social_media.domain.Model;
+package com.project.social_media.domain.Model.JPA;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

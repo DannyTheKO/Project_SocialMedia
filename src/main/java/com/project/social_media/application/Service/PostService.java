@@ -5,10 +5,10 @@ import com.project.social_media.application.Exception.ResourceNotFound;
 import com.project.social_media.application.IService.*;
 import com.project.social_media.controllers.Request.Post.PostCreateRequest;
 import com.project.social_media.controllers.Request.Post.PostUpdateRequest;
-import com.project.social_media.domain.Model.*;
-import com.project.social_media.domain.Repository.MediaAssociationRepository;
-import com.project.social_media.domain.Repository.PostRepository;
-import com.project.social_media.domain.Repository.UserRepository;
+import com.project.social_media.domain.Model.JPA.*;
+import com.project.social_media.domain.Repository.JPA.MediaAssociationRepository;
+import com.project.social_media.domain.Repository.JPA.PostRepository;
+import com.project.social_media.domain.Repository.JPA.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -120,6 +120,8 @@ public class PostService implements IPostService {
                                 "Post"
                         ));
             }
+
+            // TODO: create notification when a user "Friend" post
 
             return newPost;
         } catch (Exception e) {

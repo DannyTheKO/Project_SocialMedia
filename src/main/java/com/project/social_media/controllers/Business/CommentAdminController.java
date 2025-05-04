@@ -5,7 +5,7 @@ import com.project.social_media.application.IService.IAuthenticationService;
 import com.project.social_media.application.IService.ICommentService;
 import com.project.social_media.controllers.ApiResponse.ApiResponse;
 import com.project.social_media.controllers.Request.Comment.CommentUpdateRequest;
-import com.project.social_media.domain.Model.Comment;
+import com.project.social_media.domain.Model.JPA.Comment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +45,7 @@ public class CommentAdminController {
     public ResponseEntity<ApiResponse> deleteComment(@RequestParam Long commentId) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
             commentService.deleteCommentById(commentId);
 
             return ResponseEntity.status(HttpStatus.OK)
@@ -78,7 +78,7 @@ public class CommentAdminController {
             @ModelAttribute CommentUpdateRequest request) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
 
             Comment comment = commentService.updateComment(userId, postId, commentId, request);
             CommentDTO commentDTO = commentService.convertToDTO(comment);

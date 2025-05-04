@@ -9,8 +9,8 @@ import com.project.social_media.application.IService.IUserService;
 import com.project.social_media.controllers.ApiResponse.ApiResponse;
 import com.project.social_media.controllers.Request.Comment.CommentCreateRequest;
 import com.project.social_media.controllers.Request.Comment.CommentUpdateRequest;
-import com.project.social_media.domain.Model.Comment;
-import com.project.social_media.domain.Model.User;
+import com.project.social_media.domain.Model.JPA.Comment;
+import com.project.social_media.domain.Model.JPA.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -130,7 +130,7 @@ public class CommentController {
         try {
             // Get authenticate user
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
             User authUser = userService.getUserByUsername(authentication.getName())
                     .orElseThrow(() -> new ResourceNotFound("getUserByUsername: username not found"));
 
@@ -169,7 +169,7 @@ public class CommentController {
             @ModelAttribute CommentUpdateRequest request) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
             User authUser = userService.getUserByUsername(authentication.getName())
                     .orElseThrow(() -> new ResourceNotFound("getUserByUsername: username not found"));
             Comment existingComment = commentService.getCommentById(commentId);
@@ -212,7 +212,7 @@ public class CommentController {
     public ResponseEntity<ApiResponse> deleteComment(@RequestParam Long commentId) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
             User user = userService.getUserByUsername(authentication.getName()).orElse(null);
             Comment existingComment = commentService.getCommentById(commentId);
 

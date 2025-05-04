@@ -1,12 +1,13 @@
 package com.project.social_media.controllers;
 
 import com.project.social_media.application.DTO.UserDTO;
+import com.project.social_media.application.Exception.ResourceNotFound;
 import com.project.social_media.application.IService.IAuthenticationService;
 import com.project.social_media.application.IService.IUserService;
 import com.project.social_media.controllers.ApiResponse.ApiResponse;
 import com.project.social_media.controllers.Request.User.UserCreateRequest;
 import com.project.social_media.controllers.Request.User.UserUpdateRequest;
-import com.project.social_media.domain.Model.User;
+import com.project.social_media.domain.Model.JPA.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -136,13 +137,13 @@ public class UserController {
     public ResponseEntity<ApiResponse> updateUser(@ModelAttribute UserUpdateRequest request) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
 
             String authUser = authentication.getName();
-            User existingUser = userService.getUserByUsername(authUser).orElse(null);
+            User existingUser = userService.getUserByUsername(authUser)
+                    .orElseThrow(() -> new ResourceNotFound("getUserByUsername: username not found"));
 
             // Authentication
-            assert existingUser != null;
             if (!authUser.equals(existingUser.getUsername())) {
                 return ResponseEntity.status(FORBIDDEN) // 403
                         .body(new ApiResponse("Invalid Permission", null));
@@ -178,10 +179,11 @@ public class UserController {
     public ResponseEntity<ApiResponse> deleteUser() {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
 
             String authUser = authentication.getName();
-            User existingUser = userService.getUserByUsername(authUser).orElse(null);
+            User existingUser = userService.getUserByUsername(authUser)
+                    .orElseThrow(() -> new ResourceNotFound("getUserByUsername: username not found"));
 
             // Delete
             userService.deleteUser(existingUser.getUserId());

@@ -1,6 +1,6 @@
 package com.project.social_media.application.DTO;
 
-import com.project.social_media.domain.Model.Relationships;
+import com.project.social_media.domain.Model.JPA.Relationships;
 import lombok.Data;
 
 import java.time.LocalDateTime;

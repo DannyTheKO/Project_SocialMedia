@@ -1,6 +1,6 @@
 package com.project.social_media.application.IService;
 
-import com.project.social_media.domain.Model.Message;
+import com.project.social_media.domain.Model.MongoDB.Message;
 
 import java.util.List;
 

@@ -1,8 +1,8 @@
 package com.project.social_media.application.IService;
 
 import com.project.social_media.application.DTO.RelationshipsDTO;
+import com.project.social_media.domain.Model.JPA.Relationships;
 import com.project.social_media.controllers.ApiResponse.FriendshipCheck;
-import com.project.social_media.domain.Model.Relationships;
 import org.springframework.data.domain.Page;
 
 import java.util.List;

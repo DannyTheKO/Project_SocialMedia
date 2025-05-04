@@ -1,12 +1,11 @@
-package com.project.social_media.domain.Repository;
+package com.project.social_media.domain.Repository.JPA;
 
-import com.project.social_media.domain.Model.Comment;
-import com.project.social_media.domain.Model.Like;
-import com.project.social_media.domain.Model.Post;
+import com.project.social_media.domain.Model.JPA.Comment;
+import com.project.social_media.domain.Model.JPA.Like;
+import com.project.social_media.domain.Model.JPA.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface LikeRepository extends JpaRepository<Like, Long> {
 

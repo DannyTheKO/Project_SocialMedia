@@ -1,23 +1,16 @@
 package com.project.social_media.controllers;
 
-import com.project.social_media.application.Exception.ResourceNotFound;
 import com.project.social_media.application.IService.IAuthenticationService;
 import com.project.social_media.application.IService.IMessageService;
 import com.project.social_media.application.IService.IUserService;
-import com.project.social_media.application.Service.MessageService;
-import com.project.social_media.controllers.ApiResponse.ApiResponse;
-import com.project.social_media.domain.Model.Message;
-import com.project.social_media.domain.Model.User;
+import com.project.social_media.domain.Model.MongoDB.Message;
+import com.project.social_media.domain.Model.JPA.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,7 +29,7 @@ public class MessageController {
     {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        authenticationService.authenticationCheck(authentication);
+        authenticationService.checkValidationAuth(authentication);
         User authUser = userService.getUserByUsername(authentication.getName()).orElse(null);
 
         assert authUser != null;

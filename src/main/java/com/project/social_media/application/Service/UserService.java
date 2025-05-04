@@ -7,14 +7,13 @@ import com.project.social_media.application.IService.IMediaService;
 import com.project.social_media.application.IService.IUserService;
 import com.project.social_media.controllers.Request.User.UserCreateRequest;
 import com.project.social_media.controllers.Request.User.UserUpdateRequest;
-import com.project.social_media.domain.Model.Media;
-import com.project.social_media.domain.Model.User;
-import com.project.social_media.domain.Repository.UserRepository;
+import com.project.social_media.domain.Model.JPA.Media;
+import com.project.social_media.domain.Model.JPA.User;
+import com.project.social_media.domain.Repository.JPA.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -60,7 +59,7 @@ public class UserService implements IUserService {
      * @return {User}
      */
     public Optional<User> getUserByUsername(String username) {
-        return userRepository.findByUsername(username);
+        return userRepository.findUserByUsername(username);
     }
 
     /**
@@ -87,7 +86,7 @@ public class UserService implements IUserService {
                     throw new ResourceConflict("Email '" + request.getEmail() + "' already exists");
                 });
 
-        userRepository.findByUsername(request.getUsername())
+        userRepository.findUserByUsername(request.getUsername())
                 .ifPresent(user -> {
                     throw new ResourceConflict("Username '" + request.getUsername() + "' already exists");
                 });
@@ -95,6 +94,7 @@ public class UserService implements IUserService {
         // Construct User
         User newUser = new User();
         newUser.setUserRole(User.userRole.USER);        // Default Role
+        newUser.setUserState(User.userState.ACTIVE);    // Default State
         newUser.setUsername(request.getUsername());
         newUser.setFirstName(request.getFirstname());
         newUser.setLastName(request.getLastname());
@@ -200,6 +200,38 @@ public class UserService implements IUserService {
             userRepository.save(existingUser);
 
             return existingUser;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Admin: Update User Role And State
+     *
+     * @param userId UserID
+     * @param role {@link User.userRole}
+     * @param state {@link User.userState}
+     * @return {@link User}
+     */
+    @Override
+    public User updateUserRoleAndState(Long userId, User.userRole role, User.userState state) {
+        try {
+            User existingUser = userRepository.findById(userId)
+                    .orElseThrow(() -> new ResourceNotFound("updateUserRoleAndState: userId not found"));
+
+            // Update only fields that are provided
+            if (existingUser.getUserRole() != role) {
+                existingUser.setUserRole(role);
+            }
+
+            if (existingUser.getUserState() != state) {
+                existingUser.setUserState(state);
+            }
+
+            userRepository.save(existingUser);
+
+            return existingUser;
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

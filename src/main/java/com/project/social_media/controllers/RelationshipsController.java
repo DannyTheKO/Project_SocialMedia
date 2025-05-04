@@ -9,8 +9,8 @@ import com.project.social_media.controllers.ApiResponse.FriendshipCheck;
 import com.project.social_media.controllers.Request.Relationships.BlockUserRequest;
 import com.project.social_media.controllers.Request.Relationships.RelationshipsCreateRequest;
 import com.project.social_media.controllers.Request.Relationships.RelationshipsUpdateRequest;
-import com.project.social_media.domain.Model.Relationships;
-import com.project.social_media.domain.Model.User;
+import com.project.social_media.domain.Model.JPA.Relationships;
+import com.project.social_media.domain.Model.JPA.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +44,7 @@ public class RelationshipsController {
     public ResponseEntity<ApiResponse> getFriends() {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
             User authUser = userService.getUserByUsername(authentication.getName()).orElse(null);
 
             List<Relationships> friends = relationshipsService.getFriends(authUser.getUserId());
@@ -62,7 +62,7 @@ public class RelationshipsController {
             @RequestBody RelationshipsCreateRequest request) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
             User authUser = userService.getUserByUsername(authentication.getName()).orElse(null);
 
             if (authUser.getUserId().equals(request.getUserId2())){
@@ -85,7 +85,7 @@ public class RelationshipsController {
     public ResponseEntity<ApiResponse> acceptFriendRequest(@RequestParam Long relationshipId){
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
             relationshipsService.acceptFriendRequest(relationshipId);
             return ResponseEntity.ok(new ApiResponse("Success", "Friend request accepted"));
         } catch (Exception e) {
@@ -99,12 +99,12 @@ public class RelationshipsController {
     public ResponseEntity<ApiResponse> rejectFriendRequest(@RequestParam Long relationshipId){
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
             relationshipsService.rejectFriendRequest(relationshipId);
             return ResponseEntity.ok(new ApiResponse("Success", "Friend request rejected"));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse("Error !", e.getMessage()));
+                    .body(new ApiResponse("Error", e.getMessage()));
         }
     }
 
@@ -112,7 +112,7 @@ public class RelationshipsController {
     public ResponseEntity<ApiResponse> blockUser(@RequestBody BlockUserRequest request){
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
             User authUser = userService.getUserByUsername(authentication.getName())
                     .orElseThrow(() -> new RuntimeException("User not found !"));
             relationshipsService.blockUser(authUser.getUserId(), request.getUserId2());
@@ -129,7 +129,7 @@ public class RelationshipsController {
             @PathVariable Long relationshipId) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
             User authUser = userService.getUserByUsername(authentication.getName()).orElse(null);
 
             Relationships existingRelationship = relationshipsService.getRelationshipById(relationshipId);
@@ -153,7 +153,7 @@ public class RelationshipsController {
     public ResponseEntity<ApiResponse> checkFriendship(@RequestParam Long userId) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
             User authUser = userService.getUserByUsername(authentication.getName())
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -169,7 +169,7 @@ public class RelationshipsController {
     public ResponseEntity<ApiResponse> findRelationshipId(@RequestParam Long userId2) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
             User authUser = userService.getUserByUsername(authentication.getName())
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -185,7 +185,7 @@ public class RelationshipsController {
     public ResponseEntity<ApiResponse> findPendingRelationshipId(@RequestParam Long userId2) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
             User authUser = userService.getUserByUsername(authentication.getName())
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -203,7 +203,7 @@ public class RelationshipsController {
             @RequestParam(defaultValue = "10") int size) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
             User authUser = userService.getUserByUsername(authentication.getName())
                     .orElseThrow(() -> new RuntimeException("User not found"));
 

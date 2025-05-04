@@ -54,7 +54,7 @@ const DisplayComment = ({ comment, onStartEdit, onDelete }) => {
                     </div>
                 </div>
 
-                <div className="interaction">
+                <div className="comment-display-interaction">
                     {/*Likes*/}
                     <button>
                         <ThumbUpOffAltIcon style={{ cursor: "pointer", fontSize: "24px" }} /> Like

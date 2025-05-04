@@ -32,8 +32,6 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    // TODO: Add admin role? maybe?
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http

@@ -1,0 +1,38 @@
+@import "../../../index.css";
+
+.recentActivities-container {
+    @apply p-[20px] mb-[20px] flex flex-col rounded-md dark:bg-[#222];
+
+    .recentActivities-display-title {
+        @apply text-gray-500 dark:text-gray-300 font-bold text-2xl text-start;
+    }
+
+    .recentActivities-display-user {
+        @apply flex flex-col items-start align-baseline my-[5px] hover:bg-gray-300 dark:hover:bg-neutral-700 p-[10px] rounded-md;
+
+        .recentActivities-display-userInfo {
+            @apply flex items-center w-full gap-[15px] max-xl:text-[16px];
+
+            p {
+                @apply flex w-full gap-2 font-normal dark:text-gray-300;
+
+                .recentActivities-display-username {
+                    @apply text-[20px] text-white self-center;
+                }
+
+                .recentActivities-display-content {
+                    @apply text-[14px]  text-gray-500 dark:text-gray-300 self-center;
+                }
+            }
+
+        }
+
+        .time-color {
+            @apply text-[16px] text-end w-full text-gray-500 dark:text-gray-300;
+        }
+    }
+
+    .buttons {
+        @apply flex gap-[10px] rounded-md
+    }
+}

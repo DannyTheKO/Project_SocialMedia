@@ -12,7 +12,6 @@ public class JwtUtil {
     private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256); // Use SHA-256
     private static final Long EXPIRATION_TIME = 864_000_000L; // 1 day
 
-    // TODO: Add admin role ?
     // Encrypted Function
     public static String generateToken(String username, String role) {
         Date now = new Date();
@@ -44,7 +43,6 @@ public class JwtUtil {
                     .build()
                     .parseClaimsJws(token);
 
-            // TODO: Can i return this to something else like an Object of [String, Boolean] perhaps ?
             return true;
         } catch (Exception e) {
             return false;

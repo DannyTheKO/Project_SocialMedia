@@ -14,7 +14,7 @@ class MessageWebSocketService {
             reconnectDelay: 5000,
             onConnect: () => {
                 // Debug log
-                console.log("Connected to WebSocket with userId: " + userId);
+                console.log("Connected to Message WebSocket Service with userId: " + userId);
                 this.connected = true;
                 this.client.subscribe(`/topic/messages/${userId}`, (message) => {
                     if (message.body) {

@@ -2,10 +2,10 @@ package com.project.social_media.application.Service;
 
 
 import com.project.social_media.application.IService.IRefreshTokenService;
-import com.project.social_media.domain.Model.RefreshToken;
-import com.project.social_media.domain.Model.User;
-import com.project.social_media.domain.Repository.RefreshTokenRepository;
-import com.project.social_media.domain.Repository.UserRepository;
+import com.project.social_media.domain.Model.JPA.RefreshToken;
+import com.project.social_media.domain.Model.JPA.User;
+import com.project.social_media.domain.Repository.JPA.RefreshTokenRepository;
+import com.project.social_media.domain.Repository.JPA.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

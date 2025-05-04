@@ -6,7 +6,7 @@ import com.project.social_media.application.IService.IUserService;
 import com.project.social_media.controllers.ApiResponse.ApiResponse;
 import com.project.social_media.controllers.Request.User.UserCreateRequest;
 import com.project.social_media.controllers.Request.User.UserUpdateRequest;
-import com.project.social_media.domain.Model.User;
+import com.project.social_media.domain.Model.JPA.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -60,14 +60,22 @@ public class UserAdminController {
     @PutMapping("/user/update")
     public ResponseEntity<ApiResponse> updateUser(
             @RequestParam Long userId,
+            @RequestParam(required = false) User.userRole role,
+            @RequestBody(required = false) User.userState state,
             @ModelAttribute UserUpdateRequest request) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
+
+            // Because we are admin, will bypass the user self check
 
             // Update
             User existingUser = userService.getUserById(userId);
             User updatedUser = userService.updateUser(existingUser.getUserId(), request);
+            if (role != null || state != null) { // Update Role and State
+                updatedUser = userService.updateUserRoleAndState(existingUser.getUserId(), role, state);
+            }
+
             return ResponseEntity.ok(new ApiResponse("Success", userService.convertToDTO(updatedUser)));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR) // 500
@@ -89,7 +97,7 @@ public class UserAdminController {
     public ResponseEntity<ApiResponse> deleteUser(@RequestParam Long userId) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authenticationService.authenticationCheck(authentication);
+            authenticationService.checkValidationAuth(authentication);
 
             // Delete
             userService.deleteUser(userId);
