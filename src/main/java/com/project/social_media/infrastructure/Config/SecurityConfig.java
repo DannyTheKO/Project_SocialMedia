@@ -56,7 +56,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((request) ->
                                 request
                                 // Permit all requests >> For Testing Purpose
-//                                .anyRequest().permitAll() // Uncomment this for testing
+                                //anyRequest().permitAll() // Uncomment this for testing
                                         // >> Files
                                         .requestMatchers("/uploads/**").permitAll()
 
@@ -84,11 +84,13 @@ public class SecurityConfig {
                                         // Guest has to Authenticated to use Controller
                                         // Temp disable for testing
                                         .requestMatchers(HttpMethod.GET,
-                                                "/api/v1/messages/**"
+                                                "/api/v1/messages/**",
+                                                "/api/v1/notifications/**"
                                         ).authenticated()
 
                                         .requestMatchers(HttpMethod.POST,
                                                 "/api/v1/users/**",
+                                                "/api/v1/notifications/**",
                                                 "/api/v1/posts/**",
                                                 "/api/v1/comments/**",
                                                 "/api/v1/likes/**",
@@ -98,6 +100,7 @@ public class SecurityConfig {
 
                                         .requestMatchers(HttpMethod.PUT,
                                                 "/api/v1/users/**",
+                                                "/api/v1/notifications/**",
                                                 "/api/v1/posts/**",
                                                 "/api/v1/comments/**",
                                                 "/api/v1/likes/**",
@@ -108,6 +111,7 @@ public class SecurityConfig {
 
                                         .requestMatchers(HttpMethod.DELETE,
                                                 "/api/v1/users/**",
+                                                "/api/v1/notifications/**",
                                                 "/api/v1/posts/**",
                                                 "/api/v1/comments/**",
                                                 "/api/v1/likes/**",

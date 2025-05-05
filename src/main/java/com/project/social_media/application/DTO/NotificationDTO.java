@@ -8,9 +8,15 @@ import java.time.LocalDateTime;
 @Data
 public class NotificationDTO {
     private String notificationId;
+
     private Long senderId;
+    private String senderName;
+    private String senderImageUrl;
+
     private Long receiverId;
+
     private Notification.NotificationType NotificationEnumType;
+
     private String content;
     private Long relatedId;
     private Boolean isRead;

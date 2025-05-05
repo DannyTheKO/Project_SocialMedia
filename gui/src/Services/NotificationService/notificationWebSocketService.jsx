@@ -13,7 +13,9 @@ class NotificationWebSocketService {
             return;
         }
 
-        const socket = new SockJS("http://localhost:8080/ws");
+        const socketUrl = "http://localhost:8080/ws";
+        console.log(`Attempting to connect to WebSocket server at: ${socketUrl}`);
+        const socket = new SockJS(socketUrl);
         this.client = new Client({
             webSocketFactory: () => socket,
             reconnectDelay: 5000,
@@ -25,13 +27,17 @@ class NotificationWebSocketService {
             onConnect: () => {
                 console.log("Connected to Notification WebSocket Service with userId: " + userId);
                 this.connected = true;
-                this.client.subscribe(`/topic/notifications/${userId}`, (notification) => {
-                    const notificationData = JSON.parse(notification.body);
-                    console.log("Received notification:", notificationData);
-                    if (onNotificationReceived) {
-                        onNotificationReceived(notificationData);
-                    }
-                });
+                if (this.client.connected) {
+                    this.client.subscribe(`/topic/notifications`, (notifications) => {
+                        const notificationData = JSON.parse(notifications.body);
+                        if (onNotificationReceived) {
+                            onNotificationReceived(notificationData);
+                        }
+                    });
+                } else {
+                    this.connected = false;
+                    console.error("STOMP client is not connected");
+                }
             },
 
             onDisconnect: () => {
@@ -40,68 +46,23 @@ class NotificationWebSocketService {
             },
 
             onStompError: (frame) => {
+                this.connected = false;
                 console.error("STOMP Error:", frame.headers['message']);
                 console.error("Additional details:", frame.body);
             }
-        })
+        });
 
         this.client.activate();
     }
 
+
+
     disconnect() {
         if (this.client && this.connected) {
-            this.client.deactivate();
+            this.client.deactivate().catch(r => console.log(r));
             this.connected = false;
             console.log("Disconnected from Notification WebSocket Service");
         }
-    }
-
-    // Method to mark notification as read
-    markAsRead(notificationId) {
-        if (!this.connected || !this.client) {
-            console.error("Not connected to WebSocket server");
-            return;
-        }
-
-        this.client.publish({
-            destination: `/app/notifications/${notificationId}/read`,
-        });
-    }
-
-    // Method to mark all notifications as read
-    markAllAsRead() {
-        if (!this.connected || !this.client) {
-            console.error("Not connected to WebSocket server");
-            return;
-        }
-
-        this.client.publish({
-            destination: '/app/notifications/readAll',
-        });
-    }
-
-    // Method to delete notification
-    deleteNotification(notificationId) {
-        if (!this.connected || !this.client) {
-            console.error("Not connected to WebSocket server");
-            return;
-        }
-
-        this.client.publish({
-            destination: `/app/notifications/${notificationId}/delete`,
-        });
-    }
-
-    // Method to delete all notification for the current user
-    deleteAllNotifications() {
-        if (!this.connected || !this.client) {
-            console.error("Not connected to WebSocket server");
-            return;
-        }
-
-        this.client.publish({
-            destination: `/app/notifications/deleteAll`
-        });
     }
 }
 

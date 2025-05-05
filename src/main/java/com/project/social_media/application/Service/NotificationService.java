@@ -8,7 +8,6 @@ import com.project.social_media.domain.Model.JPA.User;
 import com.project.social_media.domain.Repository.MongoDB.NotificationRepository;
 import com.project.social_media.domain.Repository.JPA.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -51,13 +50,13 @@ public class NotificationService implements INotificationService {
             notification.setSenderId(sender.getUserId());
             notification.setReceiverId(receiver.getUserId());
             notification.setNotificationEnumType(Notification.NotificationType.FRIEND_REQUEST);
-            notification.setContent(sender.getUsername() + " đã gửi yêu cầu kết bạn");
+            notification.setContent("đã gửi yêu cầu kết bạn");
             notification.setRelatedId(friendRequestId);
             notification.setRead(false);
             notification.setCreatedAt(LocalDateTime.now());
 
             notification = notificationRepository.save(notification);
-            sendNotification(notification);
+            sendNotificationToUser(notification);
         }
     }
 
@@ -71,12 +70,13 @@ public class NotificationService implements INotificationService {
             notification.setSenderId(sender.getUserId());
             notification.setReceiverId(receiver.getUserId());
             notification.setNotificationEnumType(Notification.NotificationType.LIKE_POST);
-            notification.setContent(sender.getUsername() + " đã thích bài viết của bạn");
+            notification.setContent("đã thích bài viết của bạn");
             notification.setRelatedId(postId);
             notification.setRead(false);
+            notification.setCreatedAt(LocalDateTime.now());
 
             notification = notificationRepository.save(notification);
-            sendNotification(notification);
+            sendNotificationToUser(notification);
         }
     }
 
@@ -90,12 +90,13 @@ public class NotificationService implements INotificationService {
             notification.setSenderId(sender.getUserId());
             notification.setReceiverId(receiver.getUserId());
             notification.setNotificationEnumType(Notification.NotificationType.COMMENT_POST);
-            notification.setContent(sender.getUsername() + " đã bình luận bài viết của bạn");
+            notification.setContent("đã bình luận bài viết của bạn");
             notification.setRelatedId(commentId);
             notification.setRead(false);
+            notification.setCreatedAt(LocalDateTime.now());
 
             notification = notificationRepository.save(notification);
-            sendNotification(notification);
+            sendNotificationToUser(notification);
         }
     }
 
@@ -128,18 +129,29 @@ public class NotificationService implements INotificationService {
         notificationRepository.deleteAll(notificationList);
     }
 
-    private void sendNotification(Notification notification) {
+    @Override
+    public void sendNotificationToUser(Notification notification) {
         NotificationDTO notificationDTO = convertToDTO(notification);
-        messagingTemplate.convertAndSend("/topic/notification", notificationDTO);
+        messagingTemplate.convertAndSend("/topic/notifications", notificationDTO);
     }
+
+    public void sendNotificationCountToUser(Long receiverId) {
+        Long unReadCount = countUnreadNotifications(receiverId);
+        messagingTemplate.convertAndSend("/topic/notifications/count", unReadCount);
+    }
+
 
     // Don't use ModelMapper, it's causing problems
     private NotificationDTO convertToDTO(Notification notification) {
         NotificationDTO notificationDTO = new NotificationDTO();
+        User userSender = userRepository.findById(notification.getSenderId())
+                .orElseThrow(() -> new ResourceNotFound("Sender not found"));
 
         // Set all fields manually to ensure proper type conversion
         notificationDTO.setNotificationId(notification.getId());            // This should be String if using MongoDB
         notificationDTO.setSenderId(notification.getSenderId());
+        notificationDTO.setSenderImageUrl(userSender.getProfileImageUrl());
+        notificationDTO.setSenderName(userSender.getUsername());
         notificationDTO.setReceiverId(notification.getReceiverId());
         notificationDTO.setContent(notification.getContent());
         notificationDTO.setNotificationEnumType(notification.getNotificationEnumType());

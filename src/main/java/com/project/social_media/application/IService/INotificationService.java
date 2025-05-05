@@ -25,4 +25,8 @@ public interface INotificationService {
     void deleteNotification(String notificationId);
 
     void deleteAllNotifications(Long receiverId);
+
+    void sendNotificationToUser(Notification notification);
+
+    void sendNotificationCountToUser(Long receiverId);
 }

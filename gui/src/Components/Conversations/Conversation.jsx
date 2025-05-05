@@ -60,6 +60,7 @@ const Conversation = ({ user, onClose }) => {
             // console.log(chatMessage.senderId, chatMessage.receiverId)
             // console.log(chatMessage.senderId == currentUserId, chatMessage.receiverId === user.userId)
             // console.log(chatMessage.senderId == user.userId, chatMessage.receiverId === currentUserId)
+
             try {
                 if (
                     (chatMessage.senderId == currentUserId && chatMessage.receiverId == user.userId) ||

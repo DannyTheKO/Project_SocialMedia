@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import './RightBar.css'
 import PlaceHolderImage from '../../Assets/login-image.jpg'
 import DefaultProfilePic from '../../Assets/defaultProfilePic.jpg';

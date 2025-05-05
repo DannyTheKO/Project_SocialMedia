@@ -1,6 +1,6 @@
 import axios from '../axiosConfig.js'
 
-const NOTIFICATION_API_BASE_URL = '/api/v1/notifications';
+const NOTIFICATION_API_BASE_URL = '/notifications';
 
 export const notificationApi = {
     getUserNotification: async () =>
