@@ -12,6 +12,7 @@ import com.project.social_media.domain.Model.MongoDB.Notification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -27,6 +28,24 @@ public class NotificationController {
     private final IAuthenticationService authenticationService;
     private final UserService userService;
 
+    @MessageMapping("/notifications.send")
+    public void sendNotification(Notification notification) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User receiverUser = userService.getUserByUsername(authentication.getName())
+                .orElseThrow(() -> new ResourceNotFound("User not found"));
+
+        // Send notification to the user
+        notificationService.sendNotificationToUser(notification);
+
+        // Optionally, update the notification count
+        notificationService.sendNotificationCountToUser(receiverUser.getUserId());
+    }
+
+    @MessageMapping("/notifications.markRead")
+    public void markRead(String notificationId) {
+        notificationService.markAsRead(notificationId);
+    }
+
     /**
      * Get all notifications for the currently authenticated user
      */
@@ -41,7 +60,7 @@ public class NotificationController {
             List<NotificationDTO> notificationDTOList = notificationService.getUserNotifications(existingUser.getUserId());
             return ResponseEntity.ok(new ApiResponse("Success", notificationDTOList));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse("Error", e.getMessage()));
         }
     }

@@ -13,8 +13,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void configureMessageBroker(MessageBrokerRegistry config) {
         // prefix for destination that client can subscribe
         config.enableSimpleBroker("/topic");
+
         // prefix for message that client send to server
         config.setApplicationDestinationPrefixes("/app");
+
         // prefix for default destination if controller return to void
         // and provide send message to specific user ( use with SimpMessagingTemplate )
         config.setUserDestinationPrefix("/user");

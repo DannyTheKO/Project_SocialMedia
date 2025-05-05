@@ -90,9 +90,6 @@ const Comments = ({ postId }) => {
                     setComments(updatedComments.data || []);
                 }
 
-                // callBack to increase comment amount on post
-                onPostComment();
-
                 // Optional: Show success notification
                 // toast.success("Comment posted successfully!");
             } else {

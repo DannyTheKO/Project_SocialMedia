@@ -125,7 +125,7 @@ public class UserController {
 
     /**
      * <h1>PUT: Update User</h1>
-     * <h5>URL: api/vi/users/user/update</h5>
+     * <h5>URL: api/v1/users/user/update</h5>
      * <br>
      *
      * <li>This action should only update the current user, not other</li>
@@ -133,7 +133,7 @@ public class UserController {
      * @param request {@link UserUpdateRequest}
      * @return {@link ApiResponse#ApiResponse(String, Object)}
      */
-    @PutMapping(value = "/user/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/user/update")
     public ResponseEntity<ApiResponse> updateUser(@ModelAttribute UserUpdateRequest request) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -145,7 +145,7 @@ public class UserController {
 
             // Authentication
             if (!authUser.equals(existingUser.getUsername())) {
-                return ResponseEntity.status(FORBIDDEN) // 403
+                return ResponseEntity.status(UNAUTHORIZED)
                         .body(new ApiResponse("Invalid Permission", null));
             }
 
