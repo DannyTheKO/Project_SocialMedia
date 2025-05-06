@@ -8,11 +8,9 @@ import com.project.social_media.controllers.ApiResponse.ApiResponse;
 import com.project.social_media.controllers.ApiResponse.FriendshipCheck;
 import com.project.social_media.controllers.Request.Relationships.BlockUserRequest;
 import com.project.social_media.controllers.Request.Relationships.RelationshipsCreateRequest;
-import com.project.social_media.controllers.Request.Relationships.RelationshipsUpdateRequest;
 import com.project.social_media.domain.Model.JPA.Relationships;
 import com.project.social_media.domain.Model.JPA.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -65,13 +63,11 @@ public class RelationshipsController {
             authenticationService.checkValidationAuth(authentication);
             User authUser = userService.getUserByUsername(authentication.getName()).orElse(null);
 
-            if (authUser.getUserId().equals(request.getUserId2())){
+            if (authUser.getUserId().equals(request.getReceiverId())){
                 return ResponseEntity.status(INTERNAL_SERVER_ERROR)
                         .body(new ApiResponse("Error", "Can not add friend to your self !"));
             }
-            Relationships newRelationship = relationshipsService.createRelationship(authUser.getUserId(),
-                    request.getUserId2(),
-                    request.getStatus());
+            Relationships newRelationship = relationshipsService.createRelationship(authUser.getUserId(), request.getReceiverId(), request.getStatus());
             RelationshipsDTO relationshipDTO = relationshipsService.convertToDTO(newRelationship);
             return ResponseEntity.ok(new ApiResponse("Success", relationshipDTO));
         } catch (Exception e) {

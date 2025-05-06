@@ -2,6 +2,7 @@ package com.project.social_media.application.Service;
 
 import com.project.social_media.application.DTO.RelationshipsDTO;
 import com.project.social_media.application.DTO.UserDTO;
+import com.project.social_media.application.IService.INotificationService;
 import com.project.social_media.application.IService.IRelationshipsService;
 import com.project.social_media.controllers.ApiResponse.FriendshipCheck;
 import com.project.social_media.domain.Model.JPA.Relationships;
@@ -28,6 +29,8 @@ public class RelationshipsService implements IRelationshipsService {
 
     private final RelationshipsRepository relationshipsRepository;
     private final UserRepository userRepository;
+
+    private final INotificationService notificationService;
 
 
     @Override
@@ -68,17 +71,20 @@ public class RelationshipsService implements IRelationshipsService {
     }
 
     @Override
-    public Relationships createRelationship(Long userId1, Long userId2, Relationships.RelationshipStatus status) {
-        User user1 = userRepository.findById(userId1)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        User user2 = userRepository.findById(userId2)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    public Relationships createRelationship(Long senderId, Long receiverId, Relationships.RelationshipStatus status) {
+        User sender = userRepository.findById(senderId)
+                .orElseThrow(() -> new RuntimeException("Sender not found"));
+        User receiver = userRepository.findById(receiverId)
+                .orElseThrow(() -> new RuntimeException("Receiver not found"));
 
-        if (relationshipsRepository.existsByUser1UserIdAndUser2UserIdAndStatus(userId1, userId2, status)){
+        if (relationshipsRepository.existsByUser1UserIdAndUser2UserIdAndStatus(sender.getUserId(), receiver.getUserId(), status)){
             throw new RuntimeException("Relationship already exists");
         }
-        Relationships relationship = new Relationships(user1, user2, status, LocalDateTime.now(), LocalDateTime.now());
-        return relationshipsRepository.save(relationship);
+
+        Relationships relationship = new Relationships(sender, receiver, status, LocalDateTime.now(), LocalDateTime.now());
+        Relationships updatedRelationship = relationshipsRepository.save(relationship);
+        notificationService.createFriendRequestNotification(sender.getUserId(), receiver.getUserId(), updatedRelationship.getRelationshipId());
+        return updatedRelationship;
     }
 
     @Override
