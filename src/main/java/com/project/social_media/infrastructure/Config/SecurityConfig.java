@@ -78,7 +78,7 @@ public class SecurityConfig {
                                                 "/api/v1/comments/**",
                                                 "/api/v1/likes/**",
                                                 "/api/v1/relationships/**",
-                                                "/api/v1/friend-requests/**"
+                                                "/api/v1/shared-posts/**"
                                         ).permitAll()
 
                                         // Guest has to Authenticated to use Controller
@@ -95,7 +95,7 @@ public class SecurityConfig {
                                                 "/api/v1/comments/**",
                                                 "/api/v1/likes/**",
                                                 "/api/v1/relationships/**",
-                                                "/api/v1/friend-requests/**"
+                                                "/api/v1/shared-posts/**"
                                         ).authenticated()
 
                                         .requestMatchers(HttpMethod.PUT,
@@ -105,7 +105,7 @@ public class SecurityConfig {
                                                 "/api/v1/comments/**",
                                                 "/api/v1/likes/**",
                                                 "/api/v1/relationships/**",
-                                                "/api/v1/friend-requests/**"
+                                                "/api/v1/shared-posts/**"
                                         ).authenticated()
 
 
@@ -116,7 +116,7 @@ public class SecurityConfig {
                                                 "/api/v1/comments/**",
                                                 "/api/v1/likes/**",
                                                 "/api/v1/relationships/**",
-                                                "/api/v1/friend-requests/**"
+                                                "/api/v1/shared-posts/**"
                                         ).authenticated()
                 );
         return http.build();

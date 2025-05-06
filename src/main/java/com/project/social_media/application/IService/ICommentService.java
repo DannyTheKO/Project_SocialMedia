@@ -61,4 +61,10 @@ public interface ICommentService {
     CommentDTO convertToDTO(Comment comment);
 
     List<CommentDTO> convertToDTOList(List<Comment> commentList);
+
+    List<Comment> getAllCommentsBySharedPostId(Long sharedPostId);
+
+    Comment createCommentForSharedPost(Long userId, Long sharedPostId, CommentCreateRequest request);
+
+    Comment updateCommentForSharedPost(Long userId, Long sharedPostId, Long commentId, CommentUpdateRequest request);
 }

@@ -11,6 +11,8 @@ public class LikeRequest {
     private Long postId;
     @Nullable
     private Long commentId;
+    @Nullable
+    private Long sharedPostId;
 
     private LocalDateTime createdAt;
 }

@@ -28,6 +28,10 @@ public class Comment {
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
+    @ManyToOne
+    @JoinColumn(name = "shared_post_id")
+    private SharedPost sharedPost;
+
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes;
 

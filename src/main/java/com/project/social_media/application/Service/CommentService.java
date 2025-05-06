@@ -10,14 +10,8 @@ import com.project.social_media.application.IService.IMediaService;
 import com.project.social_media.application.IService.INotificationService;
 import com.project.social_media.controllers.Request.Comment.CommentCreateRequest;
 import com.project.social_media.controllers.Request.Comment.CommentUpdateRequest;
-import com.project.social_media.domain.Model.JPA.Comment;
-import com.project.social_media.domain.Model.JPA.MediaAssociation;
-import com.project.social_media.domain.Model.JPA.Post;
-import com.project.social_media.domain.Model.JPA.User;
-import com.project.social_media.domain.Repository.JPA.CommentRepository;
-import com.project.social_media.domain.Repository.JPA.MediaAssociationRepository;
-import com.project.social_media.domain.Repository.JPA.PostRepository;
-import com.project.social_media.domain.Repository.JPA.UserRepository;
+import com.project.social_media.domain.Model.JPA.*;
+import com.project.social_media.domain.Repository.JPA.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,6 +31,7 @@ public class CommentService implements ICommentService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final MediaAssociationRepository mediaAssociationRepository;
+    private final SharedPostRepository sharedPostRepository;
 
     private final IMediaService mediaService;
     private final ILikeService likeService;
@@ -87,6 +82,13 @@ public class CommentService implements ICommentService {
     @Override
     public List<Comment> getAllCommentsByPostId(Long postId) {
         Post getPost = postRepository.findPostByPostId(postId)
+                .orElse(new Post());
+        return getPost.getComments();
+    }
+
+    @Override
+    public List<Comment> getAllCommentsBySharedPostId(Long sharedPostId) {
+        Post getPost = postRepository.findPostByPostId(sharedPostId)
                 .orElse(new Post());
         return getPost.getComments();
     }
@@ -199,6 +201,40 @@ public class CommentService implements ICommentService {
         } catch (ResourceNotFound e) {
             throw new RuntimeException(e);
         }
+    }
+
+
+//    SHARED POST
+
+    @Override
+    public Comment createCommentForSharedPost(Long userId, Long sharedPostId, CommentCreateRequest request) {
+        User user = userRepository.findUserByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFound("User not found with id: " + userId));
+        SharedPost sharedPost = sharedPostRepository.findById(sharedPostId)
+                .orElseThrow(() -> new ResourceNotFound("SharedPost not found with id: " + sharedPostId));
+
+        Comment comment = new Comment();
+        comment.setUser(user);
+        comment.setSharedPost(sharedPost);
+        comment.setContent(request.getContent());
+        comment.setCreatedAt(LocalDateTime.now());
+        comment.setUpdatedAt(LocalDateTime.now());
+
+        return commentRepository.save(comment);
+    }
+
+    @Override
+    public Comment updateCommentForSharedPost(Long userId, Long sharedPostId, Long commentId, CommentUpdateRequest request) {
+        Comment comment = getCommentById(commentId);
+        if (!comment.getUser().getUserId().equals(userId)) {
+            throw new ResourceNotFound("Permission denied: User not authorized to update this comment");
+        }
+        if (comment.getSharedPost() == null || !comment.getSharedPost().getSharedPostId().equals(sharedPostId)) {
+            throw new ResourceNotFound("Comment does not belong to the specified SharedPost");
+        }
+        comment.setContent(request.getContent());
+        comment.setUpdatedAt(LocalDateTime.now());
+        return commentRepository.save(comment);
     }
 
     public CommentDTO convertToDTO(Comment comment) {

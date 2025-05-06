@@ -1,37 +1,74 @@
 import React, { useEffect, useState } from 'react'
 import './Posts.css'
 import Post from '../Post/Post'
+import SharedPost from '../SharedPost/SharedPost'
 import { postApi } from '../../Services/PostService/postService'
 import EditPostModal from '../Modal/EditPostModal/EditPostModal'
+import { timelineApi } from '../../Services/TimelineService/timelineService'
 
 const Posts = ({ userID }) => {
 
     const [posts, setPosts] = useState([])
 
-    const [editPost, setEditPost] = useState(null);
+    const [editItem, setEditItem] = useState(null)
 
     useEffect(() => {
-        loadAllPosts(userID)
+        loadTimeline(userID)
     }, [userID])
 
     const handleDeletePost = (postId) => {
-        setPosts(posts.filter((post) => post.postId !== postId));
+        setPosts(posts.filter((item) =>
+            !(item.hasOwnProperty('postId') && item.postId === postId) &&
+            !(item.hasOwnProperty('sharedPostId') && item.sharedPostId === postId)
+        ));
     };
 
     const handleHidePost = (postId) => {
         setPosts(posts.filter((post) => post.postId !== postId));
     };
 
-    const handleEditPost = (editedPost) => {
-        setEditPost(editedPost);
+    const handleEditPost = (editedItem) => {
+        setEditItem(editedItem);
     };
 
     const onPostUpdated = (editedPost) => {
         setPosts(
-            posts.map((p) => (p.postId === editedPost.postId ? editedPost : p))
+            posts.map((p) =>
+                p.postId === editedPost.postId ? editedPost : p
+            )
         );
-        setEditPost(null);
-    }
+        setEditItem(null);
+    };
+
+    const onSharedPostUpdated = (editedSharedPost) => {
+        setPosts(
+            posts.map((p) =>
+                p.sharedPostId === editedSharedPost.sharedPostId ? editedSharedPost : p
+            )
+        );
+        setEditItem(null);
+    };
+
+    const loadTimeline = async (userID) => {
+        try {
+            let response;
+            if (userID && (typeof userID === 'string' ? userID.trim() !== '' : true)) {
+                response = await timelineApi.getTimeline(userID);
+            } else {
+                response = await timelineApi.getTimeline();
+            }
+
+            if (response && response.message === "Success") {
+                setPosts(response.data);
+            } else {
+                console.warn('Invalid API response:', response);
+                setPosts([]);
+            }
+        } catch (error) {
+            console.error('Error fetching timeline:', error.response?.data || error.message);
+            setPosts([]);
+        }
+    };
 
     const loadAllPosts = async (userID) => {
         try {
@@ -63,31 +100,49 @@ const Posts = ({ userID }) => {
     return <div className="posts">
         {/*Danny: Anh chỉnh từ "posts" sang "posts?", có tí xiu à ^^*/}
         {posts?.length > 0 ? (
-            posts.map((post, index) =>
-                <Post
-                    key={index}
-                    user={post.user}
-                    postId={post.postId}
-                    content={post.content}
-                    comments={post.comments}
-                    likes={post.likes}
-                    media={post.media}
-                    createdPost={post.createdPost}
-                    modifiedPost={post.modifiedPost}
-                    onDeletePost={handleDeletePost}
-                    onEditPost={handleEditPost}
-                />
+            posts.map((item, index) =>
+                item.postId ? (
+                    <Post
+                        key={index}
+                        user={item.user}
+                        postId={item.postId}
+                        content={item.content}
+                        comments={item.comments}
+                        likes={item.likes}
+                        shareCount={item.shareCount}
+                        media={item.media}
+                        createdPost={item.createdPost}
+                        modifiedPost={item.modifiedPost}
+                        onDeletePost={handleDeletePost}
+                        onEditPost={handleEditPost}
+                    />
+                ) : item.sharedPostId && (
+                    <SharedPost
+                        key={index}
+                        user={item.user}
+                        sharedPostId={item.sharedPostId}
+                        originalPost={item.originalPost}
+                        sharedContent={item.sharedContent}
+                        comments={item.comments}
+                        likes={item.likes}
+                        createdAt={item.sharedAt}
+                        onHidePost={handleDeletePost}
+                        onEditPost={handleEditPost}
+                    />
+                )
             )
+        ) : (
+            <p>Không có bài viết nào !</p>
+        )}
 
-        ) : (<p>Không có bài viết nào !</p>)
-        }
-
-        {editPost && (
+        {editItem && (
             <EditPostModal
-                isOpen={!!editPost}
-                onClose={() => setEditPost(null)}
-                post={editPost}
+                isOpen={!!editItem}
+                onClose={() => setEditItem(null)}
+                post={editItem.postId ? editItem : null}
+                sharedPost={editItem.sharedPostId ? editItem : null}
                 onPostUpdated={onPostUpdated}
+                onSharedPostUpdated={onSharedPostUpdated}
             />
         )}
 
