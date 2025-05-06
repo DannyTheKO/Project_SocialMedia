@@ -15,6 +15,7 @@ public class LikeDTO {
     private String lastname;
 
     private Long postId;
+    private Long sharedPostId;
     private Long commentId;
 
     private LocalDateTime createdAt;

@@ -83,6 +83,10 @@ public class User {
     @OneToMany(mappedBy = "user2", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Relationships> relationshipsAsUser2 = new ArrayList<>();
 
+    // quan hệ với shared_posts
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<SharedPost> sharedPosts = new ArrayList<>();
+
     /**
      * User Constructor
      *

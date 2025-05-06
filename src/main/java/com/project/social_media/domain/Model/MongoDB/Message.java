@@ -1,5 +1,6 @@
 package com.project.social_media.domain.Model.MongoDB;
 
+import com.project.social_media.domain.Model.JPA.User;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

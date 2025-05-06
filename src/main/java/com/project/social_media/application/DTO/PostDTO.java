@@ -16,4 +16,5 @@ public class PostDTO {
     private List<MediaDTO> media;
     private List<CommentDTO> comments;
     private List<LikeDTO> likes;
+    private Long shareCount;
 }

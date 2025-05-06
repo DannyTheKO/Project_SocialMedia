@@ -83,6 +83,18 @@ public class CommentController {
         }
     }
 
+    @GetMapping("/all/shared-post")
+    public ResponseEntity<ApiResponse> getAllCommentBySharedPostId(@RequestParam(required = false) Long sharedPostId) {
+        try {
+            List<Comment> commentList = commentService.getAllCommentsBySharedPostId(sharedPostId);
+            List<CommentDTO> commentDTOList = commentService.convertToDTOList(commentList);
+            return ResponseEntity.ok(new ApiResponse("Success", commentDTOList));
+        } catch (Exception e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error!", e.getMessage()));
+        }
+    }
+
     /**
      * <h1>GET: Get All Comments By User ID</h1>
      * <h5>URL: api/v1/comments/all/user</h5>
@@ -125,7 +137,8 @@ public class CommentController {
      */
     @PostMapping("/create")
     public ResponseEntity<ApiResponse> createComment(
-            @RequestParam Long postId,
+            @RequestParam(required = false) Long postId,
+            @RequestParam(required = false) Long sharedPostId,
             @ModelAttribute CommentCreateRequest request) {
         try {
             // Get authenticate user
@@ -134,8 +147,17 @@ public class CommentController {
             User authUser = userService.getUserByUsername(authentication.getName())
                     .orElseThrow(() -> new ResourceNotFound("getUserByUsername: username not found"));
 
-            // Create
-            Comment newComment = commentService.createComment(authUser.getUserId(), postId, request);
+            // Create comment
+            Comment newComment;
+            if (postId != null) {
+                newComment = commentService.createComment(authUser.getUserId(), postId, request);
+            } else if (sharedPostId != null) {
+                newComment = commentService.createCommentForSharedPost(authUser.getUserId(), sharedPostId, request);
+            } else {
+                return ResponseEntity.badRequest()
+                        .body(new ApiResponse("Error!", "Either postId or sharedPostId must be provided"));
+            }
+
             CommentDTO newCommentDTO = commentService.convertToDTO(newComment);
             return ResponseEntity.ok(new ApiResponse("Success", newCommentDTO));
         } catch (Exception e) {
@@ -144,28 +166,23 @@ public class CommentController {
         }
     }
 
-    /*
-     * PUT Method
-     *
-     * Action that required user information will have to authenticate
-     * Otherwise will be redirected to log in page for authentication
-     */
-
     /**
      * <h1>PUT: Update Comment</h1>
      * <h5>URL: api/v1/comments/comment/{commentId}/update</h5>
      * <br>
-     *
-     * <li>Updates an existing comment owned by the authenticated user</li>
-     * <li>Validates that the current user is the owner of the comment</li>
+     * <li>Update an existing comment for a Post or SharedPost</li>
      *
      * @param commentId The ID of the comment to update
-     * @param request {@link CommentUpdateRequest} containing updated comment content
-     * @return {@link ApiResponse} containing the updated {@link CommentDTO}
+     * @param postId    The ID of the Post (optional if sharedPostId is provided)
+     * @param sharedPostId The ID of the SharedPost (optional if postId is provided)
+     * @param request   The comment update request
+     * @return {@link ApiResponse} containing the updated CommentDTO
      */
     @PutMapping("/comment/{commentId}/update")
     public ResponseEntity<ApiResponse> updateComment(
             @PathVariable Long commentId,
+            @RequestParam(required = false) Long postId,
+            @RequestParam(required = false) Long sharedPostId,
             @ModelAttribute CommentUpdateRequest request) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -180,8 +197,17 @@ public class CommentController {
                         .body(new ApiResponse("Invalid Permission", null));
             }
 
-            // Update
-            Comment updatedComment = commentService.updateComment(authUser.getUserId(), existingComment.getPost().getPostId(), commentId, request);
+            // Update comment
+            Comment updatedComment;
+            if (postId != null && existingComment.getPost() != null) {
+                updatedComment = commentService.updateComment(authUser.getUserId(), postId, commentId, request);
+            } else if (sharedPostId != null && existingComment.getSharedPost() != null) {
+                updatedComment = commentService.updateCommentForSharedPost(authUser.getUserId(), sharedPostId, commentId, request);
+            } else {
+                return ResponseEntity.badRequest()
+                        .body(new ApiResponse("Error!", "Invalid postId or sharedPostId for this comment"));
+            }
+
             CommentDTO updatedCommentDTO = commentService.convertToDTO(updatedComment);
             return ResponseEntity.ok(new ApiResponse("Success", updatedCommentDTO));
         } catch (Exception e) {

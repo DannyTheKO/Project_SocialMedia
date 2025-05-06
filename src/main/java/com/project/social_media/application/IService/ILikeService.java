@@ -18,4 +18,8 @@ public interface ILikeService {
     void toggleLike(Long userId, LikeRequest request);
 
     List<LikeDTO> convertToDTOList(List<Like> likeList);
+
+    List<Like> getAllLikeBySharedPostId(Long sharedPostId);
+
+    Integer getLikeCountBySharedPostId(Long sharedPostId);
 }

@@ -27,6 +27,11 @@ public class Like {
     @JoinColumn(name = "post_id")
     private Post post;
 
+    @ManyToOne
+    @JoinColumn(name = "shared_post_id")
+    private SharedPost sharedPost;
+
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id")
     private Comment comment;

@@ -17,17 +17,18 @@ export const commentApi = {
     getPostComments: (postId) =>
         axios.get(`${COMMENT_API_BASE_URL}/all/post?postId=${postId}`),
 
+    // GET /api/v1/comments/all/shared-post?sharedPostId={sharedPostId}
+    getSharedPostComments: (sharedPostId) =>
+        axios.get(`${COMMENT_API_BASE_URL}/all/shared-post?sharedPostId=${sharedPostId}`),
+
     // POST /api/v1/comments/create?userId={userId}&postId={postId}
-    createComment: (userId, postId, commentData) => {
-        // If commentData is already FormData, use it directly
+    createComment: (postId, sharedPostId, commentData) => {
         let formData;
         if (commentData instanceof FormData) {
             formData = commentData;
         } else {
-            // Otherwise create a new FormData and populate it
             formData = new FormData();
             Object.keys(commentData).forEach(key => {
-                // Handle array values (like multiple files)
                 if (Array.isArray(commentData[key])) {
                     commentData[key].forEach(item => {
                         formData.append(key, item);
@@ -38,24 +39,50 @@ export const commentApi = {
             });
         }
 
-        return axios.post(
-            `${COMMENT_API_BASE_URL}/create?postId=${postId}`,
-            formData,
-            {
-                headers: { 'Content-Type': 'multipart/form-data' }
-            }
-        );
+        let url = `${COMMENT_API_BASE_URL}/create`;
+        if (postId) {
+            url += `?postId=${postId}`;
+        } else if (sharedPostId) {
+            url += `?sharedPostId=${sharedPostId}`;
+        } else {
+            throw new Error("Either postId or sharedPostId must be provided");
+        }
+
+        return axios.post(url, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
     },
 
-    // PUT /api/v1/comments/comment/{commentId}/update
-    updateComment: (commentId, commentData) => {
-        return axios.put(
-            `${COMMENT_API_BASE_URL}/comment/${commentId}/update`,
-            commentData,
-            {
-                headers: { 'Content-Type': 'multipart/form-data' }
-            }
-        );
+    /// PUT /api/v1/comments/comment/{commentId}/update?postId={postId} hoặc ?sharedPostId={sharedPostId}
+    updateComment: (commentId, postId, sharedPostId, commentData) => {
+        let url = `${COMMENT_API_BASE_URL}/comment/${commentId}/update`;
+        if (postId) {
+            url += `?postId=${postId}`;
+        } else if (sharedPostId) {
+            url += `?sharedPostId=${sharedPostId}`;
+        } else {
+            throw new Error("Either postId or sharedPostId must be provided");
+        }
+
+        let formData;
+        if (commentData instanceof FormData) {
+            formData = commentData;
+        } else {
+            formData = new FormData();
+            Object.keys(commentData).forEach(key => {
+                if (Array.isArray(commentData[key])) {
+                    commentData[key].forEach(item => {
+                        formData.append(key, item);
+                    });
+                } else {
+                    formData.append(key, commentData[key]);
+                }
+            });
+        }
+
+        return axios.put(url, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
     },
 
     // DELETE /api/v1/comments/user/{commentId}/delete

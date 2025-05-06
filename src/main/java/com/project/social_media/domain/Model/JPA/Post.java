@@ -53,4 +53,6 @@ public class Post {
     public void updatedPost(LocalDateTime modifiedPost) {
         this.modifiedPost = LocalDateTime.now();
     }
+
+    private Long shareCount = 0L;
 }

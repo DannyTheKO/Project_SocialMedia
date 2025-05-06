@@ -62,6 +62,21 @@ public class LikeController {
         }
     }
 
+    @GetMapping("/shared-post")
+    public ResponseEntity<ApiResponse> getAllLikesBySharedPostId(@RequestParam Long sharedPostId) {
+        try {
+            List<Like> likes = likeService.getAllLikeBySharedPostId(sharedPostId);
+            if (!likes.isEmpty()) {
+                List<LikeDTO> likeDTOS = likeService.convertToDTOList(likes);
+                return ResponseEntity.ok(new ApiResponse("Success", likeDTOS));
+            }
+            return ResponseEntity.ok(new ApiResponse("Success", new ArrayList<>()));
+        } catch (Exception e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error", e.getMessage()));
+        }
+    }
+
     @GetMapping("/count/post")
     public ResponseEntity<ApiResponse> getLikesCountByPostId(@RequestParam Long postId) {
         try {
@@ -84,10 +99,22 @@ public class LikeController {
         }
     }
 
+    @GetMapping("/count/shared-post")
+    public ResponseEntity<ApiResponse> getLikesCountBySharedPostId(@RequestParam Long sharedPostId) {
+        try {
+            Integer likeCount = likeService.getLikeCountBySharedPostId(sharedPostId);
+            return ResponseEntity.ok(new ApiResponse("Success", likeCount));
+        } catch (Exception e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error", e.getMessage()));
+        }
+    }
+
     @PutMapping("/like")
     public ResponseEntity<ApiResponse> toggleLike(
             @RequestParam(required = false) Long postId,
-            @RequestParam(required = false) Long commentId) {
+            @RequestParam(required = false) Long commentId,
+            @RequestParam(required = false) Long sharedPostId   ) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             authenticationService.checkValidationAuth(authentication);
@@ -96,6 +123,7 @@ public class LikeController {
             LikeRequest request = new LikeRequest();
             request.setPostId(postId);
             request.setCommentId(commentId);
+            request.setSharedPostId(sharedPostId);
             request.setCreatedAt(LocalDateTime.now());
 
             assert authUser != null;

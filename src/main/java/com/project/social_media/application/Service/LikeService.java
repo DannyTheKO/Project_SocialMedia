@@ -4,14 +4,8 @@ import com.project.social_media.application.DTO.LikeDTO;
 import com.project.social_media.application.Exception.ResourceNotFound;
 import com.project.social_media.application.IService.ILikeService;
 import com.project.social_media.controllers.Request.Like.LikeRequest;
-import com.project.social_media.domain.Model.JPA.Comment;
-import com.project.social_media.domain.Model.JPA.Like;
-import com.project.social_media.domain.Model.JPA.Post;
-import com.project.social_media.domain.Model.JPA.User;
-import com.project.social_media.domain.Repository.JPA.CommentRepository;
-import com.project.social_media.domain.Repository.JPA.LikeRepository;
-import com.project.social_media.domain.Repository.JPA.PostRepository;
-import com.project.social_media.domain.Repository.JPA.UserRepository;
+import com.project.social_media.domain.Model.JPA.*;
+import com.project.social_media.domain.Repository.JPA.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -29,6 +23,7 @@ public class LikeService implements ILikeService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
+    private final SharedPostRepository sharedPostRepository;
 
     private final NotificationService notificationService;
 
@@ -60,6 +55,13 @@ public class LikeService implements ILikeService {
         return existingComment.getLikes() != null ? existingComment.getLikes() : new ArrayList<>();
     }
 
+    @Override
+    public List<Like> getAllLikeBySharedPostId(Long sharedPostId) {
+        SharedPost existingSharedPost = sharedPostRepository.findById(sharedPostId)
+                .orElse(new SharedPost());
+        return existingSharedPost.getLikes() != null ? existingSharedPost.getLikes() : new ArrayList<>();
+    }
+
 
     /**
      * Count like by postId
@@ -87,6 +89,13 @@ public class LikeService implements ILikeService {
                 .orElse(new Comment());
 
         return existingComment.getLikes() != null ? existingComment.getLikes().size() : 0;
+    }
+
+    @Override
+    public Integer getLikeCountBySharedPostId(Long sharedPostId) {
+        SharedPost existingSharedPost = sharedPostRepository.findById(sharedPostId)
+                .orElse(new SharedPost());
+        return existingSharedPost.getLikes() != null ? existingSharedPost.getLikes().size() : 0;
     }
 
     /**
@@ -146,6 +155,26 @@ public class LikeService implements ILikeService {
                 notificationService.createCommentPostNotification(userId, existingComment.getUser().getUserId(), existingComment.getCommentId());
                 likeRepository.save(newLike);
             }
+        } else if (request.getSharedPostId() != null) { // Thêm logic cho SharedPost
+            SharedPost existingSharedPost = sharedPostRepository.findById(request.getSharedPostId())
+                    .orElseThrow(() -> new ResourceNotFound("toggleLike: sharedPostId not found"));
+
+            Like existingLike = likeRepository.findLikesBySharedPost(existingSharedPost)
+                    .stream()
+                    .filter(like -> like.getUser().getUserId().equals(userId))
+                    .findFirst()
+                    .orElse(null);
+
+            if (existingLike != null) {
+                likeRepository.delete(existingLike);
+            } else {
+                Like newLike = new Like();
+                newLike.setUser(existingUser);
+                newLike.setSharedPost(existingSharedPost);
+                newLike.setCreatedAt(LocalDateTime.now());
+
+                likeRepository.save(newLike);
+            }
         }
     }
 
@@ -166,6 +195,10 @@ public class LikeService implements ILikeService {
 
         if (like.getComment() != null) {
             likeDTO.setCommentId(like.getComment().getCommentId());
+        }
+
+        if (like.getSharedPost() != null) {
+            likeDTO.setSharedPostId(like.getSharedPost().getSharedPostId());
         }
 
         likeDTO.setCreatedAt(like.getCreatedAt());

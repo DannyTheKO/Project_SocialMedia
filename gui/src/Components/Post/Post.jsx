@@ -18,10 +18,11 @@ import { toast } from 'react-toastify';
 import { getMediaUrl } from '../../Utils/Media/getMediaUrl.js';
 import { isVideo } from '../../Utils/Media/checkFileType.js';
 import { likeApi } from '../../Services/LikeService/likeService.jsx';
+import { sharedPostApi } from '../../Services/SharedPostService/sharedPostService.jsx';
 
 moment.locale('vi');
 
-const Post = ({ user, postId, content, comments, likes, media, createdPost, modifiedPost, onHidePost, onEditPost }) => {
+const Post = ({ user, postId, content, comments, likes, shareCount, media, createdPost, modifiedPost, onHidePost, onEditPost }) => {
     // FIXME: Fix the damn CSS on this Post Component
 
     const { currentUser, setCurrentUser } = useContext(AuthContext)
@@ -69,7 +70,7 @@ const Post = ({ user, postId, content, comments, likes, media, createdPost, modi
     // Handle toggle like post
     const handleToggleLike = async () => {
         try {
-            const response = await likeApi.toggleLike(postId, null)
+            const response = await likeApi.toggleLike(postId, null, null);
             if (response.message == 'Success') {
                 // Update like state and like counts
                 setLiked(!liked);
@@ -138,11 +139,20 @@ const Post = ({ user, postId, content, comments, likes, media, createdPost, modi
 
     const handleSharePost = async () => {
         try {
-
+            const response = await sharedPostApi.createSharedPost({
+                originalPostId: postId,
+                sharedContent: ""
+            });
+            if (response.message === "Success") {
+                toast.success("Đã chia sẻ bài viết!");
+            } else {
+                toast.error("Chia sẻ thất bại!");
+            }
         } catch (error) {
-
+            console.error("Error sharing post:", error);
+            toast.error("Đã có lỗi xảy ra khi chia sẻ!");
         }
-    }
+    };
 
     const onPostComment = () => {
         setCommentAmount((prev) => prev + 1);
@@ -172,15 +182,15 @@ const Post = ({ user, postId, content, comments, likes, media, createdPost, modi
                         {/* Dropdown menu */}
                         {showDropDown && (
                             <div className="absolute right-0 mt-1 w-96 bg-neutral-800 text-white rounded-lg shadow-lg z-50 text-[20px]">
-                                {user.userId === currentUser.userId && (
-                                    <button
-                                        onClick={handleEditPost}
-                                        className="w-full text-left px-4 py-2 hover:bg-neutral-700 rounded-t-lg flex gap-[10px] items-center cursor-pointer"
-                                    >
-                                        <EditSquareIcon style={{ fontSize: "24px" }} />
-                                        Chỉnh sửa bài viết
-                                    </button>
-                                ) && (
+                                {user.userId == currentUser.userId && (
+                                    <>
+                                        <button
+                                            onClick={handleEditPost}
+                                            className="w-full text-left px-4 py-2 hover:bg-neutral-700 rounded-t-lg flex gap-[10px] items-center cursor-pointer"
+                                        >
+                                            <EditSquareIcon style={{ fontSize: "24px" }} />
+                                            Chỉnh sửa bài viết
+                                        </button>
                                         <button
                                             onClick={handleDeletePost}
                                             className="w-full text-left px-4 py-2 hover:bg-neutral-700 rounded-b-lg flex gap-[10px] items-center text-red-500 cursor-pointer"
@@ -188,7 +198,9 @@ const Post = ({ user, postId, content, comments, likes, media, createdPost, modi
                                             <DeleteIcon style={{ fontSize: "24px" }} />
                                             Xóa bài viết
                                         </button>
-                                    )}
+                                    </>
+
+                                )}
                             </div>
                         )}
                     </div>
@@ -283,7 +295,7 @@ const Post = ({ user, postId, content, comments, likes, media, createdPost, modi
                     </div>
                     <div className="item">
                         <ShareOutlinedIcon onClick={handleSharePost} />
-                        Share
+                        {shareCount} Shares
                     </div>
                 </div>
                 {/* {commentOpen && <Comments postId={postId} isVideo={isVideo} getMediaUrl={getMediaUrl} onPostComment={onPostComment} />} */}

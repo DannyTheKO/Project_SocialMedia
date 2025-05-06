@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -162,7 +163,9 @@ public class UserService implements IUserService {
                 existingUser.setBio(request.getBio());
             }
             if (request.getBirthDate() != null) {
-                existingUser.setBirthDay(request.getBirthDate());
+                LocalDate birthDate = LocalDate.parse(request.getBirthDate());
+                LocalDateTime birthDateParse = birthDate.atStartOfDay();
+                existingUser.setBirthDay(birthDateParse);
             }
 
             if (request.getProfileImage() != null && !request.getProfileImage().isEmpty()) {
