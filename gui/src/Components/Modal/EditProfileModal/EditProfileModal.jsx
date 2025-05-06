@@ -45,13 +45,14 @@ const EditProfileModal = ({ isOpen, onClose, user, onProfileUpdated }) => {
             updatedData.append('firstName', formData?.firstName || null);
             updatedData.append('lastName', formData?.lastName || null);
             updatedData.append('bio', formData?.bio || null);
+            updatedData.append('email', formData?.email || null);
             if (formData.profileImage) {
                 updatedData.append('profileImage', formData.profileImage || null);
             }
             if (formData.bannerImage) {
                 updatedData.append('bannerImage', formData.bannerImage || null);
             }
-            updatedData.append('birthDate', formData?.email || null);
+            updatedData.append('birthDate', formData?.birthDate || null);
 
 
             const response = await userApi.updateUser(updatedData);

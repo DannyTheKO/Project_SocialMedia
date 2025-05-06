@@ -22,6 +22,8 @@ export const userApi = {
 
     // PUT /api/v1/users/user/update
     updateUser: (userData) => {
+        console.log(userData);
+
         // This can cause error
         // const formData = new FormData();
         // Object.keys(userData).forEach(key => {
