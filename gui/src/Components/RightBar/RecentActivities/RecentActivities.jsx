@@ -1,5 +1,4 @@
 import React, {useContext, useEffect, useState} from "react";
-import PlaceHolderImage from "../../../Assets/login-image.jpg";
 import NotificationWebSocketService from "../../../Services/NotificationService/notificationWebSocketService.jsx";
 import "./RecentActivities.css"
 import {notificationApi} from "../../../Services/NotificationService/notificationService.jsx";
@@ -11,6 +10,7 @@ moment.locale("vi");
 
 const RecentActivities = () => {
 
+    const recentActivitiesWebSocket = new NotificationWebSocketService()
     const [notifications, setNotifications] = useState([]);
     const [unreadNotifications, setUnreadNotifications] = useState(0);
 
@@ -20,12 +20,12 @@ const RecentActivities = () => {
     // Fetch initial notifications
     useEffect(() => {
         if (currentUser) {
-            NotificationWebSocketService.connect(currentUser.userId, handleNewNotification)
+            recentActivitiesWebSocket.connect(currentUser.userId, handleNewNotification)
             fetchNewNotifications().catch(r => console.log(r))
         }
 
         return () => {
-            NotificationWebSocketService.disconnect()
+            recentActivitiesWebSocket.disconnect()
         }
     }, [currentUser]);
 
@@ -35,17 +35,19 @@ const RecentActivities = () => {
             setNotifications([...response.data] || []);
         } else {
             setNotifications([]);
-            toast.error("Cannot Fetch Notification...")
+            console.error("Cannot Fetch Notification...")
         }
     }
 
     const handleNewNotification = (notification) => {
         try {
-            console.log(typeof currentUser.userId)
-            console.log(typeof notification.senderId)
+            // DEBUG LOG
+            // console.log(typeof currentUser.userId)
+            // console.log(typeof notification.senderId)
+
             // Check if the current user is the sender of the notification
             if (notification.senderId !== parseInt(currentUser.userId)) {
-                console.log("Received notification", notification.content);
+                // console.log("Received notification", notification.content);
                 // Add the notification to the list
                 setNotifications(prev => [...prev, notification]);
                 // Display the notification content
@@ -56,26 +58,48 @@ const RecentActivities = () => {
         }
     }
 
+    const handleDeleteNotification = async (notificationId) => {
+        await notificationApi.deleteNotification(notificationId)
+        await fetchNewNotifications()
+    }
+
+    const getTopThreeRecentNotifications = (notifications) => {
+        const sortedNotifications = notifications.sort((a, b) => {
+            return new Date(b.createdAt) - new Date(a.createdAt);
+        });
+        return sortedNotifications.slice(0, 3);
+    };
+
+    const topThreeNotifications = getTopThreeRecentNotifications(notifications);
 
 
-    return (
-        <div className="recentActivities-container">
-            <span className="recentActivities-display-title">Hoạt động gần đây</span>
-            {notifications.map((notification, index) => (
-                <div key={index} className="recentActivities-display-user">
-                    <div className="recentActivities-display-userInfo">
-                        <img src={getMediaUrl(notification.senderImageUrl)} alt="" className='avatar' />
-                        <p>
-                            <span className="recentActivities-display-username">{notification.senderName}</span>
-                            <span className="recentActivities-display-content">{notification.content}</span>
-                        </p>
+    if (notifications.length > 0) {
+        return (
+            <div className="recentActivities-container">
+                <span className="recentActivities-display-title">Hoạt động gần đây</span>
+                {topThreeNotifications.map((notification, index) => (
+                    <div key={index} className="recentActivities-display-user" onClick={() => handleDeleteNotification(notification.notificationId)}>
+                        <div className="recentActivities-display-userInfo">
+                            <img src={getMediaUrl(notification.senderImageUrl)} alt="" className='avatar' />
+                            <p>
+                                <span className="recentActivities-display-username">{notification.senderName}</span>
+                                <span className="recentActivities-display-content">{notification.content}</span>
+                            </p>
+                        </div>
+                        <span className='time-color'>{moment(notification.createdAt).fromNow()}</span>
                     </div>
-                    {console.log(notification.createdAt)}
-                    <span className='time-color'>{moment(notification.createdAt).fromNow()}</span>
-                </div>
-            ))}
-        </div>
-    )
+                ))}
+            </div>
+        )
+
+    } else {
+        return (
+            <div className="recentActivities-container">
+                <span className="recentActivities-display-title">Không có hoạt động</span>
+            </div>
+        );
+    }
+
 }
 
 export default RecentActivities

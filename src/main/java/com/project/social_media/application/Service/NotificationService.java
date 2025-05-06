@@ -40,7 +40,7 @@ public class NotificationService implements INotificationService {
     }
 
     @Override
-    public void createFriendRequestNotification(Long senderId, Long receiverId, Long friendRequestId) throws RuntimeException {
+    public void createFriendRequestNotification(Long senderId, Long receiverId, Long relationshipId) throws RuntimeException {
         User sender = userRepository.findById(senderId).orElseThrow(() -> new ResourceNotFound("Sender not found"));
         User receiver = userRepository.findById(receiverId).orElseThrow(() -> new ResourceNotFound("Receiver not found"));
 
@@ -51,13 +51,17 @@ public class NotificationService implements INotificationService {
             notification.setReceiverId(receiver.getUserId());
             notification.setNotificationEnumType(Notification.NotificationType.FRIEND_REQUEST);
             notification.setContent("đã gửi yêu cầu kết bạn");
-            notification.setRelatedId(friendRequestId);
+            notification.setRelatedId(relationshipId);
             notification.setRead(false);
             notification.setCreatedAt(LocalDateTime.now());
 
             notification = notificationRepository.save(notification);
             sendNotificationToUser(notification);
         }
+    }
+
+    public void createFriendAcceptNotification(Long senderId, Long receiverId, Long acceptId) throws RuntimeException {
+
     }
 
     @Override
@@ -110,9 +114,10 @@ public class NotificationService implements INotificationService {
     }
 
     @Override
-    public void markAsReadAll(Long receiverId) {
-        List<Notification> notificationList = notificationRepository.findByReceiverId_OrderByCreatedAtDesc(receiverId);
+    public void markAsReadAll(Long userId) {
+        List<Notification> notificationList = notificationRepository.findByReceiverId_OrderByCreatedAtDesc(userId);
         notificationList.forEach(notification -> notification.setRead(true));
+        notificationRepository.saveAll(notificationList);
     }
 
     @Override

@@ -12,7 +12,7 @@ public interface INotificationService {
 
     Long countUnreadNotifications(Long receiverId);
 
-    void createFriendRequestNotification(Long senderId, Long receiverId, Long friendRequestId);
+    void createFriendRequestNotification(Long senderId, Long receiverId, Long relationshipId);
 
     void createLikePostNotification(Long senderId, Long receiverId, Long postId);
 
