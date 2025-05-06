@@ -8,10 +8,13 @@ export const relationshipsApi = {
         axios.get(`${RELATIONSHIPS_API_BASE_URL}/friends`),
 
     // POST /api/v1/relationships/create
-    createRelationship: (userId2, status) =>
+    createRelationship: (receiverId, status) =>
         axios.post(
             `${RELATIONSHIPS_API_BASE_URL}/create`,
-            { userId2, status },
+            {
+                receiverId: receiverId,
+                status: status
+            },
             { headers: { 'Content-Type': 'application/json' } }
         ),
 

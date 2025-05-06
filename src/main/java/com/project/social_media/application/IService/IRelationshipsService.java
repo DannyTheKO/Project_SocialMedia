@@ -27,12 +27,12 @@ public interface IRelationshipsService {
     /**
      * Create a new relationship
      *
-     * @param userId1 Long
-     * @param userId2 Long
+     * @param senderId Long
+     * @param receiverId Long
      * @param status Relationship.RelationshipStatus
      * @return Relationship
      */
-    Relationships createRelationship(Long userId1, Long userId2, Relationships.RelationshipStatus status);
+    Relationships createRelationship(Long senderId, Long receiverId, Relationships.RelationshipStatus status);
 
     /**
      * Delete relationship
@@ -49,13 +49,6 @@ public interface IRelationshipsService {
      */
     RelationshipsDTO convertToDTO(Relationships relationship, Long currentUserId);
 
-    /**
-     * Convert list of Relationship to DTO
-     *
-     * @param relationship List<Relationship>
-     * @return List<RelationshipDTO>
-     */
-
     void acceptFriendRequest(Long relationshipId);
 
     void rejectFriendRequest(Long relationshipId);
@@ -66,6 +59,13 @@ public interface IRelationshipsService {
 
     RelationshipsDTO convertToDTO(Relationships relationship);
 
+
+    /**
+     * Convert list of Relationship to DTO
+     *
+     * @param relationships {@link List<Relationships>}
+     * @return {@link List<RelationshipsDTO>}
+     */
     List<RelationshipsDTO> convertToListDTO(List<Relationships> relationships , Long currentUserId);
 
     Long findRelationshipId(Long userId1, Long userId2);

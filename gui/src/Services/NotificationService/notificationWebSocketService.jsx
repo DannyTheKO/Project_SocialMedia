@@ -9,12 +9,12 @@ class NotificationWebSocketService {
 
     connect(userId, onNotificationReceived) {
         if (this.connected) {
-            console.log("Already connected to Notification WebSocket Service");
+            // console.log("Already connected to Notification WebSocket Service");
             return;
         }
 
         const socketUrl = "http://localhost:8080/ws";
-        console.log(`Attempting to connect to WebSocket server at: ${socketUrl}`);
+        // console.log(`Attempting to connect to WebSocket server at: ${socketUrl}`);
         const socket = new SockJS(socketUrl);
         this.client = new Client({
             webSocketFactory: () => socket,
@@ -25,7 +25,7 @@ class NotificationWebSocketService {
             },
 
             onConnect: () => {
-                console.log("Connected to Notification WebSocket Service with userId: " + userId);
+                // console.log("Connected to Notification WebSocket Service with userId: " + userId);
                 this.connected = true;
                 if (this.client.connected) {
                     this.client.subscribe(`/topic/notifications`, (notifications) => {
@@ -55,8 +55,6 @@ class NotificationWebSocketService {
         this.client.activate();
     }
 
-
-
     disconnect() {
         if (this.client && this.connected) {
             this.client.deactivate().catch(r => console.log(r));
@@ -66,4 +64,4 @@ class NotificationWebSocketService {
     }
 }
 
-export default new NotificationWebSocketService;
+export default NotificationWebSocketService;

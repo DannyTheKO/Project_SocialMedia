@@ -17,7 +17,7 @@
                 @apply flex w-full gap-2 font-normal dark:text-gray-300;
 
                 .recentActivities-display-username {
-                    @apply text-[20px] text-white self-center;
+                    @apply text-[20px] dark:text-white font-bold self-center;
                 }
 
                 .recentActivities-display-content {
