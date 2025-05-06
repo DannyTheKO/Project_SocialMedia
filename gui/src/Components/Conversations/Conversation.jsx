@@ -13,6 +13,10 @@ import { toast } from 'react-toastify';
 import moment from 'moment';
 import 'moment/locale/vi';
 
+import { getMediaUrl } from '../../Utils/Media/getMediaUrl.js';
+import { userApi } from '../../Services/UserService/userService.jsx';
+import ConversationAvatar from './ConversationAvatar/ConversationAvatar.jsx';
+
 const Conversation = ({ user, onClose }) => {
 
     const { currentUser, setCurrentUser } = useContext(AuthContext)
@@ -121,17 +125,31 @@ const Conversation = ({ user, onClose }) => {
         return 'Vừa xong';
     };
 
+    const getUserAvatar = async (userId) => {
+        try {
+            const response = await userApi.getUserById(userId);
+            if (response.message === 'Success') {
+                console.log(response.data.profileImageUrl);
+                return response.data.profileImageUrl;
+            }
+            return null;
+        } catch (error) {
+            console.error('Failed loading user avatar: ', error);
+            return null;
+        }
+    };
+
     return (
         <div className="conversation">
             <div className="conversation-header">
                 <div className="header-left">
-                    <img src={user.profileImageUrl || DefaultProfilePic} alt="" className="avatar" />
+                    <img src={getMediaUrl(user.profileImageUrl) || DefaultProfilePic} alt="" className="avatar" />
                     <span className="name">{user.username}</span>
                 </div>
                 <div className="header-right">
-                    <CallIcon className="action-icon" style={{ fontSize: '28px' }} />
+                    {/* <CallIcon className="action-icon" style={{ fontSize: '28px' }} />
                     <VideocamIcon className="action-icon" style={{ fontSize: '28px' }} />
-                    <MoreVertIcon className="action-icon" style={{ fontSize: '28px' }} />
+                    <MoreVertIcon className="action-icon" style={{ fontSize: '28px' }} /> */}
                     <CloseIcon className="action-icon" onClick={onClose} />
                 </div>
             </div>
@@ -143,7 +161,7 @@ const Conversation = ({ user, onClose }) => {
                             }`}
                     >
                         {msg.sender !== 'User' && (
-                            <img src={user.profileImageUrl || DefaultProfilePic} alt="" className="message-avatar" />
+                            <ConversationAvatar msg={msg} />
                         )}
                         <div className="message-content">
                             <p>{msg.content}</p>

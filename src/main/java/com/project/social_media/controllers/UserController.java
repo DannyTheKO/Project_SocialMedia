@@ -150,6 +150,7 @@ public class UserController {
             }
 
             // Update
+            System.out.println(request);
             User updatedUser = userService.updateUser(existingUser.getUserId(), request);
 
             return ResponseEntity.ok(new ApiResponse("Success", userService.convertToDTO(updatedUser)));

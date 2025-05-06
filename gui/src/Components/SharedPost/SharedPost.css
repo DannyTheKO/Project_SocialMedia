@@ -46,6 +46,10 @@
         video {
             @apply w-full object-cover
         }
+
+        .original-user-img {
+            @apply w-[40px] h-[40px] rounded-full object-cover;
+        }
     }
 
     .info {

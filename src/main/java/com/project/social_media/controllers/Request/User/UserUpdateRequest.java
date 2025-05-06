@@ -10,7 +10,7 @@ public class UserUpdateRequest {
     private String firstName;
     private String lastName;
     private String bio;
-    private LocalDateTime birthDate;
+    private String birthDate;
 
     private MultipartFile profileImage;
     private MultipartFile bannerImage;

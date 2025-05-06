@@ -25,7 +25,11 @@
     }
 
     .user {
-        @apply flex flex-col items-start my-[5px] hover:bg-gray-300 dark:hover:bg-neutral-700 p-[10px] rounded-md;
+        @apply flex justify-between items-center my-[5px] hover:bg-gray-300 dark:hover:bg-neutral-700 p-[10px] rounded-md;
+    }
+
+    p {
+        @apply text-[#222] dark:text-neutral-400 font-normal;
     }
 
     .buttons {

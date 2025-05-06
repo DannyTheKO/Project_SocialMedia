@@ -3,6 +3,7 @@ import DefaultProfilePic from '../../../Assets/defaultProfilePic.jpg';
 import './Message.css'
 import Conversation from '../../Conversations/Conversation';
 import { relationshipsApi } from '../../../Services/RelationshipsService/relationshipsService';
+import { getMediaUrl } from '../../../Utils/Media/getMediaUrl';
 
 const Message = () => {
 
@@ -66,7 +67,7 @@ const Message = () => {
                 >
                     <div className="flex gap-[15px]">
                         <img
-                            src={friend.user2.profileImageUrl || DefaultProfilePic}
+                            src={getMediaUrl(friend.user2.profileImageUrl) || DefaultProfilePic}
                             alt=""
                             className="w-[60px] h-[60px] rounded-full object-cover object-center"
                         />

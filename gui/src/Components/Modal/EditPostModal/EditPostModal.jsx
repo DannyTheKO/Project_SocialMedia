@@ -53,7 +53,7 @@ const EditPostModal = ({ isOpen, onClose, post, onPostUpdated, sharedPost, onSha
         };
 
         if (isPost) {
-            // Thêm media files vào data nếu là Post
+            // Add media files vào data nếu là Post
             files.forEach((file, index) => {
                 data[`files[${index}]`] = file;
             });

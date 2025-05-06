@@ -182,15 +182,15 @@ const Post = ({ user, postId, content, comments, likes, shareCount, media, creat
                         {/* Dropdown menu */}
                         {showDropDown && (
                             <div className="absolute right-0 mt-1 w-96 bg-neutral-800 text-white rounded-lg shadow-lg z-50 text-[20px]">
-                                {user.userId === currentUser.userId && (
-                                    <button
-                                        onClick={handleEditPost}
-                                        className="w-full text-left px-4 py-2 hover:bg-neutral-700 rounded-t-lg flex gap-[10px] items-center cursor-pointer"
-                                    >
-                                        <EditSquareIcon style={{ fontSize: "24px" }} />
-                                        Chỉnh sửa bài viết
-                                    </button>
-                                ) && (
+                                {user.userId == currentUser.userId && (
+                                    <>
+                                        <button
+                                            onClick={handleEditPost}
+                                            className="w-full text-left px-4 py-2 hover:bg-neutral-700 rounded-t-lg flex gap-[10px] items-center cursor-pointer"
+                                        >
+                                            <EditSquareIcon style={{ fontSize: "24px" }} />
+                                            Chỉnh sửa bài viết
+                                        </button>
                                         <button
                                             onClick={handleDeletePost}
                                             className="w-full text-left px-4 py-2 hover:bg-neutral-700 rounded-b-lg flex gap-[10px] items-center text-red-500 cursor-pointer"
@@ -198,7 +198,9 @@ const Post = ({ user, postId, content, comments, likes, shareCount, media, creat
                                             <DeleteIcon style={{ fontSize: "24px" }} />
                                             Xóa bài viết
                                         </button>
-                                    )}
+                                    </>
+
+                                )}
                             </div>
                         )}
                     </div>

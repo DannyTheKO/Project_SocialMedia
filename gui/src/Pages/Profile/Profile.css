@@ -22,7 +22,7 @@
         div {
             @apply absolute max-w-[25%] left-0 right-0 m-auto top-[200px] flex items-center justify-center;
         }
-
+        
         .profilePic {
             @apply h-[200px] w-[200px] rounded-full object-cover;
         }

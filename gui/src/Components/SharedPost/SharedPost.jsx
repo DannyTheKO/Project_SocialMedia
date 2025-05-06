@@ -41,7 +41,9 @@ const SharedPost = ({ user, sharedPostId, originalPost, sharedContent, comments,
                 const likesResponse = await likeApi.getAllLikesBySharedPostId(sharedPostId);
                 if (likesResponse.message === 'Success') {
                     const likesData = likesResponse.data || [];
-                    const userHasLiked = likesData.some(like => like.userId === currentUser.userId);
+                    // // Debug log
+                    // console.log(likesData[0].userId);
+                    const userHasLiked = likesData.some(like => like.userId == currentUser.userId);
                     setLiked(userHasLiked);
                 }
             } catch (error) {
@@ -162,67 +164,75 @@ const SharedPost = ({ user, sharedPostId, originalPost, sharedContent, comments,
                 </div>
                 <div className="content">
                     <p>{sharedContent && (sharedContent)}</p>
-                    {originalPost.media && originalPost.media.length > 0 && (
-                        <div className="media-gallery relative my-[20px]">
-                            {originalPost.media.length === 1 ? (
-                                isVideo(originalPost.media[0].filePath) ? (
-                                    <video
-                                        src={getMediaUrl(originalPost.media[0].filePath)}
-                                        controls
-                                        className="w-full max-h-[500px] object-cover object-center rounded-md"
-                                    />
+                    <div className='p-[20px] border-1 border-gray-400 rounded-2xl mt-[10px]'>
+                        <p>{originalPost.content}</p>
+                        {originalPost.media && originalPost.media.length > 0 && (
+                            <div className="media-gallery relative my-[20px]">
+                                {originalPost.media.length === 1 ? (
+                                    isVideo(originalPost.media[0].filePath) ? (
+                                        <video
+                                            src={getMediaUrl(originalPost.media[0].filePath)}
+                                            controls
+                                            className="w-full max-h-[500px] object-cover object-center rounded-md"
+                                        />
+                                    ) : (
+                                        <img
+                                            src={getMediaUrl(originalPost.media[0].filePath)}
+                                            alt="/"
+                                            className="w-full max-h-[500px] object-cover object-center rounded-md"
+                                        />
+                                    )
                                 ) : (
-                                    <img
-                                        src={getMediaUrl(originalPost.media[0].filePath)}
-                                        alt="/"
-                                        className="w-full max-h-[500px] object-cover object-center rounded-md"
-                                    />
-                                )
-                            ) : (
-                                <div className="relative overflow-hidden">
-                                    <div
-                                        className="flex transition-transform duration-250 ease-in-out"
-                                        style={{ transform: `translateX(-${currentIndex * 100}%)` }}
-                                    >
-                                        {originalPost.media.map((item, index) => (
-                                            <div key={index} className="w-full flex-shrink-0">
-                                                {isVideo(item.filePath) ? (
-                                                    <video
-                                                        src={getMediaUrl(item.filePath)}
-                                                        controls
-                                                        className="w-full max-h-[500px] object-cover object-center rounded-md"
-                                                    />
-                                                ) : (
-                                                    <img
-                                                        src={getMediaUrl(item.filePath)}
-                                                        alt={`Image: ${index + 1}`}
-                                                        className="w-full max-h-[500px] object-cover object-center rounded-md"
-                                                    />
-                                                )}
-                                            </div>
-                                        ))}
+                                    <div className="relative overflow-hidden">
+                                        <div
+                                            className="flex transition-transform duration-250 ease-in-out"
+                                            style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+                                        >
+                                            {originalPost.media.map((item, index) => (
+                                                <div key={index} className="w-full flex-shrink-0">
+                                                    {isVideo(item.filePath) ? (
+                                                        <video
+                                                            src={getMediaUrl(item.filePath)}
+                                                            controls
+                                                            className="w-full max-h-[500px] object-cover object-center rounded-md"
+                                                        />
+                                                    ) : (
+                                                        <img
+                                                            src={getMediaUrl(item.filePath)}
+                                                            alt={`Image: ${index + 1}`}
+                                                            className="w-full max-h-[500px] object-cover object-center rounded-md"
+                                                        />
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <button
+                                            onClick={handlePrev}
+                                            className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-4 rounded-full hover:opacity-50 text-[36px] cursor-pointer"
+                                        >
+                                            ←
+                                        </button>
+                                        <button
+                                            onClick={handleNext}
+                                            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-4 rounded-full hover:opacity-50 text-[36px] cursor-pointer"
+                                        >
+                                            →
+                                        </button>
+                                        <div className="absolute top-3 right-2 transform -translate-y-[-1/2] bg-gray-800 text-white px-5 py-3 rounded-full">
+                                            {currentIndex + 1} / {originalPost.media.length}
+                                        </div>
                                     </div>
-                                    <button
-                                        onClick={handlePrev}
-                                        className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-4 rounded-full hover:opacity-50 text-[36px] cursor-pointer"
-                                    >
-                                        ←
-                                    </button>
-                                    <button
-                                        onClick={handleNext}
-                                        className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-4 rounded-full hover:opacity-50 text-[36px] cursor-pointer"
-                                    >
-                                        →
-                                    </button>
-                                    <div className="absolute top-3 right-2 transform -translate-y-[-1/2] bg-gray-800 text-white px-5 py-3 rounded-full">
-                                        {currentIndex + 1} / {originalPost.media.length}
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    )}
-                    <p>{originalPost.content}</p>
-                    <p className="text-gray-500 text-sm">Được chia sẻ từ bài viết của {originalPost.user.username}</p>
+                                )}
+                            </div>
+                        )}
+
+                    </div>
+                    <div className='flex gap-[10px] items-center mt-[25px]'>
+                        <p className="text-gray-500 text-md ">Được chia sẻ từ bài viết của {originalPost.user.username}</p>
+                        <img className='original-user-img'
+                            src={getMediaUrl(originalPost.user?.profileImageUrl) || DefaultProfilePic} alt="" />
+                    </div>
+
                 </div>
                 <div className="info">
                     <div className="item" onClick={handleToggleLike}>

@@ -13,6 +13,7 @@ import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
+import EditSquareIcon from '@mui/icons-material/EditSquare';
 import BlockIcon from '@mui/icons-material/Block';
 import Posts from '../../Components/Posts/Posts'
 import { useParams } from 'react-router';
@@ -26,6 +27,7 @@ import { getMediaUrl } from '../../Utils/Media/getMediaUrl.js';
 import Chat from '../../Components/Chat/Chat.jsx';
 import { relationshipsApi } from '../../Services/RelationshipsService/relationshipsService.jsx';
 import Conversation from '../../Components/Conversations/Conversation.jsx';
+import EditProfileModal from '../../Components/Modal/EditProfileModal/EditProfileModal.jsx';
 
 const Profile = () => {
 
@@ -44,6 +46,12 @@ const Profile = () => {
     const [isPending, setIsPending] = useState(false);
     const [isBlocked, setIsBlocked] = useState(false);
     const [relationshipId, setRelationshipId] = useState(null);
+    // State dropdown
+    const [showDropDown, setShowDropDown] = useState(false);
+
+    // State update profile modal
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [updatedUser, setUpdatedUser] = useState(currentUser);
 
 
     // state for change profilePic and bannerPic
@@ -277,6 +285,15 @@ const Profile = () => {
         }
     }
 
+    const handleUpdateProfile = async () => {
+        setIsModalOpen(true)
+        setShowDropDown(false)
+    }
+
+    const handleProfileUpdated = (updatedData) => {
+        setUpdatedUser(updatedData)
+    }
+
     return (
         <div className='profile'>
             {isBlocked ? (
@@ -303,25 +320,30 @@ const Profile = () => {
                                 />
                             </label>
                         )}
-                        <div>
+
+                        <div className="group relative">
                             <img
                                 src={getMediaUrl(profileImageUrl) || DefaultProfilePic}
                                 alt="Profile"
-                                className='profilePic'
+                                className="profilePic w-full h-full object-cover rounded-full"
                             />
-                            {/* {currentUser?.userId === id && (
-                        <label className='upload-profile'>
-                            <FileUploadIcon />
-                            <span className="ml-2">Tải lên ảnh đại diện mới</span>
-                            <input
-                                type="file"
-                                onChange={(e) => handleFileChange(e, "profile")}
-                                className="hidden"
-                                accept="image/*"
-                            />
-                        </label>
-                    )} */}
+                            <div
+                                className="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 rounded-full transition-opacity duration-300 ease-in-out"
+                            ></div>
+                            {currentUser?.userId === id && (
+                                <label className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out cursor-pointer">
+                                    <FileUploadIcon />
+                                    <span className="ml-2">Tải lên ảnh đại diện mới</span>
+                                    <input
+                                        type="file"
+                                        onChange={(e) => handleFileChange(e, "profile")}
+                                        className="hidden"
+                                        accept="image/*"
+                                    />
+                                </label>
+                            )}
                         </div>
+
 
                     </div>
                     <div className="profileContainer">
@@ -390,11 +412,27 @@ const Profile = () => {
                                     </div>
                                 )}
                             </div>
-                            <div className="right">
+                            <div className="right relative">
                                 {currentUser?.userId != id && (
                                     <EmailOutlinedIcon style={{ cursor: 'pointer' }} onClick={handleOpenChat} />
                                 )}
-                                <MoreVertIcon style={{ cursor: 'pointer' }} />
+                                <MoreVertIcon style={{ cursor: 'pointer' }} onClick={() => setShowDropDown(!showDropDown)} />
+                                {showDropDown && (
+                                    <div className="absolute top-[30px] mt-1 w-96 bg-neutral-800 text-white rounded-lg shadow-lg z-50 text-[20px]">
+                                        {currentUser.userId == id && (
+                                            <>
+                                                <button
+                                                    onClick={handleUpdateProfile}
+                                                    className="w-full text-left px-4 py-2 hover:bg-neutral-700 rounded-t-lg flex gap-[10px] items-center cursor-pointer"
+                                                >
+                                                    <EditSquareIcon style={{ fontSize: "24px" }} />
+                                                    Chỉnh sửa thông tin cá nhân
+                                                </button>
+                                            </>
+
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         </div>
                         {openChat && selectedUser && (
@@ -436,6 +474,12 @@ const Profile = () => {
                             </div>
                         </>
                     )}
+                    <EditProfileModal
+                        isOpen={isModalOpen}
+                        onClose={() => setIsModalOpen(false)}
+                        user={updatedUser}
+                        onProfileUpdated={handleProfileUpdated}
+                    />
                 </>
             )}
         </div>

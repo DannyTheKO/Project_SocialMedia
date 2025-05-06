@@ -1,10 +1,15 @@
-import React, {useContext, useEffect, useState} from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import './RightBar.css'
 import PlaceHolderImage from '../../Assets/login-image.jpg'
 import DefaultProfilePic from '../../Assets/defaultProfilePic.jpg';
 import { relationshipsApi } from '../../Services/RelationshipsService/relationshipsService';
 import { Link } from 'react-router';
 import RecentActivities from "./RecentActivities/RecentActivities.jsx"
+import { getMediaUrl } from '../../Utils/Media/getMediaUrl.js';
+import moment from 'moment/moment.js';
+import 'moment/locale/vi'
+
+moment.locale('vi');
 
 const RightBar = () => {
 
@@ -36,18 +41,19 @@ const RightBar = () => {
     return (
         <div className='rightBar'>
             <div className="container p-[20px]">
-                <RecentActivities/>
+                <RecentActivities />
 
                 <div className="item">
-                    <span className='time-color'>Bạn bè online</span>
+                    <span className='time-color'>Bạn bè</span>
                     {friends.map((friend) => (
                         <Link to={`profile/${friend.user2.userId}`}>
                             <div className='user'>
                                 <div className="userInfo relative">
-                                    <img src={friend.user2.profileImageUrl || DefaultProfilePic} alt="" className='avatar' />
-                                    <div className='green-dot' />
+                                    <img src={getMediaUrl(friend.user2.profileImageUrl) || DefaultProfilePic} alt="" className='avatar' />
+                                    {moment(friend.user2.lastLogin).fromNow() == 'vài giây trước' && (<div className='green-dot' />)}
                                     <span className='text-[20px] text-color font-medium'>{friend.user2.username} </span>
                                 </div>
+                                <p>{moment(friend.user2.lastLogin).fromNow() == 'vài giây trước' ? 'Đang hoạt động' : moment(friend.user2.lastLogin).fromNow()}</p>
                             </div>
                         </Link>
                     ))}

@@ -162,7 +162,8 @@ public class UserService implements IUserService {
                 existingUser.setBio(request.getBio());
             }
             if (request.getBirthDate() != null) {
-                existingUser.setBirthDay(request.getBirthDate());
+                LocalDateTime birthDateParsed = LocalDateTime.parse(request.getBirthDate());
+                existingUser.setBirthDay(birthDateParsed);
             }
 
             if (request.getProfileImage() != null && !request.getProfileImage().isEmpty()) {

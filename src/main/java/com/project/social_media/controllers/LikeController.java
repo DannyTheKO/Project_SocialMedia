@@ -62,7 +62,7 @@ public class LikeController {
         }
     }
 
-    @GetMapping("/shared-post") // Thêm endpoint cho SharedPost
+    @GetMapping("/shared-post")
     public ResponseEntity<ApiResponse> getAllLikesBySharedPostId(@RequestParam Long sharedPostId) {
         try {
             List<Like> likes = likeService.getAllLikeBySharedPostId(sharedPostId);
