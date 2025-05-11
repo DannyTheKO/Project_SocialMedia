@@ -12,25 +12,26 @@
 
 ### 1. Backend
 - Mở file `application.properties` và chỉnh sửa thông tin kết nối MySQL và MongoDB.
-# MySQL Configuration
+
+#### MySQL Configuration
+```
 spring.datasource.url=jdbc:mysql://localhost:3306/social_media
 spring.datasource.username=root
 spring.datasource.password=root
+```
 
-# MongoDB Configuration
+#### MongoDB Configuration
+```
 spring.data.mongodb.uri=mongodb://localhost:27017/social_media
+```
 
-- Chạy lệnh:
-
-./mvnw clean install
-
-Sau đó chạy file Start_Server.java bằng IDE hoặc dòng lệnh.
-
-    mvn spring-boot:run
+- Chạy lệnh: `./mvnw clean install`
+- Sau đó chạy file Start_Server.java bằng IDE hoặc dòng lệnh: `mvn spring-boot:run`
 
 ### 2. Frontend
 Mở terminal:
-
+```
 cd gui
 npm install     # Cài đặt các thư viện cần thiết
 npm run dev     # Chạy server frontend tại http://localhost:3000
+```
