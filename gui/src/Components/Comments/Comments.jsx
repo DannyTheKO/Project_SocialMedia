@@ -10,7 +10,7 @@ import CommentCreateForm from "./CreateForm/CommentCreateForm.jsx";
 
 // const Comments = ({ postId, isVideo, getMediaUrl, onPostComment }) => {
 
-const Comments = ({ postId }) => {
+const Comments = ({ postId, sharedPostId }) => {
     // Authentication
     const { currentUser } = useContext(AuthContext);
 
@@ -74,8 +74,8 @@ const Comments = ({ postId }) => {
             // }
 
             const response = await commentApi.createComment(
-                currentUser.userId,
                 postId,
+                sharedPostId,
                 formData
             );
 

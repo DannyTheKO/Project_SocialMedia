@@ -1,10 +1,10 @@
-import React, {useContext, useEffect, useState} from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
 import './Notification.css'
-import {AuthContext} from "../../Context/AuthContext.jsx";
-import {notificationApi} from "../../Services/NotificationService/notificationService.jsx";
+import { AuthContext } from "../../Context/AuthContext.jsx";
+import { notificationApi } from "../../Services/NotificationService/notificationService.jsx";
 import NotificationWebSocketService from "../../Services/NotificationService/notificationWebSocketService.jsx";
-import {getMediaUrl} from "../../Utils/Media/getMediaUrl.js";
+import { getMediaUrl } from "../../Utils/Media/getMediaUrl.js";
 import moment from "moment/moment.js";
 
 moment.locale('vi');
@@ -12,7 +12,7 @@ moment.locale('vi');
 const Notification = () => {
 
     const notificationWebSocket = new NotificationWebSocketService();
-    const {currentUser} = useContext(AuthContext);
+    const { currentUser } = useContext(AuthContext);
     const [unreadNotifications, setUnreadNotifications] = useState([]);
     const [seenNotifications, setSeenNotifications] = useState([]);
     const [unReadFilter, setUnreadFilter] = useState(false);
@@ -34,7 +34,7 @@ const Notification = () => {
 
     const fetchNewNotification = async () => {
         const response = await notificationApi.getUserNotification();
-        console.log(response);
+        // console.log(response);
         if (response.message === "Success") {
             const unread = response.data.filter((data) => !data.isRead);
             const seen = response.data.filter((data) => data.isRead);
@@ -43,7 +43,7 @@ const Notification = () => {
             setSeenNotifications(seen || []);
         } else {
             setUnreadNotifications([])
-            console.error("Cannot Fetch Notification...")
+            // console.error("Cannot Fetch Notification...")
         }
     }
 
@@ -53,7 +53,7 @@ const Notification = () => {
                 setUnreadNotifications(prevState => [...prevState, notification]);
             }
         } catch (error) {
-            console.error(error);
+            // console.error(error);
             setUnreadNotifications([])
         }
     }
@@ -93,7 +93,7 @@ const Notification = () => {
                     Notifications
                 </div>
                 <div className="right flex gap-[15px] items-center dark:text-white">
-                    <MoreHorizOutlinedIcon/>
+                    <MoreHorizOutlinedIcon />
                 </div>
             </div>
             <div className="flex gap-[15px] items-center mx-[10px]">
@@ -114,17 +114,17 @@ const Notification = () => {
             {/*Unread Notification*/}
             {sortUnreadNotificationsByDate.map((notification) => (
                 <div className="notifications flex flex-col gap-[8px] p-[5px] cursor-pointer"
-                     onClick={() => markAsRead(notification.notificationId)}>
+                    onClick={() => markAsRead(notification.notificationId)}>
                     <div className="notification flex justify-between items-center">
                         <div className='flex gap-[15px] mr-[10px]'>
                             <img src={getMediaUrl(notification.senderImageUrl)} alt=""
-                                 className='w-[60px] h-[60px] rounded-full object-cover object-center'/>
+                                className='w-[60px] h-[60px] rounded-full object-cover object-center' />
                             <div className="content flex flex-col">
                                 <div className='notification-info items-center'>
-                                <span
-                                    className="lastest-msg font-medium text-[20px] text-gray-700 dark:text-[lightgray]">
-                                    <b className='text-black dark:text-gray-300'>{notification.senderName}</b> {notification.content}
-                                </span>
+                                    <span
+                                        className="lastest-msg font-medium text-[20px] text-gray-700 dark:text-[lightgray]">
+                                        <b className='text-black dark:text-gray-300'>{notification.senderName}</b> {notification.content}
+                                    </span>
                                 </div>
                                 <p className="date font-medium text-[20px] text-blue-500">{moment(notification.createdAt).fromNow()}</p>
                             </div>
@@ -137,10 +137,10 @@ const Notification = () => {
             {/*Seen Notification*/}
             {sortSeenNotificationsByDate.map((notification) => (
                 <div className="notification flex justify-between items-center"
-                     onClick={() => deleteNotification(notification.notificationId)}>
+                    onClick={() => deleteNotification(notification.notificationId)}>
                     <div className='flex gap-[15px] mr-[10px]'>
                         <img src={getMediaUrl(notification.senderImageUrl)} alt=""
-                             className='w-[60px] h-[60px] rounded-full object-cover object-center'/>
+                            className='w-[60px] h-[60px] rounded-full object-cover object-center' />
                         <div className="content flex flex-col">
                             <div className='notification-info items-center'>
                                 <span
