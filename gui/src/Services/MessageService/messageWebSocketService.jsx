@@ -7,6 +7,7 @@ class MessageWebSocketService {
         this.connected = false;
     }
 
+    // call this callback (onMessageRecived) every time receive message from topic 
     connect(userId, onMessageReceived) {
         const socket = new SockJS('http://localhost:8080/ws');
         this.client = new Client({
@@ -16,6 +17,8 @@ class MessageWebSocketService {
                 // Debug log
                 // console.log("Connected to Message WebSocket Service with userId: " + userId);
                 this.connected = true;
+
+                // topic where receive message 
                 this.client.subscribe(`/topic/messages/${userId}`, (message) => {
                     if (message.body) {
                         const chatMessage = JSON.parse(message.body);

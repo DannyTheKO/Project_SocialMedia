@@ -108,7 +108,7 @@ const Message = () => {
                 </div>
             ))}
 
-            {/* Hiển thị khung chat khi click vào một cuộc hội thoại */}
+            {/* Hiển thị khung chat khi click vào một message*/}
             {openConversation && selectedUser && (
                 <Conversation user={selectedUser} onClose={handleCloseConversation} />
             )}
